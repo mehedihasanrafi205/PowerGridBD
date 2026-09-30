@@ -36,8 +36,6 @@ export default function RegisterPage() {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
-    setValue,
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -47,8 +45,6 @@ export default function RegisterPage() {
       confirmPassword: "",
     },
   });
-
-  const _password = watch("password");
 
   const handleRegister = async (data: RegisterForm) => {
     setIsLoading(true);
@@ -66,28 +62,19 @@ export default function RegisterPage() {
       } else {
         toast.error(response.message || "Registration failed");
       }
-    } catch (error: any) {
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.";
       toast.error(
-        error.response?.data?.message ||
-          "Registration failed. Please try again.",
+        error && typeof error === "object" && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
+          : message,
       );
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const _handleResendOtp = async () => {
-    const email = watch("email");
-    if (!email) return;
-    try {
-      await api.post("/auth/register", {
-        email,
-        name: watch("name"),
-        password: watch("password"),
-      });
-      toast.success("OTP resent! Please check your email.");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to resend OTP");
     }
   };
 

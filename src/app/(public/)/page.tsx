@@ -62,7 +62,10 @@ export default function PublicPage() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-label="Customer portal icon"
+                  role="img"
                 >
+                  <title>Customer Portal</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -94,7 +97,10 @@ export default function PublicPage() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-label="Technician dashboard icon"
+                  role="img"
                 >
+                  <title>Technician Dashboard</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -126,7 +132,10 @@ export default function PublicPage() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-label="Power operator dashboard icon"
+                  role="img"
                 >
+                  <title>Power Operator</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -158,7 +167,10 @@ export default function PublicPage() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-label="Admin console icon"
+                  role="img"
                 >
+                  <title>Admin Console</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -237,7 +249,10 @@ export default function PublicPage() {
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-label="Arrow right"
+              role="img"
             >
+              <title>Arrow Right</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

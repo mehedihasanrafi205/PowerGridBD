@@ -3,17 +3,17 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-interface InputOTPProps
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    "onChange" | "ref"
-  > {
-  length?: number;
-  containerClassName?: string;
-  onComplete?: (value: string) => void;
-}
-
-const InputOTP = React.forwardRef<HTMLDivElement, InputOTPProps>(
+const InputOTP = React.forwardRef<
+  HTMLDivElement,
+  {
+    length?: number;
+    containerClassName?: string;
+    onComplete?: (value: string) => void;
+    disabled?: boolean;
+    className?: string;
+    name?: string;
+  }
+>(
   (
     {
       className,
@@ -21,6 +21,7 @@ const InputOTP = React.forwardRef<HTMLDivElement, InputOTPProps>(
       containerClassName,
       onComplete,
       disabled,
+      name,
       ...restProps
     },
     ref,
@@ -91,7 +92,7 @@ const InputOTP = React.forwardRef<HTMLDivElement, InputOTPProps>(
         <div className={cn("flex items-center gap-2", containerClassName)}>
           {Array.from({ length }).map((_, i) => (
             <input
-              key={i}
+              key={`otp-${i}`}
               ref={(el) => {
                 inputsRef.current[i] = el;
               }}
@@ -111,7 +112,7 @@ const InputOTP = React.forwardRef<HTMLDivElement, InputOTPProps>(
             />
           ))}
         </div>
-        <input type="hidden" name={restProps.name} value={values.join("")} />
+        <input type="hidden" name={name} value={values.join("")} />
       </div>
     );
   },
@@ -120,13 +121,3 @@ const InputOTP = React.forwardRef<HTMLDivElement, InputOTPProps>(
 InputOTP.displayName = "InputOTP";
 
 export { InputOTP };
-
-interface InputOTPProps
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    "onChange" | "ref"
-  > {
-  length?: number;
-  containerClassName?: string;
-  onComplete?: (value: string) => void;
-}

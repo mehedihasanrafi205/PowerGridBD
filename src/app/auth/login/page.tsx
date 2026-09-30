@@ -79,9 +79,16 @@ export default function LoginPage() {
       } else {
         toast.error(response.message || "Login failed");
       }
-    } catch (error: any) {
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Login failed. Please try again.";
       toast.error(
-        error.response?.data?.message || "Login failed. Please try again.",
+        error && typeof error === "object" && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
+          : message,
       );
     } finally {
       setIsLoading(false);
@@ -102,9 +109,16 @@ export default function LoginPage() {
       } else {
         toast.error(response.message || "Demo login failed");
       }
-    } catch (error: any) {
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Demo login failed. Please try again.";
       toast.error(
-        error.response?.data?.message || "Demo login failed. Please try again.",
+        error && typeof error === "object" && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
+          : message,
       );
     } finally {
       setDemoLoading(null);
@@ -144,6 +158,7 @@ export default function LoginPage() {
           <div className="grid grid-cols-2 gap-3 mb-6">
             {demoAccounts.map((account) => (
               <button
+                type="button"
                 key={account.role}
                 onClick={() => handleDemoLogin(account.email, account.role)}
                 disabled={demoLoading !== null}

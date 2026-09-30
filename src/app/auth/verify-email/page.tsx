@@ -28,8 +28,6 @@ export default function VerifyEmailPage() {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
-    watch,
   } = useForm<OTPForm>({
     resolver: zodResolver(otpSchema),
     defaultValues: { otp: "" },
@@ -46,10 +44,16 @@ export default function VerifyEmailPage() {
       } else {
         toast.error(response.message || "Verification failed");
       }
-    } catch (error: any) {
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Verification failed. Please try again.";
       toast.error(
-        error.response?.data?.message ||
-          "Verification failed. Please try again.",
+        error && typeof error === "object" && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
+          : message,
       );
     } finally {
       setIsLoading(false);
@@ -71,8 +75,15 @@ export default function VerifyEmailPage() {
           return prev - 1;
         });
       }, 1000);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to resend OTP");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to resend OTP";
+      toast.error(
+        error && typeof error === "object" && "response" in error
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
+          : message,
+      );
     } finally {
       setResendLoading(false);
     }
