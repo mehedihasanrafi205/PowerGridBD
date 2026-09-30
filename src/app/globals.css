@@ -48,6 +48,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* PowerGridBD Design System Colors */
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -55,32 +56,53 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.58 0.25 264);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --accent: oklch(0.72 0.15 165);
+  --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --chart-1: oklch(0.58 0.25 264);
+  --chart-2: oklch(0.72 0.15 165);
+  --chart-3: oklch(0.65 0.18 145);
+  --chart-4: oklch(0.83 0.18 85);
+  --chart-5: oklch(0.09 0.02 240);
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary: oklch(0.58 0.25 264);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.72 0.15 165);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* PowerGridBD Semantic Colors */
+  --color-deep-charcoal: oklch(0.09 0.02 240);
+  --color-electric-blue: oklch(0.58 0.25 264);
+  --color-smart-teal: oklch(0.72 0.15 165);
+  --color-amber: oklch(0.83 0.18 85);
+  --color-emerald: oklch(0.65 0.18 145);
+  --color-white: oklch(1 0 0);
+
+  /* Status Colors */
+  --color-status-pending: oklch(0.83 0.18 85);
+  --color-status-active: oklch(0.58 0.25 264);
+  --color-status-assigned: oklch(0.72 0.15 165);
+  --color-status-in-progress: oklch(0.58 0.25 264 / 0.8);
+  --color-status-resolved: oklch(0.65 0.18 145);
+  --color-status-restored: oklch(0.65 0.18 145 / 0.9);
+  --color-status-failed: oklch(0.577 0.245 27.325);
+  --color-status-cancelled: oklch(0.556 0 0);
+  --color-status-warning: oklch(0.83 0.18 85);
+  --color-status-critical: oklch(0.58 0.25 264 / 0.9);
+  --color-status-success: oklch(0.65 0.18 145);
 }
 
 .dark {
@@ -90,23 +112,23 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: oklch(0.58 0.25 264);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(0.72 0.15 165);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --chart-1: oklch(0.58 0.25 264);
+  --chart-2: oklch(0.72 0.15 165);
+  --chart-3: oklch(0.65 0.18 145);
+  --chart-4: oklch(0.83 0.18 85);
+  --chart-5: oklch(0.09 0.02 240);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -115,6 +137,27 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* PowerGridBD Semantic Colors - Dark Mode */
+  --color-deep-charcoal: oklch(0.95 0 0);
+  --color-electric-blue: oklch(0.58 0.25 264);
+  --color-smart-teal: oklch(0.72 0.15 165);
+  --color-amber: oklch(0.83 0.18 85);
+  --color-emerald: oklch(0.65 0.18 145);
+  --color-white: oklch(1 0 0);
+
+  /* Status Colors - Dark Mode */
+  --color-status-pending: oklch(0.83 0.18 85);
+  --color-status-active: oklch(0.58 0.25 264);
+  --color-status-assigned: oklch(0.72 0.15 165);
+  --color-status-in-progress: oklch(0.58 0.25 264 / 0.8);
+  --color-status-resolved: oklch(0.65 0.18 145);
+  --color-status-restored: oklch(0.65 0.18 145 / 0.9);
+  --color-status-failed: oklch(0.704 0.191 22.216);
+  --color-status-cancelled: oklch(0.556 0 0);
+  --color-status-warning: oklch(0.83 0.18 85);
+  --color-status-critical: oklch(0.58 0.25 264 / 0.9);
+  --color-status-success: oklch(0.65 0.18 145);
 }
 
 @layer base {
@@ -124,10 +167,102 @@
   body {
     @apply bg-background text-foreground;
   }
-  button:not(:disabled), [role="button"]:not(:disabled) {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
     cursor: pointer;
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* PowerGridBD Utility Classes */
+@layer utilities {
+  .bg-deep-charcoal {
+    background-color: var(--color-deep-charcoal);
+  }
+  .text-deep-charcoal {
+    color: var(--color-deep-charcoal);
+  }
+  .bg-electric-blue {
+    background-color: var(--color-electric-blue);
+  }
+  .text-electric-blue {
+    color: var(--color-electric-blue);
+  }
+  .bg-smart-teal {
+    background-color: var(--color-smart-teal);
+  }
+  .text-smart-teal {
+    color: var(--color-smart-teal);
+  }
+  .bg-amber {
+    background-color: var(--color-amber);
+  }
+  .text-amber {
+    color: var(--color-amber);
+  }
+  .bg-emerald {
+    background-color: var(--color-emerald);
+  }
+  .text-emerald {
+    color: var(--color-emerald);
+  }
+
+  /* Status Badge Utilities - Using CSS variables with opacity */
+  .badge-pending {
+    background-color: var(--color-amber / 0.1);
+    color: var(--color-amber);
+    border-color: var(--color-amber / 0.2);
+  }
+  .badge-active {
+    background-color: var(--color-electric-blue / 0.1);
+    color: var(--color-electric-blue);
+    border-color: var(--color-electric-blue / 0.2);
+  }
+  .badge-assigned {
+    background-color: var(--color-smart-teal / 0.1);
+    color: var(--color-smart-teal);
+    border-color: var(--color-smart-teal / 0.2);
+  }
+  .badge-in-progress {
+    background-color: var(--color-electric-blue / 0.1);
+    color: var(--color-electric-blue);
+    border-color: var(--color-electric-blue / 0.2);
+  }
+  .badge-resolved {
+    background-color: var(--color-emerald / 0.1);
+    color: var(--color-emerald);
+    border-color: var(--color-emerald / 0.2);
+  }
+  .badge-restored {
+    background-color: var(--color-emerald / 0.1);
+    color: var(--color-emerald);
+    border-color: var(--color-emerald / 0.2);
+  }
+  .badge-failed {
+    background-color: var(--destructive / 0.1);
+    color: var(--destructive);
+    border-color: var(--destructive / 0.2);
+  }
+  .badge-cancelled {
+    background-color: var(--muted / 0.5);
+    color: var(--muted-foreground);
+    border-color: var(--muted / 0.3);
+  }
+  .badge-warning {
+    background-color: var(--color-amber / 0.1);
+    color: var(--color-amber);
+    border-color: var(--color-amber / 0.2);
+  }
+  .badge-critical {
+    background-color: var(--color-electric-blue / 0.1);
+    color: var(--color-electric-blue);
+    border-color: var(--color-electric-blue / 0.2);
+  }
+  .badge-success {
+    background-color: var(--color-emerald / 0.1);
+    color: var(--color-emerald);
+    border-color: var(--color-emerald / 0.2);
   }
 }
