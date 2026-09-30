@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import QueryProvider from "./query.provider";
 import { Toaster } from "@/components/ui/toast";
+import QueryProvider from "./query.provider";
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (

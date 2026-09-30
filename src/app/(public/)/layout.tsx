@@ -1,6 +1,5 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "PowerGridBD",
@@ -20,7 +19,10 @@ export default function PublicLayout({
             PowerGridBD
           </Link>
           <nav className="flex items-center gap-4">
-            <Link href="/auth/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <Link
+              href="/auth/login"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               Login
             </Link>
             <Link

@@ -1,17 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { api } from "@/lib/apiClient";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import apiClient from "@/lib/apiClient";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -21,10 +21,34 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 const demoAccounts = [
-  { role: "ADMIN", email: "admin@powergridbd.com", label: "Admin", description: "Full system access", color: "bg-destructive/10 text-destructive border-destructive/20" },
-  { role: "POWER_OPERATOR", email: "operator@powergridbd.com", label: "Power Operator", description: "Grid & outage management", color: "bg-amber/10 text-amber border-amber/20" },
-  { role: "TECHNICIAN", email: "technician@powergridbd.com", label: "Technician", description: "Assigned outage resolution", color: "bg-emerald/10 text-emerald border-emerald/20" },
-  { role: "CUSTOMER", email: "customer@powergridbd.com", label: "Customer", description: "Report & track outages", color: "bg-primary/10 text-primary border-primary/20" },
+  {
+    role: "ADMIN",
+    email: "admin@powergridbd.com",
+    label: "Admin",
+    description: "Full system access",
+    color: "bg-destructive/10 text-destructive border-destructive/20",
+  },
+  {
+    role: "POWER_OPERATOR",
+    email: "operator@powergridbd.com",
+    label: "Power Operator",
+    description: "Grid & outage management",
+    color: "bg-amber/10 text-amber border-amber/20",
+  },
+  {
+    role: "TECHNICIAN",
+    email: "technician@powergridbd.com",
+    label: "Technician",
+    description: "Assigned outage resolution",
+    color: "bg-emerald/10 text-emerald border-emerald/20",
+  },
+  {
+    role: "CUSTOMER",
+    email: "customer@powergridbd.com",
+    label: "Customer",
+    description: "Report & track outages",
+    color: "bg-primary/10 text-primary border-primary/20",
+  },
 ];
 
 export default function LoginPage() {
@@ -47,7 +71,7 @@ export default function LoginPage() {
   const handleLogin = async (data: LoginForm) => {
     setIsLoading(true);
     try {
-      const response = await apiClient.post("/auth/login", data);
+      const response = await api.post("/auth/login", data);
       if (response.success) {
         toast.success("Login successful!");
         router.push("/");
@@ -56,7 +80,9 @@ export default function LoginPage() {
         toast.error(response.message || "Login failed");
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Login failed. Please try again.");
+      toast.error(
+        error.response?.data?.message || "Login failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +91,10 @@ export default function LoginPage() {
   const handleDemoLogin = async (email: string, role: string) => {
     setDemoLoading(role);
     try {
-      const response = await apiClient.post("/auth/login", { email, password: "demo123" });
+      const response = await api.post("/auth/login", {
+        email,
+        password: "demo123",
+      });
       if (response.success) {
         toast.success(`Demo login as ${role} successful!`);
         router.push("/");
@@ -74,7 +103,9 @@ export default function LoginPage() {
         toast.error(response.message || "Demo login failed");
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Demo login failed. Please try again.");
+      toast.error(
+        error.response?.data?.message || "Demo login failed. Please try again.",
+      );
     } finally {
       setDemoLoading(null);
     }
@@ -84,11 +115,18 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 text-2xl font-bold text-primary mb-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-2xl font-bold text-primary mb-6"
+          >
             PowerGridBD
           </Link>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome Back</h1>
-          <p className="text-muted-foreground">Sign in to your account to continue</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-muted-foreground">
+            Sign in to your account to continue
+          </p>
         </div>
 
         {/* Demo Login Section */}
@@ -98,7 +136,9 @@ export default function LoginPage() {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-background px-2 text-muted-foreground">Or try Demo Login</span>
+              <span className="bg-background px-2 text-muted-foreground">
+                Or try Demo Login
+              </span>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-6">
@@ -110,12 +150,16 @@ export default function LoginPage() {
                 className={cn(
                   "p-4 rounded-lg border transition-all hover:shadow-md",
                   account.color,
-                  demoLoading === account.role && "opacity-50 cursor-wait"
+                  demoLoading === account.role && "opacity-50 cursor-wait",
                 )}
               >
                 <div className="font-semibold">{account.label}</div>
-                <div className="text-xs text-muted-foreground mt-1">{account.description}</div>
-                {demoLoading === account.role && <div className="text-xs text-primary mt-1">Logging in...</div>}
+                <div className="text-xs text-muted-foreground mt-1">
+                  {account.description}
+                </div>
+                {demoLoading === account.role && (
+                  <div className="text-xs text-primary mt-1">Logging in...</div>
+                )}
               </button>
             ))}
           </div>
@@ -131,7 +175,10 @@ export default function LoginPage() {
               placeholder="you@example.com"
               {...register("email")}
               disabled={isLoading}
-              className={cn(errors.email && "border-destructive focus:border-destructive focus:ring-destructive/20")}
+              className={cn(
+                errors.email &&
+                  "border-destructive focus:border-destructive focus:ring-destructive/20",
+              )}
             />
             {errors.email && (
               <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -154,10 +201,15 @@ export default function LoginPage() {
               placeholder="••••••••"
               {...register("password")}
               disabled={isLoading}
-              className={cn(errors.password && "border-destructive focus:border-destructive focus:ring-destructive/20")}
+              className={cn(
+                errors.password &&
+                  "border-destructive focus:border-destructive focus:ring-destructive/20",
+              )}
             />
             {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
@@ -169,7 +221,10 @@ export default function LoginPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
             Don't have an account?{" "}
-            <Link href="/auth/register" className="text-primary hover:underline font-medium">
+            <Link
+              href="/auth/register"
+              className="text-primary hover:underline font-medium"
+            >
               Register
             </Link>
           </p>
