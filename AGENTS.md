@@ -1,5 +1,9 @@
 <!-- BEGIN:nextjs-agent-rules -->
 
+## Project Backend 
+Backend Repository: https://github.com/mehedihasanrafi205/PowerGridBD-Backend
+Backend Live: https://powergridbd-backend.vercel.app
+
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
@@ -45,3 +49,4 @@ bun format       # biome format --write
 - `sharp` and `unrs-resolver` are trusted deps with ignored scripts
 - Static export means no API routes, no server components with dynamic data
 - CSS uses `@import "tailwindcss"` (v4 syntax), not `@tailwind base/components/utilities`
+
