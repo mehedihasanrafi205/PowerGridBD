@@ -30,12 +30,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [error, isLoading, queryClient]);
 
+  const isAuthenticated = Boolean(data?.success && data.data?.user);
+
   return (
     <AuthContext.Provider
       value={{
         user: data?.success && data.data?.user ? data.data.user : null,
         isLoading,
-        isAuthenticated: data?.success && !!data.data?.user,
+        isAuthenticated,
         refresh: () => queryClient.invalidateQueries({ queryKey: ["user"] }),
       }}
     >

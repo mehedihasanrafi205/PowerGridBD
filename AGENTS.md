@@ -21,6 +21,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - **Tailwind CSS v4** — CSS-first config, CSS variables for theming
 - **shadcn/ui** — "base-nova" style, RSC enabled, lucide icons
 - **React Compiler** — enabled via `babel-plugin-react-compiler`
+- **TanStack Query** — server state management
+- **Zod** — validation schemas
 
 ## Commands
 ```bash
@@ -36,6 +38,18 @@ bun format       # biome format --write
 - `reactCompiler: true` — automatic memoization, no `useMemo`/`useCallback` needed
 - Path alias `@/*` → `./src/*` (tsconfig + components.json)
 - CSS variables for all colors (globals.css) — dark mode via `.dark` class
+- `NEXT_PUBLIC_BASE_URL` env var for API base URL
+
+## Architecture
+- **Route groups**: `(public)` for auth pages, `(dashboard)` for role-based dashboards
+- **Dashboard structure**: Single `(dashboard)` route group with role-based sub-routes:
+  - `(dashboard)/customer/*` — Customer portal (outages, SLA, payments)
+  - `(dashboard)/technician/*` — Technician portal (assigned tasks, performance)
+  - `(dashboard)/operator/*` — Power Operator portal (grid, schedules, analytics)
+  - `(dashboard)/admin/*` — Admin console (users, payments, audit logs)
+- **API + Hooks pattern**: `src/api/*.api.ts` modules + `src/hooks/*.hook.ts` (TanStack Query)
+- **Types**: Centralized in `src/types/` with barrel export at `src/types/index.ts`
+- **Providers**: `AuthProvider`, `QueryProvider`, composed in `Providers` at `src/providers/index.tsx`
 
 ## Conventions
 - **No `useMemo`/`useCallback`** — React Compiler handles it
@@ -43,10 +57,33 @@ bun format       # biome format --write
 - **Components** — colocate in `src/components/ui/` for shadcn components
 - **Fonts** — Geist Sans/Mono + Inter loaded via `next/font` in layout.tsx
 - **Images** — use `next/image` (configured for static export)
+- **Role checks** — use `useAuth()` hook, check `user.role` for conditional rendering
+- **API calls** — use `api.get/post/put/patch/delete` from `@/lib/apiClient`
 
 ## Gotchas
 - `node_modules` + `.next` + `out` are ignored by Biome
 - `sharp` and `unrs-resolver` are trusted deps with ignored scripts
 - Static export means no API routes, no server components with dynamic data
 - CSS uses `@import "tailwindcss"` (v4 syntax), not `@tailwind base/components/utilities`
+- **CSS warnings**: `var(--color-xxx / 0.1)` syntax produces warnings but doesn't block build
+- **TypeScript strict**: `noImplicitAny: true`, `alwaysStrict: true` — must type everything
 
+## UI Components (shadcn/ui)
+All components in `src/components/ui/` — installed via `bunx --bun shadcn@latest add <component>`
+Key components: `button`, `input`, `textarea`, `select`, `dialog`, `dropdown-menu`, `tabs`, `table`, `card`, `badge`, `avatar`, `tooltip`, `pagination`, `skeleton`, `separator`, `checkbox`, `label`, `input-otp`, `toast`
+
+## Features Implemented
+- Outage reporting & lifecycle (PENDING → ASSIGNED → IN_PROGRESS → RESOLVED → RESTORED)
+- Grid hierarchy (Zone → Substation → Feeder → Area)
+- Load-shedding schedules with CRUD
+- SLA subscriptions with SSLCommerz payments
+- Priority restoration payments
+- Technician applications with OTP verification
+- Role-based dashboards with analytics
+- Audit logs (admin only)
+
+## Type Safety Notes
+- `OperationalAnalytics` includes optional fields: `totalUsers`, `criticalFeeders`, `mttr`, `avgAssignmentTime`, `firstTimeFixRate`
+- `CustomerSummary` includes optional: `slaActive`, `slaExpiryDate`
+- `TechnicianSummary` includes optional: `firstTimeFixRate`
+- Hook filters use strict union types (`Role`, `OutageStatus`, `ApplicationStatus`) — cast when passing string values

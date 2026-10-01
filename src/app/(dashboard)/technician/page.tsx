@@ -1,13 +1,13 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PlusCircle, AlertTriangle, Clock, CheckCircle, BarChart3, TrendingUp } from "lucide-react";
-import { useTechnicianSummary } from "@/hooks/analytics.hook";
-import { useOutages } from "@/hooks/outage.hook";
+import { PlusCircle, AlertTriangle, Clock, CheckCircle, BarChart3, TrendingUp, User } from "lucide-react";
+import { useTechnicianSummary } from "@/hooks";
+import { useOutages } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 export default function TechnicianDashboard() {
@@ -101,7 +101,7 @@ export default function TechnicianDashboard() {
         </div>
 
         <div className="space-y-3">
-          {outages?.data?.length > 0 ? (
+          {outages && outages.data && outages.data.length > 0 ? (
             outages.data.slice(0, 5).map((outage) => (
               <div
                 key={outage.id}

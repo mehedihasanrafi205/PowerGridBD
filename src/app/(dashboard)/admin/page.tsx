@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Users, CreditCard, BarChart3, FileText, GitBranch, AlertCircle, Shield, TrendingUp } from "lucide-react";
-import { useOperationalAnalytics } from "@/hooks/analytics.hook";
-import { useFinancialAnalytics } from "@/hooks/analytics.hook";
-import { useOutages } from "@/hooks/outage.hook";
+import { useOperationalAnalytics } from "@/hooks";
+import { useFinancialAnalytics } from "@/hooks";
+import { useOutages } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
@@ -182,7 +182,7 @@ export default function AdminDashboard() {
             </Link>
           </div>
           <div className="space-y-3">
-            {outages?.data?.length > 0 ? (
+            {outages && outages.data && outages.data.length > 0 ? (
               outages.data.slice(0, 5).map((outage) => (
                 <div
                   key={outage.id}
@@ -193,65 +193,4 @@ export default function AdminDashboard() {
                       {outage.status}
                     </span>
                     <div>
-                      <p className="font-medium text-sm">Outage #{outage.id.slice(0, 8)}</p>
-                      <p className="text-xs text-muted-foreground">{outage.area?.name || "Unknown"}</p>
-                    </div>
-                  </div>
-                  <Link href={`/admin/outages/${outage.id}`} className="text-sm text-primary hover:underline">
-                    View
-                  </Link>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-muted-foreground py-4">No recent outages</p>
-            )}
-          </div>
-        </div>
-
-        <div className="bg-card border rounded-xl p-6">
-          <CardTitle className="text-xl mb-4">Role Distribution</CardTitle>
-          <div className="grid gap-4 md:grid-cols-4">
-            <div className="p-4 bg-blue-50 rounded-lg text-center">
-              <p className="text-3xl font-bold text-blue-600">0</p>
-              <p className="text-sm text-muted-foreground">Customers</p>
-            </div>
-            <div className="p-4 bg-green-50 rounded-lg text-center">
-              <p className="text-3xl font-bold text-green-600">0</p>
-              <p className="text-sm text-muted-foreground">Technicians</p>
-            </div>
-            <div className="p-4 bg-amber-50 rounded-lg text-center">
-              <p className="text-3xl font-bold text-amber-600">0</p>
-              <p className="text-sm text-muted-foreground">Operators</p>
-            </div>
-            <div className="p-4 bg-red-50 rounded-lg text-center">
-              <p className="text-3xl font-bold text-red-600">0</p>
-              <p className="text-sm text-muted-foreground">Admins</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-card border rounded-xl p-6">
-        <CardTitle className="text-xl mb-4">System Health</CardTitle>
-        <div className="grid md:grid-cols-4 gap-6">
-          <div className="p-4 bg-green-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">Grid Uptime</p>
-            <p className="text-2xl font-bold text-green-600">99.9%</p>
-          </div>
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">API Response</p>
-            <p className="text-2xl font-bold text-blue-600">{"<"} 200ms</p>
-          </div>
-          <div className="p-4 bg-purple-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">Error Rate</p>
-            <p className="text-2xl font-bold text-purple-600">{"<"} 0.1%</p>
-          </div>
-          <div className="p-4 bg-amber-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">Active Alerts</p>
-            <p className="text-2xl font-bold text-amber-600">0</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+                      <p className="fon

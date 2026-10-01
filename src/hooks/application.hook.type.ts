@@ -20,7 +20,7 @@ export const useMyApplication = (email: string) => {
   });
 };
 
-export const useApplications = (filters?: { status?: string; page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }) => {
+export const useApplications = (filters?: ApplicationFilters) => {
   return useQuery({
     queryKey: ["applications", filters],
     queryFn: () => getApplications(filters),

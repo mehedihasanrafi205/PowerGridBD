@@ -1,4 +1,5 @@
-import { Role, UserStatus } from "./auth";
+import { Role, UserStatus, User } from "./auth.type";
+
 
 export interface UserFilters {
   searchTerm?: string;
@@ -49,19 +50,4 @@ export interface UserProfileResponse {
   statusCode: number;
   message: string;
   data: User;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  address?: string;
-  role: Role;
-  status: UserStatus;
-  profileImage?: string;
-  slaActive?: boolean;
-  slaExpiryDate?: string;
-  createdAt: string;
-  updatedAt: string;
 }

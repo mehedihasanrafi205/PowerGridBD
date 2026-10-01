@@ -27,6 +27,19 @@ const registerSchema = z
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
+interface AuthResponse {
+  success: boolean;
+  message: string;
+  data?: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+    };
+  };
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +62,7 @@ export default function RegisterPage() {
   const handleRegister = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
-      const response = await api.post("/auth/register", {
+      const response = await api.post<AuthResponse>("/auth/register", {
         name: data.name,
         email: data.email,
         password: data.password,
@@ -63,16 +76,8 @@ export default function RegisterPage() {
         toast.error(response.message || "Registration failed");
       }
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Registration failed. Please try again.";
-      toast.error(
-        error && typeof error === "object" && "response" in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message
-          : message,
-      );
+      const message = error instanceof Error ? error.message : "Registration failed. Please try again.";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

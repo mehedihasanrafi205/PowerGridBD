@@ -51,6 +51,19 @@ const demoAccounts = [
   },
 ];
 
+interface AuthResponse {
+  success: boolean;
+  message: string;
+  data?: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+    };
+  };
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +84,7 @@ export default function LoginPage() {
   const handleLogin = async (data: LoginForm) => {
     setIsLoading(true);
     try {
-      const response = await api.post("/auth/login", data);
+      const response = await api.post<AuthResponse>("/auth/login", data);
       if (response.success) {
         toast.success("Login successful!");
         router.push("/");
@@ -80,16 +93,8 @@ export default function LoginPage() {
         toast.error(response.message || "Login failed");
       }
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Login failed. Please try again.";
-      toast.error(
-        error && typeof error === "object" && "response" in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message
-          : message,
-      );
+      const message = error instanceof Error ? error.message : "Login failed. Please try again.";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -98,7 +103,7 @@ export default function LoginPage() {
   const handleDemoLogin = async (email: string, role: string) => {
     setDemoLoading(role);
     try {
-      const response = await api.post("/auth/login", {
+      const response = await api.post<AuthResponse>("/auth/login", {
         email,
         password: "demo123",
       });
@@ -110,16 +115,8 @@ export default function LoginPage() {
         toast.error(response.message || "Demo login failed");
       }
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Demo login failed. Please try again.";
-      toast.error(
-        error && typeof error === "object" && "response" in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message
-          : message,
-      );
+      const message = error instanceof Error ? error.message : "Demo login failed. Please try again.";
+      toast.error(message);
     } finally {
       setDemoLoading(null);
     }

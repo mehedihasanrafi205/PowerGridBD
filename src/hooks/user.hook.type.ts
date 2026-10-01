@@ -11,7 +11,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { UserFilters, UserUpdatePayload, UserStatusPayload, UserRolePayload } from "@/types";
 
-export const useUsers = (filters?: { searchTerm?: string; role?: string; status?: string; page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }) => {
+export const useUsers = (filters?: UserFilters) => {
   return useQuery({
     queryKey: ["users", filters],
     queryFn: () => getUsers(filters),
@@ -60,7 +60,7 @@ export const useUpdateProfileImage = () => {
 export const useUpdateUserStatus = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: { status: "ACTIVE" | "BLOCKED" } }) => updateUserStatus(id, payload),
+    mutationFn: ({ id, payload }: { id: string; payload: UserStatusPayload }) => updateUserStatus(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -72,7 +72,7 @@ export const useUpdateUserStatus = () => {
 export const useUpdateUserRole = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: { role: "CUSTOMER" | "TECHNICIAN" | "POWER_OPERATOR" | "ADMIN" } }) => updateUserRole(id, payload),
+    mutationFn: ({ id, payload }: { id: string; payload: UserRolePayload }) => updateUserRole(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });

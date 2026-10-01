@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle, AlertTriangle, Users, Calendar, BarChart3, GitBranch, FileText, TrendingUp, AlertCircle } from "lucide-react";
-import { useOperationalAnalytics } from "@/hooks/analytics.hook";
-import { useOutages } from "@/hooks/outage.hook";
-import { useSchedules } from "@/hooks/schedule.hook";
+import { useOperationalAnalytics } from "@/hooks";
+import { useOutages } from "@/hooks";
+import { useSchedules } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 export default function OperatorDashboard() {
@@ -123,16 +123,10 @@ export default function OperatorDashboard() {
         <div className="bg-card border rounded-xl p-6">
           <CardTitle className="text-xl mb-4">Critical Feeders</CardTitle>
           <div className="space-y-3">
-            {analytics?.data?.criticalFeeders?.length > 0 ? (
-              analytics.data.criticalFeeders.slice(0, 5).map((feeder) => (
-                <div key={feeder.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                  <div>
-                    <p className="font-medium">{feeder.name}</p>
-                    <p className="text-sm text-muted-foreground">{feeder.zone?.name} Zone</p>
-                  </div>
-                  <Badge variant="destructive">{feeder.outageCount} outages</Badge>
-                </div>
-              ))
+            {analytics?.data && analytics.data.criticalFeedersDown > 0 ? (
+              <div className="text-center py-4 text-muted-foreground">
+                {analytics.data.criticalFeedersDown} critical feeder(s) down. Check grid details.
+              </div>
             ) : (
               <div className="text-center py-4 text-muted-foreground">
                 No critical feeders at this time. All systems operational.
@@ -149,7 +143,7 @@ export default function OperatorDashboard() {
             <Link href="/operator/outages" className="text-sm text-primary hover:underline">View All</Link>
           </div>
           <div className="space-y-3">
-            {outages?.data?.length > 0 ? (
+            {outages && outages.data && outages.data.length > 0 ? (
               outages.data.slice(0, 5).map((outage) => (
                 <div key={outage.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
                   <div className="flex items-center gap-3">
@@ -176,7 +170,7 @@ export default function OperatorDashboard() {
             <Link href="/operator/schedules" className="text-sm text-primary hover:underline">View All</Link>
           </div>
           <div className="space-y-3">
-            {schedules?.data?.length > 0 ? (
+            {schedules && schedules.data && schedules.data.length > 0 ? (
               schedules.data.slice(0, 5).map((schedule) => (
                 <div key={schedule.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                   <div>
@@ -212,7 +206,7 @@ export default function OperatorDashboard() {
           </div>
           <div className="p-4 bg-amber-50 rounded-lg">
             <p className="text-sm text-muted-foreground">Critical Feeders</p>
-            <p className="text-2xl font-bold text-amber-600">{analytics?.data?.criticalFeeders?.length || 0}</p>
+            <p className="text-2xl font-bold text-amber-600">{analytics?.data?.criticalFeedersDown || 0}</p>
           </div>
         </div>
       </div>

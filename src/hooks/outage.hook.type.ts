@@ -8,7 +8,7 @@ import {
 } from "@/api/outage.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { OutageFilters, OutageStatusPayload } from "@/types";
+import type { OutageFilters, OutageStatus, OutageStatusPayload } from "@/types";
 
 export const useOutages = (filters?: OutageFilters) => {
   return useQuery({
@@ -59,7 +59,7 @@ export const useAssignTechnician = () => {
 export const useUpdateOutageStatus = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: { status: string; notes?: string } }) =>
+    mutationFn: ({ id, payload }: { id: string; payload: OutageStatusPayload }) =>
       updateOutageStatus(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["outages"] });

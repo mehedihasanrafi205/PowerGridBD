@@ -1,14 +1,14 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle, AlertTriangle, Shield, CreditCard, Clock, CheckCircle } from "lucide-react";
-import { useMySummary } from "@/hooks/analytics.hook";
-import { useOutages } from "@/hooks/outage.hook";
-import { useMyPayments } from "@/hooks/payment.hook";
+import { useMySummary } from "@/hooks";
+import { useOutages } from "@/hooks";
+import { useMyPayments } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 export default function CustomerDashboard() {
@@ -132,7 +132,7 @@ export default function CustomerDashboard() {
                 <div key={i} className="h-16 bg-muted rounded animate-pulse" />
               ))}
             </div>
-          ) : outages?.data && outages.data.length > 0 ? (
+          ) : outages && outages.data && outages.data.length > 0 ? (
             <div className="space-y-3">
               {outages.data.slice(0, 5).map((outage) => (
                 <div
@@ -200,7 +200,7 @@ export default function CustomerDashboard() {
                 <p className="font-semibold">{summary?.data?.slaActive ? "SLA Active" : "SLA Inactive"}</p>
                 <p className="text-sm text-muted-foreground">
                   {summary?.data?.slaActive
-                    ? `Expires: ${summary.data.slaExpiryDate ? new Date(summary.data.slaExpiryDate).toLocaleDateString() : "Unknown"}`
+                    ? `Expires: ${summary?.data?.slaExpiryDate ? new Date(summary.data.slaExpiryDate).toLocaleDateString() : "Unknown"}`
                     : "No active SLA subscription"}
                 </p>
               </div>
@@ -209,7 +209,7 @@ export default function CustomerDashboard() {
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="font-semibold text-blue-800 mb-2">Priority Restoration</p>
             <p className="text-sm text-blue-600">
-              {summary?.data?.priorityCount > 0
+              {summary && summary.data && summary.data.priorityCount > 0
                 ? `${summary.data.priorityCount} outage(s) with priority status`
                 : "No priority restorations active"}
             </p>

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useAuth } from "@/hooks/useAuth";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
@@ -25,7 +26,7 @@ export function UserMenu({ user }: UserMenuProps) {
   if (!user) return null;
 
   const roleColors: Record<string, "default" | "secondary" | "destructive" | "success" | "warning" | "info"> = {
-    CUSTOMER: "primary",
+    CUSTOMER: "info",
     TECHNICIAN: "success",
     POWER_OPERATOR: "warning",
     ADMIN: "destructive",

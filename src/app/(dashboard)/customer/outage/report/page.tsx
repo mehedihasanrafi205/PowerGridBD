@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,8 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCreateOutage } from "@/hooks/outage.hook";
-import { useAreas } from "@/hooks/grid.hook";
+import { useCreateOutage } from "@/hooks";
+import { useAreas } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
 import Link from "next/link";

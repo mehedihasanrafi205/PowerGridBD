@@ -31,7 +31,7 @@ export function Header({ user }: HeaderProps) {
   if (!user) return null;
 
   const roleColors: Record<string, "default" | "secondary" | "destructive" | "success" | "warning" | "info"> = {
-    CUSTOMER: "primary",
+    CUSTOMER: "info",
     TECHNICIAN: "success",
     POWER_OPERATOR: "warning",
     ADMIN: "destructive",
