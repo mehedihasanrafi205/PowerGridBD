@@ -2,10 +2,10 @@
 
 import { ReactNode } from "react";
 import QueryProvider from "./query.provider";
-import AuthProvider from "./auth.provider";
+import { AuthProvider } from "./auth.provider";
 import { Toaster } from "@/components/ui/toast";
 
-const Providers = ({ children }: { children: ReactNode }) => {
+export default function Providers({ children }: { children: ReactNode }) {
   return (
     <AuthProvider>
       <QueryProvider>
@@ -14,6 +14,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
       </QueryProvider>
     </AuthProvider>
   );
-};
+}
 
-export default Providers;
+export { AuthProvider } from "./auth.provider";
+export { default as QueryProvider } from "./query.provider";

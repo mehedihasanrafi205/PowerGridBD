@@ -5,6 +5,11 @@ export interface OperationalAnalytics {
   totalTechnicians: number;
   activeSchedules: number;
   criticalFeedersDown: number;
+  totalUsers?: number;
+  criticalFeeders?: number;
+  mttr?: number;
+  avgAssignmentTime?: number;
+  firstTimeFixRate?: number;
 }
 
 export interface PerformanceAnalytics {
@@ -70,6 +75,8 @@ export interface CustomerSummary {
   reportsByStatus: Record<string, number>;
   priorityCount: number;
   totalPaid: number;
+  slaActive?: boolean;
+  slaExpiryDate?: string;
 }
 
 export interface TechnicianSummary {
@@ -77,6 +84,7 @@ export interface TechnicianSummary {
   ongoingCount: number;
   resolvedCount: number;
   avgResolutionTime: number;
+  firstTimeFixRate?: number;
 }
 
 export interface AuditLogFilters {
