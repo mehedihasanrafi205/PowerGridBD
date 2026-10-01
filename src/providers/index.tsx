@@ -1,15 +1,18 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { Toaster } from "@/components/ui/toast";
+import { ReactNode } from "react";
 import QueryProvider from "./query.provider";
+import AuthProvider from "./auth.provider";
+import { Toaster } from "@/components/ui/toast";
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
-    <QueryProvider>
-      {children}
-      <Toaster />
-    </QueryProvider>
+    <AuthProvider>
+      <QueryProvider>
+        <Toaster />
+        {children}
+      </QueryProvider>
+    </AuthProvider>
   );
 };
 

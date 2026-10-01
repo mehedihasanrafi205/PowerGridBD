@@ -19,20 +19,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PowerGridBD",
   description: "Load Shedding & Power Outage Management Platform",
-  keywords: [
-    "power grid",
-    "load shedding",
-    "outage management",
-    "electricity",
-    "Bangladesh",
-  ],
+  keywords: ["power grid", "load shedding", "outage management", "electricity", "Bangladesh"],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
