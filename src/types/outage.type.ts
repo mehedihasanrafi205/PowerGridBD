@@ -63,6 +63,7 @@ export interface Outage {
     id: string;
     name: string;
     email: string;
+    phone?: string;
   };
   status: OutageStatus;
   isPriority: boolean;
@@ -74,6 +75,23 @@ export interface Outage {
   cancelledAt?: string;
   createdAt: string;
   updatedAt: string;
+  location?: {
+    latitude: number;
+    longitude: number;
+  };
+  resolutionNotes?: string;
+  feeder?: {
+    id: string;
+    name: string;
+    substation?: {
+      id: string;
+      name: string;
+      zone?: {
+        id: string;
+        name: string;
+      };
+    };
+  };
 }
 
 export interface OutagePaginatedResponse {

@@ -1,19 +1,23 @@
 export interface ZonePayload {
   name: string;
+  code?: string;
 }
 
 export interface SubstationPayload {
   name: string;
+  code?: string;
   zoneId: string;
 }
 
 export interface FeederPayload {
   name: string;
+  code?: string;
   substationId: string;
 }
 
 export interface AreaPayload {
   name: string;
+  code?: string;
   feederId: string;
 }
 
@@ -55,7 +59,12 @@ export interface AreaFilters {
 export interface Zone {
   id: string;
   name: string;
+  code?: string;
+  isActive?: boolean;
   substations?: Substation[];
+  _count?: {
+    substations: number;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -63,9 +72,14 @@ export interface Zone {
 export interface Substation {
   id: string;
   name: string;
+  code?: string;
+  isActive?: boolean;
   zoneId: string;
   zone?: Zone;
   feeders?: Feeder[];
+  _count?: {
+    feeders: number;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -73,9 +87,14 @@ export interface Substation {
 export interface Feeder {
   id: string;
   name: string;
+  code?: string;
+  isActive?: boolean;
   substationId: string;
   substation?: Substation;
   areas?: Area[];
+  _count?: {
+    areas: number;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -83,8 +102,13 @@ export interface Feeder {
 export interface Area {
   id: string;
   name: string;
+  code?: string;
+  isActive?: boolean;
   feederId: string;
   feeder?: Feeder;
+  _count?: {
+    customers: number;
+  };
   createdAt: string;
   updatedAt: string;
 }

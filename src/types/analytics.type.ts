@@ -87,9 +87,61 @@ export interface TechnicianSummary {
   firstTimeFixRate?: number;
 }
 
+export interface TechnicianWorkloadResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    technicianWorkload: Array<{
+      technicianId: string;
+      technicianName: string;
+      assignedCount: number;
+      resolvedCount: number;
+      avgResolutionTime: number;
+      firstTimeFixRate: number;
+    }>;
+  };
+}
+
+export interface SlaPlan {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  durationDays: number;
+  features: string[];
+}
+
+export interface SlaPlanResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: SlaPlan[];
+}
+
+export interface SlaSubscribePayload {
+  planId: string;
+}
+
+export interface SlaSubscribeResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data?: {
+    subscription: {
+      id: string;
+      planId: string;
+      startDate: string;
+      endDate: string;
+      isActive: boolean;
+    };
+  };
+}
+
 export interface AuditLogFilters {
   entity?: string;
   action?: string;
+  searchTerm?: string;
   page?: number;
   limit?: number;
   sortBy?: string;
@@ -106,6 +158,7 @@ export interface AuditLog {
     id: string;
     name: string;
     email: string;
+    role?: string;
   };
   metadata?: Record<string, unknown>;
   createdAt: string;
@@ -171,4 +224,27 @@ export interface TechnicianSummaryResponse {
   statusCode: number;
   message: string;
   data: TechnicianSummary;
+}
+
+export interface TechnicianWorkloadResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    technicianWorkload: Array<{
+      technicianId: string;
+      technicianName: string;
+      assignedCount: number;
+      resolvedCount: number;
+      avgResolutionTime: number;
+      firstTimeFixRate: number;
+    }>;
+  };
+}
+
+export interface SlaPlanResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: SlaPlan[];
 }

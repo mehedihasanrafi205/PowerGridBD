@@ -7,8 +7,12 @@ import {
   getMySummary,
   getTechnicianSummary,
   getAuditLogs,
+  getSlaPlans,
+  subscribeSla,
+  getTechnicianWorkload,
 } from "@/api/analytics.api";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { AuditLogFilters } from "@/types";
 
 export const useOperationalAnalytics = () => {
@@ -67,7 +71,38 @@ export const useTechnicianSummary = () => {
   });
 };
 
-export const useAuditLogs = (filters?: { entity?: string; action?: string; page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }) => {
+export const useTechnicianWorkload = () => {
+  return useQuery({
+    queryKey: ["analytics", "technician-workload"],
+    queryFn: getTechnicianWorkload,
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useSlaPlans = () => {
+  return useQuery({
+    queryKey: ["sla", "plans"],
+    queryFn: getSlaPlans,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useSubscribeSla = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { planId: string }) => subscribeSla(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["analytics", "my-summary"] });
+      queryClient.invalidateQueries({ queryKey: ["sla", "plans"] });
+      toast.success("SLA subscription successful!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to subscribe to SLA");
+    },
+  });
+};
+
+export const useAuditLogs = (filters?: { searchTerm?: string; entity?: string; action?: string; page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }) => {
   return useQuery({
     queryKey: ["audit-logs", filters],
     queryFn: () => getAuditLogs(filters),

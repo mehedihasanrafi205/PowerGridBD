@@ -1,6 +1,7 @@
 import {
   initiatePayment,
   getMyPayments,
+  getAllPayments,
   getPaymentByTransaction,
   refundPayment,
 } from "@/api/payment.api";
@@ -12,6 +13,14 @@ export const useMyPayments = (filters?: PaymentFilters) => {
   return useQuery({
     queryKey: ["payments", "my", filters],
     queryFn: () => getMyPayments(filters),
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useAllPayments = (filters?: PaymentFilters) => {
+  return useQuery({
+    queryKey: ["payments", "all", filters],
+    queryFn: () => getAllPayments(filters),
     staleTime: 60 * 1000,
   });
 };
@@ -46,6 +55,7 @@ export const useRefundPayment = () => {
     mutationFn: (transactionId: string) => refundPayment(transactionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payments", "my"] });
+      queryClient.invalidateQueries({ queryKey: ["payments", "all"] });
       toast.success("Refund processed successfully!");
     },
     onError: (error: Error) => {

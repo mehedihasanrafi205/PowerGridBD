@@ -9,6 +9,9 @@ import type {
   TechnicianSummaryResponse,
   AuditLogResponse,
   AuditLogFilters,
+  SlaPlanResponse,
+  SlaSubscribePayload,
+  TechnicianWorkloadResponse,
 } from "@/types";
 
 export const getOperationalAnalytics = () =>
@@ -33,6 +36,15 @@ export const getMySummary = () =>
 
 export const getTechnicianSummary = () =>
   apiClient<TechnicianSummaryResponse>("/analytics/technician-summary");
+
+export const getTechnicianWorkload = () =>
+  apiClient<TechnicianWorkloadResponse>("/analytics/technician-workload");
+
+export const getSlaPlans = () =>
+  apiClient<SlaPlanResponse>("/analytics/sla-plans");
+
+export const subscribeSla = (payload: SlaSubscribePayload) =>
+  apiClient("/analytics/sla/subscribe", { method: "POST", body: payload });
 
 export const getAuditLogs = (params?: AuditLogFilters) => {
   const searchParams = new URLSearchParams();

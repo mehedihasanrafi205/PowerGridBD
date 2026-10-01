@@ -1,24 +1,31 @@
 export type ScheduleStatus = "SCHEDULED" | "ONGOING" | "COMPLETED" | "CANCELLED";
 export type ScheduleType = "FEEDER" | "AREA";
+export type ScheduleRecurrence = "NONE" | "DAILY" | "WEEKLY" | "MONTHLY";
 
 export interface SchedulePayload {
   title: string;
   type: ScheduleType;
+  description?: string;
   feederId?: string;
   areaId?: string;
   startTime: string;
   endTime: string;
   reason?: string;
+  recurrence?: ScheduleRecurrence;
+  recurrenceDays?: string[];
 }
 
 export interface ScheduleUpdatePayload {
   title?: string;
   type?: ScheduleType;
+  description?: string;
   feederId?: string;
   areaId?: string;
   startTime?: string;
   endTime?: string;
   reason?: string;
+  recurrence?: ScheduleRecurrence;
+  recurrenceDays?: string[];
 }
 
 export interface ScheduleStatusPayload {
@@ -43,6 +50,7 @@ export interface Schedule {
   id: string;
   title: string;
   type: ScheduleType;
+  description?: string;
   feederId?: string;
   feeder?: {
     id: string;
@@ -69,6 +77,8 @@ export interface Schedule {
   endTime: string;
   reason?: string;
   status: ScheduleStatus;
+  recurrence?: ScheduleRecurrence;
+  recurrenceDays?: string[];
   createdBy: string;
   creator?: {
     id: string;

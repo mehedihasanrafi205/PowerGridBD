@@ -5,6 +5,7 @@ export interface ApplicationPayload {
   email: string;
   phone: string;
   experience: number;
+  skills?: string;
   motivation?: string;
 }
 
@@ -27,6 +28,8 @@ export interface Application {
   email: string;
   phone: string;
   experience: number;
+  experienceYears?: number;
+  skills?: string;
   motivation?: string;
   status: ApplicationStatus;
   rejectionReason?: string;
@@ -35,6 +38,7 @@ export interface Application {
     id: string;
     name: string;
     email: string;
+    role?: string;
   };
   reviewedAt?: string;
   createdAt: string;

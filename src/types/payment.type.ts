@@ -8,6 +8,7 @@ export interface PaymentInitiatePayload {
 }
 
 export interface PaymentFilters {
+  searchTerm?: string;
   status?: PaymentStatus[];
   type?: PaymentType[];
   page?: number;
@@ -25,6 +26,11 @@ export interface Payment {
     name: string;
     email: string;
   };
+  customer?: {
+    id: string;
+    name: string;
+    email: string;
+  };
   outageId?: string;
   outage?: {
     id: string;
@@ -34,6 +40,7 @@ export interface Payment {
   status: PaymentStatus;
   amount: number;
   currency: string;
+  gateway?: string;
   paymentDetails?: {
     sessionkey?: string;
     status?: string;
