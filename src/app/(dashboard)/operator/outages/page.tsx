@@ -6,10 +6,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { Pagination } from "@/components/ui/pagination";
-import { Search, Filter, Download, Loader2, User, AlertTriangle, MapPin, Shield } from "lucide-react";
+import {
+  Search,
+  Filter,
+  Download,
+  Loader2,
+  User,
+  AlertTriangle,
+  MapPin,
+  Shield,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import Link from "next/link";
@@ -21,7 +43,11 @@ export default function OperatorOutagesPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data: outages, isLoading, error } = useOutages({
+  const {
+    data: outages,
+    isLoading,
+    error,
+  } = useOutages({
     searchTerm: searchTerm || undefined,
     status: statusFilter !== "all" ? [statusFilter as any] : undefined,
     page,
@@ -53,13 +79,20 @@ export default function OperatorOutagesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "PENDING": return "warning";
-      case "ASSIGNED": return "info";
-      case "IN_PROGRESS": return "default";
-      case "RESOLVED": return "success";
-      case "RESTORED": return "success";
-      case "CANCELLED": return "secondary";
-      default: return "secondary";
+      case "PENDING":
+        return "warning";
+      case "ASSIGNED":
+        return "info";
+      case "IN_PROGRESS":
+        return "default";
+      case "RESOLVED":
+        return "success";
+      case "RESTORED":
+        return "success";
+      case "CANCELLED":
+        return "secondary";
+      default:
+        return "secondary";
     }
   };
 
@@ -71,7 +104,9 @@ export default function OperatorOutagesPage() {
             <AlertTriangle className="h-8 w-8 text-primary" />
             Outage Management
           </h1>
-          <p className="text-muted-foreground mt-1">View and manage all outage reports</p>
+          <p className="text-muted-foreground mt-1">
+            View and manage all outage reports
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" disabled={isLoading}>
@@ -119,7 +154,9 @@ export default function OperatorOutagesPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">Failed to load outages</div>
+            <div className="text-center text-red-500 py-4">
+              Failed to load outages
+            </div>
           )}
 
           {!error && (
@@ -148,20 +185,28 @@ export default function OperatorOutagesPage() {
                       </TableRow>
                     ) : outages?.data?.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={9}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           No outages found
                         </TableCell>
                       </TableRow>
                     ) : !outages?.data || outages.data.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={9}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           No outages found
                         </TableCell>
                       </TableRow>
                     ) : (
                       outages.data.map((outage) => (
                         <TableRow key={outage.id} className="hover:bg-muted/50">
-                          <TableCell className="font-mono text-sm">#{outage.id.slice(0, 8)}</TableCell>
+                          <TableCell className="font-mono text-sm">
+                            #{outage.id.slice(0, 8)}
+                          </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <User className="h-4 w-4 text-muted-foreground" />
@@ -174,9 +219,14 @@ export default function OperatorOutagesPage() {
                               {outage.area?.name || "Unknown"}
                             </div>
                           </TableCell>
-                          <TableCell className="max-w-xs truncate">{outage.description}</TableCell>
+                          <TableCell className="max-w-xs truncate">
+                            {outage.description}
+                          </TableCell>
                           <TableCell>
-                            <Badge variant={getStatusColor(outage.status)} className="gap-1">
+                            <Badge
+                              variant={getStatusColor(outage.status)}
+                              className="gap-1"
+                            >
                               {outage.status}
                             </Badge>
                           </TableCell>
@@ -195,7 +245,9 @@ export default function OperatorOutagesPage() {
                                 {outage.technician.name}
                               </div>
                             ) : (
-                              <span className="text-muted-foreground">Unassigned</span>
+                              <span className="text-muted-foreground">
+                                Unassigned
+                              </span>
                             )}
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
@@ -220,7 +272,9 @@ export default function OperatorOutagesPage() {
               {outages?.meta && outages.meta.totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 pt-4 border-t">
                   <p className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to {Math.min(page * limit, outages.meta.total)} of {outages.meta.total} outages
+                    Showing {(page - 1) * limit + 1} to{" "}
+                    {Math.min(page * limit, outages.meta.total)} of{" "}
+                    {outages.meta.total} outages
                   </p>
                   <Pagination
                     page={page}

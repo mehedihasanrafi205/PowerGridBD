@@ -9,7 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCreateOutage } from "@/hooks";
@@ -20,7 +26,10 @@ import Link from "next/link";
 import { toast } from "sonner";
 
 const outageSchema = z.object({
-  description: z.string().min(10, "Description must be at least 10 characters").max(500),
+  description: z
+    .string()
+    .min(10, "Description must be at least 10 characters")
+    .max(500),
   areaId: z.string().min(1, "Please select an area"),
   isPriority: z.boolean().optional(),
 });
@@ -74,7 +83,10 @@ export default function ReportOutagePage() {
   return (
     <div className="container mx-auto py-8 max-w-2xl">
       <div className="mb-8">
-        <Link href="/customer/outages" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4">
+        <Link
+          href="/customer/outages"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4"
+        >
           <ArrowLeft className="h-4 w-4" />
           Back to Outages
         </Link>
@@ -83,8 +95,12 @@ export default function ReportOutagePage() {
             <AlertTriangle className="h-6 w-6 text-red-600" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Report New Outage</h1>
-            <p className="text-muted-foreground">Help us restore power faster by reporting outages in your area.</p>
+            <h1 className="text-3xl font-bold text-foreground">
+              Report New Outage
+            </h1>
+            <p className="text-muted-foreground">
+              Help us restore power faster by reporting outages in your area.
+            </p>
           </div>
         </div>
       </div>
@@ -102,12 +118,16 @@ export default function ReportOutagePage() {
                 value={watch("areaId")}
                 onValueChange={(v) => setValue("areaId", v)}
               >
-                <SelectTrigger className={cn(errors.areaId && "border-destructive")}>
+                <SelectTrigger
+                  className={cn(errors.areaId && "border-destructive")}
+                >
                   <SelectValue placeholder="Select your area" />
                 </SelectTrigger>
                 <SelectContent>
                   {areasLoading ? (
-                    <SelectItem value="" disabled>Loading areas...</SelectItem>
+                    <SelectItem value="" disabled>
+                      Loading areas...
+                    </SelectItem>
                   ) : (
                     areas?.data?.map((area) => (
                       <SelectItem key={area.id} value={area.id}>
@@ -118,7 +138,9 @@ export default function ReportOutagePage() {
                 </SelectContent>
               </Select>
               {errors.areaId && (
-                <p className="text-sm text-destructive mt-1">{errors.areaId.message}</p>
+                <p className="text-sm text-destructive mt-1">
+                  {errors.areaId.message}
+                </p>
               )}
             </div>
 
@@ -132,7 +154,9 @@ export default function ReportOutagePage() {
                 className={cn(errors.description && "border-destructive")}
               />
               {errors.description && (
-                <p className="text-sm text-destructive">{errors.description.message}</p>
+                <p className="text-sm text-destructive">
+                  {errors.description.message}
+                </p>
               )}
               <p className="text-sm text-muted-foreground">
                 Minimum 10 characters. Be as specific as possible.
@@ -146,9 +170,12 @@ export default function ReportOutagePage() {
                 checked={isPriority}
               />
               <Label htmlFor="isPriority" className="cursor-pointer">
-                <span className="font-medium">Mark as Priority Restoration</span>
+                <span className="font-medium">
+                  Mark as Priority Restoration
+                </span>
                 <p className="text-sm text-muted-foreground">
-                  Pay for priority handling - your outage jumps to the top of the work queue
+                  Pay for priority handling - your outage jumps to the top of
+                  the work queue
                 </p>
               </Label>
             </div>
@@ -156,9 +183,10 @@ export default function ReportOutagePage() {
             {isPriority && (
               <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
                 <p className="text-sm text-amber-800">
-                  <strong>Priority Restoration:</strong> This will initiate a payment of BDT 500.
-                  You'll be redirected to SSLCommerz for payment. Once confirmed, your outage
-                  will be prioritized in the work queue.
+                  <strong>Priority Restoration:</strong> This will initiate a
+                  payment of BDT 500. You'll be redirected to SSLCommerz for
+                  payment. Once confirmed, your outage will be prioritized in
+                  the work queue.
                 </p>
               </div>
             )}

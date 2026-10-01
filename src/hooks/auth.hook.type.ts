@@ -96,7 +96,8 @@ export const useForgotPassword = () => {
   return useMutation({
     mutationFn: forgotPassword,
     onSuccess: () => toast.success("Reset OTP sent to your email"),
-    onError: (error: Error) => toast.error(error.message || "Failed to send OTP"),
+    onError: (error: Error) =>
+      toast.error(error.message || "Failed to send OTP"),
   });
 };
 

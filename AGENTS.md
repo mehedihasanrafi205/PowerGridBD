@@ -59,6 +59,8 @@ bun format       # biome format --write
 - **Images** — use `next/image` (configured for static export)
 - **Role checks** — use `useAuth()` hook, check `user.role` for conditional rendering
 - **API calls** — use `api.get/post/put/patch/delete` from `@/lib/apiClient`
+- **Type files** — use `.type.ts` suffix for type definitions (e.g., `outage.type.ts`)
+- **Hook files** — use `.hook.type.ts` suffix for hook type definitions (e.g., `outage.hook.type.ts`)
 
 ## Gotchas
 - `node_modules` + `.next` + `out` are ignored by Biome
@@ -67,6 +69,11 @@ bun format       # biome format --write
 - CSS uses `@import "tailwindcss"` (v4 syntax), not `@tailwind base/components/utilities`
 - **CSS warnings**: `var(--color-xxx / 0.1)` syntax produces warnings but doesn't block build
 - **TypeScript strict**: `noImplicitAny: true`, `alwaysStrict: true` — must type everything
+- **No `baseUrl` in tsconfig** — deprecated in TS 5.0+, use only `paths`
+- **Static export + Auth**: `AuthProvider` creates its own `QueryClient` to avoid "No QueryClient set" during static generation
+- **Operator analytics page**: Previously corrupted during write (shell escaping); use Node.js script or base64 to write large files
+- **File write truncation**: Here-documents with shell can truncate large TSX files; prefer Node.js `fs.writeFileSync` or base64 encoding
+- **Filter types**: Hook filters use strict union types (`Role`, `OutageStatus`, `ApplicationStatus`) — cast when passing string values from URL params
 
 ## UI Components (shadcn/ui)
 All components in `src/components/ui/` — installed via `bunx --bun shadcn@latest add <component>`
@@ -87,3 +94,19 @@ Key components: `button`, `input`, `textarea`, `select`, `dialog`, `dropdown-men
 - `CustomerSummary` includes optional: `slaActive`, `slaExpiryDate`
 - `TechnicianSummary` includes optional: `firstTimeFixRate`
 - Hook filters use strict union types (`Role`, `OutageStatus`, `ApplicationStatus`) — cast when passing string values
+
+## Current Blocker (as of 2026-10-02)
+- `src/app/(dashboard)/operator/analytics/page.tsx` is truncated (8KB vs expected ~15KB)
+- Shell here-documents truncate large TSX files due to escaping issues
+- Fix: Write complete file using Node.js `fs.writeFileSync` or base64 encoding
+
+## File Write Best Practice
+For large TSX files (>5KB), avoid shell here-documents. Use:
+```bash
+node -e "
+const fs = require('fs');
+const content = \`...entire file content...\`;
+fs.writeFileSync('path/to/file.tsx', content);
+"
+```
+Or write via Python with proper encoding.

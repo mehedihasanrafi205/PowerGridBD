@@ -1,6 +1,11 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "lucide-react";
 
 interface PaginationProps {
   page: number;
@@ -25,15 +30,15 @@ export function Pagination({
 
   const pageNumbers = React.useMemo(() => {
     if (!showPageNumbers) return [];
-    
+
     const half = Math.floor(maxPageNumbers / 2);
     let start = Math.max(1, page - half);
     let end = Math.min(totalPages, start + maxPageNumbers - 1);
-    
+
     if (end - start + 1 < maxPageNumbers) {
       start = Math.max(1, end - maxPageNumbers + 1);
     }
-    
+
     const pages = [];
     for (let i = start; i <= end; i++) {
       pages.push(i);
@@ -46,14 +51,16 @@ export function Pagination({
       className={cn(
         "flex flex-col sm:flex-row items-center justify-between gap-4 py-4",
         "border-t border-border",
-        className
+        className,
       )}
       aria-label="Pagination"
     >
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <span>Page {page} of {totalPages}</span>
+        <span>
+          Page {page} of {totalPages}
+        </span>
       </div>
-      
+
       <div className="flex items-center gap-1">
         {showFirstLast && (
           <button
@@ -65,7 +72,7 @@ export function Pagination({
             <ChevronLeftIcon className="h-4 w-4" />
           </button>
         )}
-        
+
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page === 1}
@@ -74,7 +81,7 @@ export function Pagination({
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
-        
+
         {showPageNumbers && (
           <>
             {pageNumbers[0] > 1 && (
@@ -90,7 +97,7 @@ export function Pagination({
                 )}
               </>
             )}
-            
+
             {pageNumbers.map((p) => (
               <button
                 key={p}
@@ -99,13 +106,13 @@ export function Pagination({
                   "px-3 py-1 rounded-md transition-colors",
                   p === page
                     ? "bg-primary text-primary-foreground"
-                    : "hover:bg-muted"
+                    : "hover:bg-muted",
                 )}
               >
                 {p}
               </button>
             ))}
-            
+
             {pageNumbers[pageNumbers.length - 1] < totalPages && (
               <>
                 {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
@@ -121,7 +128,7 @@ export function Pagination({
             )}
           </>
         )}
-        
+
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page === totalPages}
@@ -130,7 +137,7 @@ export function Pagination({
         >
           <ChevronRight className="h-4 w-4" />
         </button>
-        
+
         {showFirstLast && (
           <button
             onClick={() => onPageChange(totalPages)}

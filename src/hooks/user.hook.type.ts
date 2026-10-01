@@ -9,7 +9,12 @@ import {
 } from "@/api/user.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { UserFilters, UserUpdatePayload, UserStatusPayload, UserRolePayload } from "@/types";
+import type {
+  UserFilters,
+  UserUpdatePayload,
+  UserStatusPayload,
+  UserRolePayload,
+} from "@/types";
 
 export const useUsers = (filters?: UserFilters) => {
   return useQuery({
@@ -30,7 +35,11 @@ export const useUser = (id: string) => {
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: { name?: string; phone?: string; address?: string }) => updateProfile(payload),
+    mutationFn: (payload: {
+      name?: string;
+      phone?: string;
+      address?: string;
+    }) => updateProfile(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -60,7 +69,8 @@ export const useUpdateProfileImage = () => {
 export const useUpdateUserStatus = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: UserStatusPayload }) => updateUserStatus(id, payload),
+    mutationFn: ({ id, payload }: { id: string; payload: UserStatusPayload }) =>
+      updateUserStatus(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -72,7 +82,8 @@ export const useUpdateUserStatus = () => {
 export const useUpdateUserRole = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: UserRolePayload }) => updateUserRole(id, payload),
+    mutationFn: ({ id, payload }: { id: string; payload: UserRolePayload }) =>
+      updateUserRole(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });

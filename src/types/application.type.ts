@@ -16,6 +16,7 @@ export interface ApplicationReviewPayload {
 
 export interface ApplicationFilters {
   status?: ApplicationStatus;
+  searchTerm?: string;
   page?: number;
   limit?: number;
   sortBy?: string;

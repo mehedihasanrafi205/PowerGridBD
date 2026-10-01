@@ -9,7 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Calendar, Loader2, Save, ArrowLeft, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -115,7 +121,9 @@ export default function CreateSchedulePage() {
             <Calendar className="h-8 w-8 text-primary" />
             Create Schedule
           </h1>
-          <p className="text-muted-foreground mt-1">Create a new load-shedding schedule</p>
+          <p className="text-muted-foreground mt-1">
+            Create a new load-shedding schedule
+          </p>
         </div>
       </div>
 
@@ -132,17 +140,20 @@ export default function CreateSchedulePage() {
                 placeholder="e.g., Weekly Maintenance - Gulshan Area"
                 {...register("title")}
                 disabled={isLoading}
-                className={cn(errors.title && "border-destructive focus:border-destructive")}
+                className={cn(
+                  errors.title && "border-destructive focus:border-destructive",
+                )}
               />
-              {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
+              {errors.title && (
+                <p className="text-sm text-destructive">
+                  {errors.title.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="type">Schedule Type *</Label>
-              <Select
-                {...register("type")}
-                disabled={isLoading}
-              >
+              <Select {...register("type")} disabled={isLoading}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
@@ -151,7 +162,11 @@ export default function CreateSchedulePage() {
                   <SelectItem value="AREA">Area-based</SelectItem>
                 </SelectContent>
               </Select>
-              {errors.type && <p className="text-sm text-destructive">{errors.type.message}</p>}
+              {errors.type && (
+                <p className="text-sm text-destructive">
+                  {errors.type.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -193,15 +208,16 @@ export default function CreateSchedulePage() {
                   ))}
                 </SelectContent>
               </Select>
-              {errors.areaId && <p className="text-sm text-destructive">{errors.areaId.message}</p>}
+              {errors.areaId && (
+                <p className="text-sm text-destructive">
+                  {errors.areaId.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="feederId">Feeder (Optional)</Label>
-              <Select
-                {...register("feederId")}
-                disabled={isLoading}
-              >
+              <Select {...register("feederId")} disabled={isLoading}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a feeder" />
                 </SelectTrigger>
@@ -227,9 +243,16 @@ export default function CreateSchedulePage() {
                   type="datetime-local"
                   {...register("startTime")}
                   disabled={isLoading}
-                  className={cn(errors.startTime && "border-destructive focus:border-destructive")}
+                  className={cn(
+                    errors.startTime &&
+                      "border-destructive focus:border-destructive",
+                  )}
                 />
-                {errors.startTime && <p className="text-sm text-destructive">{errors.startTime.message}</p>}
+                {errors.startTime && (
+                  <p className="text-sm text-destructive">
+                    {errors.startTime.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -239,9 +262,16 @@ export default function CreateSchedulePage() {
                   type="datetime-local"
                   {...register("endTime")}
                   disabled={isLoading}
-                  className={cn(errors.endTime && "border-destructive focus:border-destructive")}
+                  className={cn(
+                    errors.endTime &&
+                      "border-destructive focus:border-destructive",
+                  )}
                 />
-                {errors.endTime && <p className="text-sm text-destructive">{errors.endTime.message}</p>}
+                {errors.endTime && (
+                  <p className="text-sm text-destructive">
+                    {errors.endTime.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -250,7 +280,10 @@ export default function CreateSchedulePage() {
               <Select
                 {...register("recurrence")}
                 onValueChange={(value) => {
-                  setValue("recurrence", value as "NONE" | "DAILY" | "WEEKLY" | "MONTHLY");
+                  setValue(
+                    "recurrence",
+                    value as "NONE" | "DAILY" | "WEEKLY" | "MONTHLY",
+                  );
                   if (value === "NONE") setValue("recurrenceDays", []);
                 }}
                 disabled={isLoading}

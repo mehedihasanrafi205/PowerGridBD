@@ -102,7 +102,15 @@ export const useSubscribeSla = () => {
   });
 };
 
-export const useAuditLogs = (filters?: { searchTerm?: string; entity?: string; action?: string; page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }) => {
+export const useAuditLogs = (filters?: {
+  searchTerm?: string;
+  entity?: string;
+  action?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}) => {
   return useQuery({
     queryKey: ["audit-logs", filters],
     queryFn: () => getAuditLogs(filters),

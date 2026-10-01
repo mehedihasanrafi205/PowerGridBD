@@ -8,7 +8,12 @@ import {
 } from "@/api/schedule.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { ScheduleFilters, SchedulePayload, ScheduleUpdatePayload, ScheduleStatusPayload } from "@/types";
+import type {
+  ScheduleFilters,
+  SchedulePayload,
+  ScheduleUpdatePayload,
+  ScheduleStatusPayload,
+} from "@/types";
 
 export const useSchedules = (filters?: ScheduleFilters) => {
   return useQuery({
@@ -43,8 +48,13 @@ export const useCreateSchedule = () => {
 export const useUpdateSchedule = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: ScheduleUpdatePayload }) =>
-      updateSchedule(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: ScheduleUpdatePayload;
+    }) => updateSchedule(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["schedules"] });
       queryClient.invalidateQueries({ queryKey: ["schedule"] });
@@ -59,8 +69,13 @@ export const useUpdateSchedule = () => {
 export const useUpdateScheduleStatus = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: ScheduleStatusPayload }) =>
-      updateScheduleStatus(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: ScheduleStatusPayload;
+    }) => updateScheduleStatus(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["schedules"] });
       queryClient.invalidateQueries({ queryKey: ["schedule"] });

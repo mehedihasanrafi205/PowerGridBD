@@ -2,9 +2,23 @@
 import Link from "next/link";
 
 import { useAuth } from "@/hooks/useAuth";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { LogOut, User, Settings, Shield, CreditCard, BarChart3 } from "lucide-react";
+import {
+  LogOut,
+  User,
+  Settings,
+  Shield,
+  CreditCard,
+  BarChart3,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -25,7 +39,10 @@ export function UserMenu({ user }: UserMenuProps) {
 
   if (!user) return null;
 
-  const roleColors: Record<string, "default" | "secondary" | "destructive" | "success" | "warning" | "info"> = {
+  const roleColors: Record<
+    string,
+    "default" | "secondary" | "destructive" | "success" | "warning" | "info"
+  > = {
     CUSTOMER: "info",
     TECHNICIAN: "success",
     POWER_OPERATOR: "warning",
@@ -46,7 +63,9 @@ export function UserMenu({ user }: UserMenuProps) {
               {user.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <span className="hidden md:block text-sm font-medium">{user.name}</span>
+          <span className="hidden md:block text-sm font-medium">
+            {user.name}
+          </span>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
@@ -54,7 +73,11 @@ export function UserMenu({ user }: UserMenuProps) {
           <p className="font-medium text-sm">{user.name}</p>
           <p className="text-xs text-muted-foreground truncate">{user.email}</p>
           <div className="mt-1">
-            <Badge variant={roleColors[user.role as keyof typeof roleColors] || "default"}>
+            <Badge
+              variant={
+                roleColors[user.role as keyof typeof roleColors] || "default"
+              }
+            >
               {user.role}
             </Badge>
           </div>
@@ -86,7 +109,10 @@ export function UserMenu({ user }: UserMenuProps) {
         {["ADMIN", "POWER_OPERATOR"].includes(user.role) && (
           <>
             <DropdownMenuItem asChild>
-              <Link href="/analytics" className="flex items-center gap-2 w-full">
+              <Link
+                href="/analytics"
+                className="flex items-center gap-2 w-full"
+              >
                 <BarChart3 className="h-4 w-4" />
                 Analytics
               </Link>
@@ -94,7 +120,13 @@ export function UserMenu({ user }: UserMenuProps) {
           </>
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={async () => { await logout(); router.push("/auth/login"); }} className="text-destructive focus:text-destructive">
+        <DropdownMenuItem
+          onClick={async () => {
+            await logout();
+            router.push("/auth/login");
+          }}
+          className="text-destructive focus:text-destructive"
+        >
           <LogOut className="h-4 w-4 mr-2" />
           Logout
         </DropdownMenuItem>

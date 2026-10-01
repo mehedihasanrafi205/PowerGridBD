@@ -5,7 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PlusCircle, AlertTriangle, Clock, CheckCircle, BarChart3, TrendingUp, User } from "lucide-react";
+import {
+  PlusCircle,
+  AlertTriangle,
+  Clock,
+  CheckCircle,
+  BarChart3,
+  TrendingUp,
+  User,
+} from "lucide-react";
 import { useTechnicianSummary } from "@/hooks";
 import { useOutages } from "@/hooks";
 import { cn } from "@/lib/utils";
@@ -13,9 +21,9 @@ import { cn } from "@/lib/utils";
 export default function TechnicianDashboard() {
   const { user, isLoading } = useAuth();
   const { data: summary, isLoading: summaryLoading } = useTechnicianSummary();
-  const { data: outages, isLoading: outagesLoading } = useOutages({ 
-    status: ["ASSIGNED", "IN_PROGRESS"], 
-    limit: 5 
+  const { data: outages, isLoading: outagesLoading } = useOutages({
+    status: ["ASSIGNED", "IN_PROGRESS"],
+    limit: 5,
   });
 
   if (isLoading) {
@@ -23,7 +31,10 @@ export default function TechnicianDashboard() {
       <div className="container mx-auto py-8">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-card border rounded-xl p-6 animate-pulse">
+            <div
+              key={i}
+              className="bg-card border rounded-xl p-6 animate-pulse"
+            >
               <div className="h-4 w-1/4 bg-muted rounded mb-2" />
               <div className="h-8 w-1/2 bg-muted rounded" />
             </div>
@@ -67,8 +78,12 @@ export default function TechnicianDashboard() {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Welcome back, {user?.name?.split(" ")[0]}!</h1>
-        <p className="text-muted-foreground mt-1">Here's your task overview and performance summary.</p>
+        <h1 className="text-3xl font-bold text-foreground">
+          Welcome back, {user?.name?.split(" ")[0]}!
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Here's your task overview and performance summary.
+        </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -80,7 +95,9 @@ export default function TechnicianDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">{stat.title}</p>
-                <p className="text-3xl font-bold text-foreground mt-1">{stat.value}</p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  {stat.value}
+                </p>
               </div>
               <div className={cn(stat.bg, "p-3 rounded-xl")}>
                 <stat.icon className={cn(stat.color, "h-6 w-6")} />
@@ -94,9 +111,7 @@ export default function TechnicianDashboard() {
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
           <CardTitle className="text-xl">Assigned Outages</CardTitle>
           <Link href="/technician/outages">
-            <Button>
-              View All Assigned
-            </Button>
+            <Button>View All Assigned</Button>
           </Link>
         </div>
 
@@ -113,16 +128,19 @@ export default function TechnicianDashboard() {
                       outage.status === "ASSIGNED"
                         ? "info"
                         : outage.status === "IN_PROGRESS"
-                        ? "default"
-                        : "success"
+                          ? "default"
+                          : "success"
                     }
                   >
                     {outage.status}
                   </Badge>
                   <div>
-                    <p className="font-medium">Outage #{outage.id.slice(0, 8)}</p>
+                    <p className="font-medium">
+                      Outage #{outage.id.slice(0, 8)}
+                    </p>
                     <p className="text-sm text-muted-foreground">
-                      {outage.area?.name || "Unknown Area"} • {new Date(outage.reportedAt).toLocaleDateString()}
+                      {outage.area?.name || "Unknown Area"} •{" "}
+                      {new Date(outage.reportedAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -133,7 +151,10 @@ export default function TechnicianDashboard() {
                       Priority
                     </Badge>
                   )}
-                  <Link href={`/technician/outage/${outage.id}`} className="text-sm text-primary hover:underline">
+                  <Link
+                    href={`/technician/outage/${outage.id}`}
+                    className="text-sm text-primary hover:underline"
+                  >
                     {outage.status === "ASSIGNED" ? "Start Work" : "Continue"}
                   </Link>
                 </div>
@@ -155,8 +176,12 @@ export default function TechnicianDashboard() {
           <div className="space-y-4">
             <div>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-muted-foreground">First-Time Fix Rate</span>
-                <span className="font-semibold">{summary?.data?.firstTimeFixRate || 0}%</span>
+                <span className="text-muted-foreground">
+                  First-Time Fix Rate
+                </span>
+                <span className="font-semibold">
+                  {summary?.data?.firstTimeFixRate || 0}%
+                </span>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div
@@ -167,13 +192,19 @@ export default function TechnicianDashboard() {
             </div>
             <div>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-muted-foreground">Avg Resolution Time</span>
-                <span className="font-semibold">{summary?.data?.avgResolutionTime || 0}h</span>
+                <span className="text-muted-foreground">
+                  Avg Resolution Time
+                </span>
+                <span className="font-semibold">
+                  {summary?.data?.avgResolutionTime || 0}h
+                </span>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-500 rounded-full transition-all"
-                  style={{ width: `${Math.min((summary?.data?.avgResolutionTime || 0) / 24 * 100, 100)}%` }}
+                  style={{
+                    width: `${Math.min(((summary?.data?.avgResolutionTime || 0) / 24) * 100, 100)}%`,
+                  }}
                 />
               </div>
             </div>

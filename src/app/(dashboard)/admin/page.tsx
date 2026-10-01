@@ -5,7 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Users, CreditCard, BarChart3, FileText, GitBranch, AlertCircle, Shield, TrendingUp } from "lucide-react";
+import {
+  Users,
+  CreditCard,
+  BarChart3,
+  FileText,
+  GitBranch,
+  AlertCircle,
+  Shield,
+  TrendingUp,
+} from "lucide-react";
 import { useOperationalAnalytics } from "@/hooks";
 import { useFinancialAnalytics } from "@/hooks";
 import { useOutages } from "@/hooks";
@@ -13,8 +22,10 @@ import { cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
   const { user, isLoading } = useAuth();
-  const { data: analytics, isLoading: analyticsLoading } = useOperationalAnalytics();
-  const { data: financial, isLoading: financialLoading } = useFinancialAnalytics();
+  const { data: analytics, isLoading: analyticsLoading } =
+    useOperationalAnalytics();
+  const { data: financial, isLoading: financialLoading } =
+    useFinancialAnalytics();
   const { data: outages, isLoading: outagesLoading } = useOutages({ limit: 5 });
 
   if (isLoading) {
@@ -22,7 +33,10 @@ export default function AdminDashboard() {
       <div className="container mx-auto py-8">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-card border rounded-xl p-6 animate-pulse">
+            <div
+              key={i}
+              className="bg-card border rounded-xl p-6 animate-pulse"
+            >
               <div className="h-4 w-1/4 bg-muted rounded mb-2" />
               <div className="h-8 w-1/2 bg-muted rounded" />
             </div>
@@ -81,7 +95,9 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">{stat.title}</p>
-                <p className="text-3xl font-bold text-foreground mt-1">{stat.value}</p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  {stat.value}
+                </p>
               </div>
               <div className={cn(stat.bg, "p-3 rounded-xl")}>
                 <stat.icon className={cn(stat.color, "h-6 w-6")} />
@@ -98,38 +114,58 @@ export default function AdminDashboard() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Link href="/admin/users">
-              <Button variant="outline" className="h-20 justify-start gap-3 p-4">
+              <Button
+                variant="outline"
+                className="h-20 justify-start gap-3 p-4"
+              >
                 <Users className="h-6 w-6" />
                 <div className="text-left">
                   <p className="font-medium">User Management</p>
-                  <p className="text-sm text-muted-foreground">Manage users & roles</p>
+                  <p className="text-sm text-muted-foreground">
+                    Manage users & roles
+                  </p>
                 </div>
               </Button>
             </Link>
             <Link href="/admin/applications">
-              <Button variant="outline" className="h-20 justify-start gap-3 p-4">
+              <Button
+                variant="outline"
+                className="h-20 justify-start gap-3 p-4"
+              >
                 <Shield className="h-6 w-6" />
                 <div className="text-left">
                   <p className="font-medium">Applications</p>
-                  <p className="text-sm text-muted-foreground">Review tech applications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Review tech applications
+                  </p>
                 </div>
               </Button>
             </Link>
             <Link href="/admin/payments">
-              <Button variant="outline" className="h-20 justify-start gap-3 p-4">
+              <Button
+                variant="outline"
+                className="h-20 justify-start gap-3 p-4"
+              >
                 <CreditCard className="h-6 w-6" />
                 <div className="text-left">
                   <p className="font-medium">Payments</p>
-                  <p className="text-sm text-muted-foreground">View & manage payments</p>
+                  <p className="text-sm text-muted-foreground">
+                    View & manage payments
+                  </p>
                 </div>
               </Button>
             </Link>
             <Link href="/admin/audit-logs">
-              <Button variant="outline" className="h-20 justify-start gap-3 p-4">
+              <Button
+                variant="outline"
+                className="h-20 justify-start gap-3 p-4"
+              >
                 <FileText className="h-6 w-6" />
                 <div className="text-left">
                   <p className="font-medium">Audit Logs</p>
-                  <p className="text-sm text-muted-foreground">System activity trail</p>
+                  <p className="text-sm text-muted-foreground">
+                    System activity trail
+                  </p>
                 </div>
               </Button>
             </Link>
@@ -157,13 +193,17 @@ export default function AdminDashboard() {
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 bg-purple-50 rounded-lg">
-                <p className="text-sm text-muted-foreground">Active SLA Subscriptions</p>
+                <p className="text-sm text-muted-foreground">
+                  Active SLA Subscriptions
+                </p>
                 <p className="text-2xl font-bold text-purple-600">
                   {financial?.data?.activeSlaSubscriptions || 0}
                 </p>
               </div>
               <div className="p-4 bg-amber-50 rounded-lg">
-                <p className="text-sm text-muted-foreground">Priority Revenue</p>
+                <p className="text-sm text-muted-foreground">
+                  Priority Revenue
+                </p>
                 <p className="text-2xl font-bold text-amber-600">
                   BDT {financial?.data?.revenueByType?.priorityRestoration || 0}
                 </p>
@@ -177,7 +217,10 @@ export default function AdminDashboard() {
         <div className="bg-card border rounded-xl p-6">
           <div className="flex items-center justify-between mb-4">
             <CardTitle className="text-xl">Recent Outages</CardTitle>
-            <Link href="/admin/outages" className="text-sm text-primary hover:underline">
+            <Link
+              href="/admin/outages"
+              className="text-sm text-primary hover:underline"
+            >
               View All
             </Link>
           </div>
@@ -193,17 +236,26 @@ export default function AdminDashboard() {
                       {outage.status}
                     </span>
                     <div>
-                      <p className="font-medium text-sm">Outage #{outage.id.slice(0, 8)}</p>
-                      <p className="text-xs text-muted-foreground">{outage.area?.name || "Unknown"}</p>
+                      <p className="font-medium text-sm">
+                        Outage #{outage.id.slice(0, 8)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {outage.area?.name || "Unknown"}
+                      </p>
                     </div>
                   </div>
-                  <Link href={`/admin/outages/${outage.id}`} className="text-sm text-primary hover:underline">
+                  <Link
+                    href={`/admin/outages/${outage.id}`}
+                    className="text-sm text-primary hover:underline"
+                  >
                     View
                   </Link>
                 </div>
               ))
             ) : (
-              <p className="text-center text-muted-foreground py-4">No recent outages</p>
+              <p className="text-center text-muted-foreground py-4">
+                No recent outages
+              </p>
             )}
           </div>
         </div>

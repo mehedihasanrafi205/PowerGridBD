@@ -8,8 +8,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Mail, Phone, MapPin, Camera, Save, Loader2, BadgeCheck, Shield, AlertCircle, Badge as LucideBadge } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Camera,
+  Save,
+  Loader2,
+  BadgeCheck,
+  Shield,
+  AlertCircle,
+  Badge as LucideBadge,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -25,7 +43,8 @@ export default function TechnicianProfilePage() {
   const updateProfileMutation = useUpdateProfile();
   const updateImageMutation = useUpdateProfileImage();
 
-  const isLoading = updateProfileMutation.isPending || updateImageMutation.isPending;
+  const isLoading =
+    updateProfileMutation.isPending || updateImageMutation.isPending;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -39,7 +58,9 @@ export default function TechnicianProfilePage() {
   };
 
   const handleImageUpload = async () => {
-    const input = document.getElementById("profile-image-upload") as HTMLInputElement;
+    const input = document.getElementById(
+      "profile-image-upload",
+    ) as HTMLInputElement;
     const file = input?.files?.[0];
     if (!file) return;
 
@@ -97,7 +118,9 @@ export default function TechnicianProfilePage() {
           <User className="h-8 w-8 text-primary" />
           Technician Profile
         </h1>
-        <p className="text-muted-foreground mt-1">Manage your account information and skills</p>
+        <p className="text-muted-foreground mt-1">
+          Manage your account information and skills
+        </p>
       </div>
 
       <Card>
@@ -110,7 +133,10 @@ export default function TechnicianProfilePage() {
         <CardContent>
           <div className="flex items-center gap-6">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={previewImage || user?.profileImage || ""} alt={user?.name || ""} />
+              <AvatarImage
+                src={previewImage || user?.profileImage || ""}
+                alt={user?.name || ""}
+              />
               <AvatarFallback className="text-2xl font-medium">
                 {user?.name?.charAt(0).toUpperCase()}
               </AvatarFallback>
@@ -119,10 +145,18 @@ export default function TechnicianProfilePage() {
               <p className="font-medium">{user?.name}</p>
               <p className="text-sm text-muted-foreground">{user?.email}</p>
               <div className="mt-4 flex items-center gap-4">
-                <label htmlFor="profile-image-upload" className="cursor-pointer">
-                  <Button variant="outline" disabled={updateImageMutation.isPending}>
+                <label
+                  htmlFor="profile-image-upload"
+                  className="cursor-pointer"
+                >
+                  <Button
+                    variant="outline"
+                    disabled={updateImageMutation.isPending}
+                  >
                     <Camera className="h-4 w-4 mr-2" />
-                    {updateImageMutation.isPending ? "Uploading..." : "Change Photo"}
+                    {updateImageMutation.isPending
+                      ? "Uploading..."
+                      : "Change Photo"}
                   </Button>
                   <input
                     id="profile-image-upload"
@@ -133,13 +167,19 @@ export default function TechnicianProfilePage() {
                   />
                 </label>
                 {previewImage && (
-                  <Button variant="default" onClick={handleImageUpload} disabled={updateImageMutation.isPending}>
+                  <Button
+                    variant="default"
+                    onClick={handleImageUpload}
+                    disabled={updateImageMutation.isPending}
+                  >
                     <Save className="h-4 w-4 mr-2" />
                     Save Changes
                   </Button>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground mt-2">Max 5MB • JPG, PNG</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                Max 5MB • JPG, PNG
+              </p>
             </div>
           </div>
         </CardContent>
@@ -202,7 +242,11 @@ export default function TechnicianProfilePage() {
           </CardContent>
           <CardContent className="pt-0">
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <Save className="h-4 w-4 mr-2" />
+              )}
               {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </CardContent>
@@ -229,7 +273,8 @@ export default function TechnicianProfilePage() {
             ))}
           </div>
           <p className="text-sm text-muted-foreground mt-4">
-            Add or update your skills in the admin panel. Contact your operator for certification updates.
+            Add or update your skills in the admin panel. Contact your operator
+            for certification updates.
           </p>
         </CardContent>
       </Card>
@@ -245,7 +290,8 @@ export default function TechnicianProfilePage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
-            Once you delete your account, there is no going back. Please be certain.
+            Once you delete your account, there is no going back. Please be
+            certain.
           </p>
           <Button variant="destructive" className="w-full">
             Delete Account

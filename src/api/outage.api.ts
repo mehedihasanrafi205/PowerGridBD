@@ -9,14 +9,20 @@ import type {
 } from "@/types";
 
 export const createOutage = (payload: OutagePayload) =>
-  apiClient<{ success: boolean; statusCode: number; message: string; data: Outage }>("/outage", {
+  apiClient<{
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: Outage;
+  }>("/outage", {
     method: "POST",
     body: payload,
   });
 
 export const getOutages = (params?: OutageFilters) => {
   const searchParams = new URLSearchParams();
-  if (params?.status?.length) params.status.forEach((s) => searchParams.append("status", s));
+  if (params?.status?.length)
+    params.status.forEach((s) => searchParams.append("status", s));
   if (params?.areaId) searchParams.append("areaId", params.areaId);
   if (params?.isPriority) searchParams.append("isPriority", "true");
   if (params?.searchTerm) searchParams.append("searchTerm", params.searchTerm);
@@ -26,7 +32,9 @@ export const getOutages = (params?: OutageFilters) => {
   if (params?.sortOrder) searchParams.append("sortOrder", params.sortOrder);
   if (params?.from) searchParams.append("from", params.from);
   if (params?.to) searchParams.append("to", params.to);
-  return apiClient<OutagePaginatedResponse>(`/outage?${searchParams.toString()}`);
+  return apiClient<OutagePaginatedResponse>(
+    `/outage?${searchParams.toString()}`,
+  );
 };
 
 export const getOutageById = (id: string) =>
@@ -45,6 +53,9 @@ export const updateOutageStatus = (id: string, payload: OutageStatusPayload) =>
   });
 
 export const deleteOutage = (id: string) =>
-  apiClient<{ success: boolean; statusCode: number; message: string }>(`/outage/${id}`, {
-    method: "DELETE",
-  });
+  apiClient<{ success: boolean; statusCode: number; message: string }>(
+    `/outage/${id}`,
+    {
+      method: "DELETE",
+    },
+  );

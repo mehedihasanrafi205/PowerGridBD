@@ -12,7 +12,7 @@ interface BreadcrumbItem {
 
 export function Breadcrumbs() {
   const pathname = usePathname();
-  
+
   const segments = pathname
     .split("/")
     .filter(Boolean)
@@ -27,12 +27,20 @@ export function Breadcrumbs() {
   if (segments.length === 0) return null;
 
   return (
-    <nav className="flex items-center gap-1 text-sm mb-4 lg:mb-6" aria-label="Breadcrumb">
-      <Link href="/" className={cn("flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors")}>
+    <nav
+      className="flex items-center gap-1 text-sm mb-4 lg:mb-6"
+      aria-label="Breadcrumb"
+    >
+      <Link
+        href="/"
+        className={cn(
+          "flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors",
+        )}
+      >
         <Home className="h-4 w-4" />
         <span className="hidden sm:inline">Home</span>
       </Link>
-      
+
       {segments.map((segment, index) => (
         <span key={segment.href} className="flex items-center gap-1">
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -42,7 +50,7 @@ export function Breadcrumbs() {
             <Link
               href={segment.href}
               className={cn(
-                "flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+                "flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors",
               )}
             >
               {segment.label}

@@ -6,10 +6,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { Pagination } from "@/components/ui/pagination";
-import { Search, Filter, Download, Loader2, Calendar, PlusCircle, Edit, Trash2 } from "lucide-react";
+import {
+  Search,
+  Filter,
+  Download,
+  Loader2,
+  Calendar,
+  PlusCircle,
+  Edit,
+  Trash2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import Link from "next/link";
@@ -21,7 +43,11 @@ export default function OperatorSchedulesPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data: schedules, isLoading, error } = useSchedules({
+  const {
+    data: schedules,
+    isLoading,
+    error,
+  } = useSchedules({
     searchTerm: searchTerm || undefined,
     status: statusFilter !== "all" ? [statusFilter as any] : undefined,
     page,
@@ -51,11 +77,16 @@ export default function OperatorSchedulesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "SCHEDULED": return "info";
-      case "ACTIVE": return "warning";
-      case "COMPLETED": return "success";
-      case "CANCELLED": return "secondary";
-      default: return "secondary";
+      case "SCHEDULED":
+        return "info";
+      case "ACTIVE":
+        return "warning";
+      case "COMPLETED":
+        return "success";
+      case "CANCELLED":
+        return "secondary";
+      default:
+        return "secondary";
     }
   };
 
@@ -67,7 +98,9 @@ export default function OperatorSchedulesPage() {
             <Calendar className="h-8 w-8 text-primary" />
             Load-Shedding Schedules
           </h1>
-          <p className="text-muted-foreground mt-1">Manage scheduled power outages</p>
+          <p className="text-muted-foreground mt-1">
+            Manage scheduled power outages
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" disabled={isLoading}>
@@ -121,7 +154,9 @@ export default function OperatorSchedulesPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">Failed to load schedules</div>
+            <div className="text-center text-red-500 py-4">
+              Failed to load schedules
+            </div>
           )}
 
           {!error && (
@@ -149,16 +184,26 @@ export default function OperatorSchedulesPage() {
                       </TableRow>
                     ) : !schedules?.data || schedules.data.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={8}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           No schedules found
                         </TableCell>
                       </TableRow>
                     ) : (
                       schedules.data.map((schedule) => (
-                        <TableRow key={schedule.id} className="hover:bg-muted/50">
-                          <TableCell className="font-medium">{schedule.title}</TableCell>
+                        <TableRow
+                          key={schedule.id}
+                          className="hover:bg-muted/50"
+                        >
+                          <TableCell className="font-medium">
+                            {schedule.title}
+                          </TableCell>
                           <TableCell>{schedule.area?.name || "N/A"}</TableCell>
-                          <TableCell>{schedule.feeder?.name || "N/A"}</TableCell>
+                          <TableCell>
+                            {schedule.feeder?.name || "N/A"}
+                          </TableCell>
                           <TableCell className="text-sm">
                             {new Date(schedule.startTime).toLocaleString()}
                           </TableCell>
@@ -170,15 +215,23 @@ export default function OperatorSchedulesPage() {
                               {schedule.status}
                             </Badge>
                           </TableCell>
-                          <TableCell>{schedule.recurrence || "One-time"}</TableCell>
+                          <TableCell>
+                            {schedule.recurrence || "One-time"}
+                          </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end gap-2">
-                              <Link href={`/operator/schedules/${schedule.id}/edit`}>
+                              <Link
+                                href={`/operator/schedules/${schedule.id}/edit`}
+                              >
                                 <Button variant="ghost" size="sm">
                                   <Edit className="h-4 w-4" />
                                 </Button>
                               </Link>
-                              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-destructive hover:text-destructive"
+                              >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
@@ -194,7 +247,9 @@ export default function OperatorSchedulesPage() {
               {schedules?.meta && schedules.meta.totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 pt-4 border-t">
                   <p className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to {Math.min(page * limit, schedules.meta.total)} of {schedules.meta.total} schedules
+                    Showing {(page - 1) * limit + 1} to{" "}
+                    {Math.min(page * limit, schedules.meta.total)} of{" "}
+                    {schedules.meta.total} schedules
                   </p>
                   <Pagination
                     page={page}

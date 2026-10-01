@@ -33,8 +33,7 @@ export const userLogout = () =>
     method: "POST",
   });
 
-export const getMe = () =>
-  apiClient<ApiResponse<{ user: User }>>("/auth/me");
+export const getMe = () => apiClient<ApiResponse<{ user: User }>>("/auth/me");
 
 export const googleOAuth = (payload: GoogleOAuthPayload) =>
   apiClient<ApiResponse<{ user: User }>>("/auth/google", {

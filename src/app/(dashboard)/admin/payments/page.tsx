@@ -6,10 +6,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { Pagination } from "@/components/ui/pagination";
-import { Search, Filter, Loader2, Download, CreditCard, AlertCircle } from "lucide-react";
+import {
+  Search,
+  Filter,
+  Loader2,
+  Download,
+  CreditCard,
+  AlertCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import Link from "next/link";
@@ -22,10 +42,14 @@ export default function AdminPaymentsPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data: payments, isLoading, error } = useAllPayments({
+  const {
+    data: payments,
+    isLoading,
+    error,
+  } = useAllPayments({
     searchTerm: searchTerm || undefined,
     status: statusFilter !== "all" ? [statusFilter as any] : undefined,
-    type: typeFilter !== "all" ? typeFilter as any : undefined,
+    type: typeFilter !== "all" ? (typeFilter as any) : undefined,
     page,
     limit,
     sortBy: "createdAt",
@@ -59,19 +83,27 @@ export default function AdminPaymentsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "SUCCESS": return "success";
-      case "FAILED": return "destructive";
-      case "PENDING": return "warning";
-      case "CANCELLED": return "secondary";
-      default: return "secondary";
+      case "SUCCESS":
+        return "success";
+      case "FAILED":
+        return "destructive";
+      case "PENDING":
+        return "warning";
+      case "CANCELLED":
+        return "secondary";
+      default:
+        return "secondary";
     }
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case "PRIORITY_RESTORATION": return "Priority Restoration";
-      case "SLA_SUBSCRIPTION": return "SLA Subscription";
-      default: return type;
+      case "PRIORITY_RESTORATION":
+        return "Priority Restoration";
+      case "SLA_SUBSCRIPTION":
+        return "SLA Subscription";
+      default:
+        return type;
     }
   };
 
@@ -83,7 +115,9 @@ export default function AdminPaymentsPage() {
             <CreditCard className="h-8 w-8 text-primary" />
             Payment Management
           </h1>
-          <p className="text-muted-foreground mt-1">View and manage all payment transactions</p>
+          <p className="text-muted-foreground mt-1">
+            View and manage all payment transactions
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" disabled={isLoading}>
@@ -143,7 +177,9 @@ export default function AdminPaymentsPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">Failed to load payments</div>
+            <div className="text-center text-red-500 py-4">
+              Failed to load payments
+            </div>
           )}
 
           {!error && (
@@ -171,24 +207,40 @@ export default function AdminPaymentsPage() {
                       </TableRow>
                     ) : !payments?.data || payments.data.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={8}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           No payments found
                         </TableCell>
                       </TableRow>
                     ) : (
                       payments.data.map((payment) => (
-                        <TableRow key={payment.id} className="hover:bg-muted/50">
-                          <TableCell className="font-mono text-sm">{payment.transactionId}</TableCell>
+                        <TableRow
+                          key={payment.id}
+                          className="hover:bg-muted/50"
+                        >
+                          <TableCell className="font-mono text-sm">
+                            {payment.transactionId}
+                          </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <span className="font-medium">{payment.customer?.name || "Unknown"}</span>
-                              <span className="text-xs text-muted-foreground">#{payment.customer?.id?.slice(0, 8) || "N/A"}</span>
+                              <span className="font-medium">
+                                {payment.customer?.name || "Unknown"}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                #{payment.customer?.id?.slice(0, 8) || "N/A"}
+                              </span>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Badge variant="secondary">{getTypeLabel(payment.type)}</Badge>
+                            <Badge variant="secondary">
+                              {getTypeLabel(payment.type)}
+                            </Badge>
                           </TableCell>
-                          <TableCell className="font-medium">BDT {payment.amount.toLocaleString()}</TableCell>
+                          <TableCell className="font-medium">
+                            BDT {payment.amount.toLocaleString()}
+                          </TableCell>
                           <TableCell>
                             <Badge variant={getStatusColor(payment.status)}>
                               {payment.status}
@@ -217,7 +269,9 @@ export default function AdminPaymentsPage() {
               {payments?.meta && payments.meta.totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 pt-4 border-t">
                   <p className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to {Math.min(page * limit, payments.meta.total)} of {payments.meta.total} payments
+                    Showing {(page - 1) * limit + 1} to{" "}
+                    {Math.min(page * limit, payments.meta.total)} of{" "}
+                    {payments.meta.total} payments
                   </p>
                   <Pagination
                     page={page}

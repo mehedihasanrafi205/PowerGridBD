@@ -59,8 +59,13 @@ export const useAssignTechnician = () => {
 export const useUpdateOutageStatus = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: OutageStatusPayload }) =>
-      updateOutageStatus(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: OutageStatusPayload;
+    }) => updateOutageStatus(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["outages"] });
       queryClient.invalidateQueries({ queryKey: ["outage"] });

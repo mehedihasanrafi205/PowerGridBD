@@ -22,9 +22,24 @@ import {
 } from "@/api/grid.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { ZoneFilters, SubstationFilters, FeederFilters, AreaFilters, ZonePayload, SubstationPayload, FeederPayload, AreaPayload } from "@/types";
+import type {
+  ZoneFilters,
+  SubstationFilters,
+  FeederFilters,
+  AreaFilters,
+  ZonePayload,
+  SubstationPayload,
+  FeederPayload,
+  AreaPayload,
+} from "@/types";
 
-export const useZones = (filters?: { searchTerm?: string; page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }) => {
+export const useZones = (filters?: {
+  searchTerm?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}) => {
   return useQuery({
     queryKey: ["zones", filters],
     queryFn: () => getZones(filters),
@@ -54,7 +69,8 @@ export const useCreateZone = () => {
 export const useUpdateZone = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: { name: string } }) => updateZone(id, payload),
+    mutationFn: ({ id, payload }: { id: string; payload: { name: string } }) =>
+      updateZone(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["zones"] });
       toast.success("Zone updated!");
@@ -73,7 +89,14 @@ export const useDeleteZone = () => {
   });
 };
 
-export const useSubstations = (filters?: { searchTerm?: string; zoneId?: string; page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }) => {
+export const useSubstations = (filters?: {
+  searchTerm?: string;
+  zoneId?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}) => {
   return useQuery({
     queryKey: ["substations", filters],
     queryFn: () => getSubstations(filters),
@@ -92,7 +115,8 @@ export const useSubstation = (id: string) => {
 export const useCreateSubstation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ name, zoneId }: { name: string; zoneId: string }) => createSubstation({ name, zoneId }),
+    mutationFn: ({ name, zoneId }: { name: string; zoneId: string }) =>
+      createSubstation({ name, zoneId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["substations"] });
       toast.success("Substation created!");
@@ -103,7 +127,13 @@ export const useCreateSubstation = () => {
 export const useUpdateSubstation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: { name: string; zoneId: string } }) => updateSubstation(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: { name: string; zoneId: string };
+    }) => updateSubstation(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["substations"] });
       toast.success("Substation updated!");
@@ -122,7 +152,14 @@ export const useDeleteSubstation = () => {
   });
 };
 
-export const useFeeders = (filters?: { searchTerm?: string; substationId?: string; page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }) => {
+export const useFeeders = (filters?: {
+  searchTerm?: string;
+  substationId?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}) => {
   return useQuery({
     queryKey: ["feeders", filters],
     queryFn: () => getFeeders(filters),
@@ -141,7 +178,13 @@ export const useFeeder = (id: string) => {
 export const useCreateFeeder = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ name, substationId }: { name: string; substationId: string }) => createFeeder({ name, substationId }),
+    mutationFn: ({
+      name,
+      substationId,
+    }: {
+      name: string;
+      substationId: string;
+    }) => createFeeder({ name, substationId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feeders"] });
       toast.success("Feeder created!");
@@ -152,7 +195,13 @@ export const useCreateFeeder = () => {
 export const useUpdateFeeder = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: { name: string; substationId: string } }) => updateFeeder(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: { name: string; substationId: string };
+    }) => updateFeeder(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feeders"] });
       toast.success("Feeder updated!");
@@ -171,7 +220,14 @@ export const useDeleteFeeder = () => {
   });
 };
 
-export const useAreas = (filters?: { searchTerm?: string; feederId?: string; page?: number; limit?: number; sortBy?: string; sortOrder?: "asc" | "desc" }) => {
+export const useAreas = (filters?: {
+  searchTerm?: string;
+  feederId?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}) => {
   return useQuery({
     queryKey: ["areas", filters],
     queryFn: () => getAreas(filters),
@@ -190,7 +246,8 @@ export const useArea = (id: string) => {
 export const useCreateArea = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ name, feederId }: { name: string; feederId: string }) => createArea({ name, feederId }),
+    mutationFn: ({ name, feederId }: { name: string; feederId: string }) =>
+      createArea({ name, feederId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["areas"] });
       toast.success("Area created!");
@@ -201,7 +258,13 @@ export const useCreateArea = () => {
 export const useUpdateArea = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: { name: string; feederId: string } }) => updateArea(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: { name: string; feederId: string };
+    }) => updateArea(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["areas"] });
       toast.success("Area updated!");

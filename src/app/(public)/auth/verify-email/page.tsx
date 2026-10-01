@@ -49,7 +49,9 @@ export default function VerifyEmailPage() {
   const handleVerify = async (data: OTPForm) => {
     setIsLoading(true);
     try {
-      const response = await api.post<AuthResponse>("/auth/verify-email", { otp: data.otp });
+      const response = await api.post<AuthResponse>("/auth/verify-email", {
+        otp: data.otp,
+      });
       if (response.success) {
         toast.success("Email verified successfully! Redirecting...");
         router.push("/");
@@ -58,7 +60,10 @@ export default function VerifyEmailPage() {
         toast.error(response.message || "Verification failed");
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Verification failed. Please try again.";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Verification failed. Please try again.";
       toast.error(message);
     } finally {
       setIsLoading(false);
@@ -81,7 +86,8 @@ export default function VerifyEmailPage() {
         });
       }, 1000);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to resend OTP";
+      const message =
+        error instanceof Error ? error.message : "Failed to resend OTP";
       toast.error(message);
     } finally {
       setResendLoading(false);

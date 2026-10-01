@@ -1,4 +1,8 @@
-export type ScheduleStatus = "SCHEDULED" | "ONGOING" | "COMPLETED" | "CANCELLED";
+export type ScheduleStatus =
+  | "SCHEDULED"
+  | "ONGOING"
+  | "COMPLETED"
+  | "CANCELLED";
 export type ScheduleType = "FEEDER" | "AREA";
 export type ScheduleRecurrence = "NONE" | "DAILY" | "WEEKLY" | "MONTHLY";
 

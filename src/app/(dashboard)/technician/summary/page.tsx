@@ -5,14 +5,27 @@ import { useTechnicianSummary, useTechnicianWorkload } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, CheckCircle, AlertTriangle, TrendingUp, BarChart3, Loader2, User, Calendar, Users, Link as LinkIcon, Download } from "lucide-react";
+import {
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  TrendingUp,
+  BarChart3,
+  Loader2,
+  User,
+  Calendar,
+  Users,
+  Link as LinkIcon,
+  Download,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 export default function TechnicianSummaryPage() {
   const { user, isLoading: authLoading } = useAuth();
   const { data: summary, isLoading: summaryLoading } = useTechnicianSummary();
-  const { data: workload, isLoading: workloadLoading } = useTechnicianWorkload();
+  const { data: workload, isLoading: workloadLoading } =
+    useTechnicianWorkload();
 
   if (authLoading || summaryLoading || workloadLoading) {
     return (
@@ -44,7 +57,9 @@ export default function TechnicianSummaryPage() {
           <BarChart3 className="h-8 w-8 text-primary" />
           Performance Summary
         </h1>
-        <p className="text-muted-foreground mt-1">Your performance metrics and workload overview</p>
+        <p className="text-muted-foreground mt-1">
+          Your performance metrics and workload overview
+        </p>
       </div>
 
       {/* Key Stats */}
@@ -54,7 +69,9 @@ export default function TechnicianSummaryPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Assigned Tasks</p>
-                <p className="text-3xl font-bold text-foreground mt-1">{s?.assignedCount || 0}</p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  {s?.assignedCount || 0}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-blue-100">
                 <AlertTriangle className="h-6 w-6 text-blue-600" />
@@ -68,7 +85,9 @@ export default function TechnicianSummaryPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">In Progress</p>
-                <p className="text-3xl font-bold text-foreground mt-1">{s?.ongoingCount || 0}</p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  {s?.ongoingCount || 0}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-amber-100">
                 <Clock className="h-6 w-6 text-amber-600" />
@@ -81,8 +100,12 @@ export default function TechnicianSummaryPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Resolved This Month</p>
-                <p className="text-3xl font-bold text-foreground mt-1">{s?.resolvedCount || 0}</p>
+                <p className="text-sm text-muted-foreground">
+                  Resolved This Month
+                </p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  {s?.resolvedCount || 0}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-green-100">
                 <CheckCircle className="h-6 w-6 text-green-600" />
@@ -95,8 +118,12 @@ export default function TechnicianSummaryPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Avg Resolution Time</p>
-                <p className="text-3xl font-bold text-foreground mt-1">{s?.avgResolutionTime || 0}h</p>
+                <p className="text-sm text-muted-foreground">
+                  Avg Resolution Time
+                </p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  {s?.avgResolutionTime || 0}h
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-purple-100">
                 <Clock className="h-6 w-6 text-purple-600" />
@@ -118,8 +145,12 @@ export default function TechnicianSummaryPage() {
           <CardContent className="space-y-6">
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">First-Time Fix Rate</span>
-                <span className="font-semibold text-green-600">{s?.firstTimeFixRate || 0}%</span>
+                <span className="text-muted-foreground">
+                  First-Time Fix Rate
+                </span>
+                <span className="font-semibold text-green-600">
+                  {s?.firstTimeFixRate || 0}%
+                </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
@@ -127,35 +158,58 @@ export default function TechnicianSummaryPage() {
                   style={{ width: `${s?.firstTimeFixRate || 0}%` }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Target: {">"} 90%</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Target: {">"} 90%
+              </p>
             </div>
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">Avg Resolution Time</span>
-                <span className="font-semibold text-blue-600">{s?.avgResolutionTime || 0}h</span>
+                <span className="text-muted-foreground">
+                  Avg Resolution Time
+                </span>
+                <span className="font-semibold text-blue-600">
+                  {s?.avgResolutionTime || 0}h
+                </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-500 rounded-full transition-all"
-                  style={{ width: `${Math.min((s?.avgResolutionTime || 0) / 48 * 100, 100)}%` }}
+                  style={{
+                    width: `${Math.min(((s?.avgResolutionTime || 0) / 48) * 100, 100)}%`,
+                  }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Target: {"<"} 24h</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Target: {"<"} 24h
+              </p>
             </div>
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">Tasks Completed On Time</span>
-                <span className="font-semibold text-purple-600">{Math.round((s?.resolvedCount || 0) / Math.max(s?.assignedCount || 1, 1) * 100)}%</span>
+                <span className="text-muted-foreground">
+                  Tasks Completed On Time
+                </span>
+                <span className="font-semibold text-purple-600">
+                  {Math.round(
+                    ((s?.resolvedCount || 0) /
+                      Math.max(s?.assignedCount || 1, 1)) *
+                      100,
+                  )}
+                  %
+                </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-purple-500 rounded-full transition-all"
-                  style={{ width: `${Math.round((s?.resolvedCount || 0) / Math.max(s?.assignedCount || 1, 1) * 100)}%` }}
+                  style={{
+                    width: `${Math.round(((s?.resolvedCount || 0) / Math.max(s?.assignedCount || 1, 1)) * 100)}%`,
+                  }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Completion rate</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Completion rate
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -175,17 +229,21 @@ export default function TechnicianSummaryPage() {
                     <div className="flex justify-between text-sm">
                       <span className="font-medium">{tech.technicianName}</span>
                       <span className="text-muted-foreground">
-                        {tech.assignedCount} assigned / {tech.resolvedCount} resolved
+                        {tech.assignedCount} assigned / {tech.resolvedCount}{" "}
+                        resolved
                       </span>
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
                       <div
                         className="h-full bg-primary rounded-full transition-all"
-                        style={{ width: `${Math.min(tech.assignedCount / 10 * 100, 100)}%` }}
+                        style={{
+                          width: `${Math.min((tech.assignedCount / 10) * 100, 100)}%`,
+                        }}
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Avg resolution: {tech.avgResolutionTime}h | Fix rate: {tech.firstTimeFixRate.toFixed(1)}%
+                      Avg resolution: {tech.avgResolutionTime}h | Fix rate:{" "}
+                      {tech.firstTimeFixRate.toFixed(1)}%
                     </p>
                   </div>
                 ))}
@@ -223,13 +281,28 @@ export default function TechnicianSummaryPage() {
                 </thead>
                 <tbody>
                   {technicianWorkload.map((tech: any) => (
-                    <tr key={tech.technicianId} className="border-b last:border-0 hover:bg-muted/50">
-                      <td className="py-3 font-medium">{tech.technicianName}</td>
-                      <td className="py-3 pr-4 text-right">{tech.assignedCount}</td>
-                      <td className="py-3 pr-4 text-right text-green-600">{tech.resolvedCount}</td>
-                      <td className="py-3 pr-4 text-right">{tech.avgResolutionTime}h</td>
+                    <tr
+                      key={tech.technicianId}
+                      className="border-b last:border-0 hover:bg-muted/50"
+                    >
+                      <td className="py-3 font-medium">
+                        {tech.technicianName}
+                      </td>
+                      <td className="py-3 pr-4 text-right">
+                        {tech.assignedCount}
+                      </td>
+                      <td className="py-3 pr-4 text-right text-green-600">
+                        {tech.resolvedCount}
+                      </td>
+                      <td className="py-3 pr-4 text-right">
+                        {tech.avgResolutionTime}h
+                      </td>
                       <td className="py-3 text-right font-semibold">
-                        <Badge variant={tech.firstTimeFixRate >= 90 ? "success" : "warning"}>
+                        <Badge
+                          variant={
+                            tech.firstTimeFixRate >= 90 ? "success" : "warning"
+                          }
+                        >
                           {tech.firstTimeFixRate.toFixed(1)}%
                         </Badge>
                       </td>
@@ -261,7 +334,11 @@ export default function TechnicianSummaryPage() {
             Update Profile
           </Button>
         </Link>
-        <Button variant="outline" className="w-full justify-start gap-3 h-14" disabled>
+        <Button
+          variant="outline"
+          className="w-full justify-start gap-3 h-14"
+          disabled
+        >
           <Download className="h-5 w-5" />
           Export Report
         </Button>

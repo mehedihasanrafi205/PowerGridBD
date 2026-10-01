@@ -6,10 +6,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { Pagination } from "@/components/ui/pagination";
-import { Search, Filter, Loader2, Download, User, UserPlus, Shield, MoreHorizontal, Edit, Trash2 } from "lucide-react";
+import {
+  Search,
+  Filter,
+  Loader2,
+  Download,
+  User,
+  UserPlus,
+  Shield,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import Link from "next/link";
@@ -22,10 +46,14 @@ export default function AdminUsersPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data: users, isLoading, error } = useUsers({
+  const {
+    data: users,
+    isLoading,
+    error,
+  } = useUsers({
     searchTerm: searchTerm || undefined,
-    role: roleFilter !== "all" ? roleFilter as any : undefined,
-    status: statusFilter !== "all" ? statusFilter as any : undefined,
+    role: roleFilter !== "all" ? (roleFilter as any) : undefined,
+    status: statusFilter !== "all" ? (statusFilter as any) : undefined,
     page,
     limit,
     sortBy: "createdAt",
@@ -59,19 +87,27 @@ export default function AdminUsersPage() {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case "ADMIN": return "destructive";
-      case "POWER_OPERATOR": return "warning";
-      case "TECHNICIAN": return "success";
-      case "CUSTOMER": return "info";
-      default: return "secondary";
+      case "ADMIN":
+        return "destructive";
+      case "POWER_OPERATOR":
+        return "warning";
+      case "TECHNICIAN":
+        return "success";
+      case "CUSTOMER":
+        return "info";
+      default:
+        return "secondary";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "ACTIVE": return "success";
-      case "BLOCKED": return "destructive";
-      default: return "secondary";
+      case "ACTIVE":
+        return "success";
+      case "BLOCKED":
+        return "destructive";
+      default:
+        return "secondary";
     }
   };
 
@@ -83,7 +119,9 @@ export default function AdminUsersPage() {
             <User className="h-8 w-8 text-primary" />
             User Management
           </h1>
-          <p className="text-muted-foreground mt-1">Manage users, roles, and account status</p>
+          <p className="text-muted-foreground mt-1">
+            Manage users, roles, and account status
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" disabled={isLoading}>
@@ -149,7 +187,9 @@ export default function AdminUsersPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">Failed to load users</div>
+            <div className="text-center text-red-500 py-4">
+              Failed to load users
+            </div>
           )}
 
           {!error && (
@@ -176,7 +216,10 @@ export default function AdminUsersPage() {
                       </TableRow>
                     ) : !users?.data || users.data.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={7}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           No users found
                         </TableCell>
                       </TableRow>
@@ -192,7 +235,9 @@ export default function AdminUsersPage() {
                               </div>
                               <div>
                                 <p className="font-medium">{u.name}</p>
-                                <p className="text-xs text-muted-foreground font-mono">#{u.id.slice(0, 8)}</p>
+                                <p className="text-xs text-muted-foreground font-mono">
+                                  #{u.id.slice(0, 8)}
+                                </p>
                               </div>
                             </div>
                           </TableCell>
@@ -227,7 +272,11 @@ export default function AdminUsersPage() {
                                   <Edit className="h-4 w-4" />
                                 </Button>
                               </Link>
-                              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-destructive hover:text-destructive"
+                              >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
@@ -243,7 +292,9 @@ export default function AdminUsersPage() {
               {users?.meta && users.meta.totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 pt-4 border-t">
                   <p className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to {Math.min(page * limit, users.meta.total)} of {users.meta.total} users
+                    Showing {(page - 1) * limit + 1} to{" "}
+                    {Math.min(page * limit, users.meta.total)} of{" "}
+                    {users.meta.total} users
                   </p>
                   <Pagination
                     page={page}

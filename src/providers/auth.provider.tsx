@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useEffect, ReactNode, useState, useRef } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  ReactNode,
+  useState,
+  useRef,
+} from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getMe } from "@/api/auth.api";
 import type { User } from "@/types";
@@ -68,7 +75,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     fetchUser();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [isClient]);
 
   const isAuthenticated = Boolean(user);

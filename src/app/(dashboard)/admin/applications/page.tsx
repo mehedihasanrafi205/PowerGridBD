@@ -6,10 +6,35 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { Pagination } from "@/components/ui/pagination";
-import { Search, Filter, Loader2, Download, UserCheck, UserX, Shield, FileText, MoreHorizontal, Check, X } from "lucide-react";
+import {
+  Search,
+  Filter,
+  Loader2,
+  Download,
+  UserCheck,
+  UserX,
+  Shield,
+  FileText,
+  MoreHorizontal,
+  Check,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import Link from "next/link";
@@ -21,9 +46,13 @@ export default function AdminApplicationsPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data: applications, isLoading, error } = useApplications({
+  const {
+    data: applications,
+    isLoading,
+    error,
+  } = useApplications({
     searchTerm: searchTerm || undefined,
-    status: statusFilter !== "all" ? [statusFilter as any] : undefined,
+    status: statusFilter !== "all" ? (statusFilter as any) : undefined,
     page,
     limit,
     sortBy: "createdAt",
@@ -51,20 +80,29 @@ export default function AdminApplicationsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "PENDING": return "warning";
-      case "UNDER_REVIEW": return "info";
-      case "APPROVED": return "success";
-      case "REJECTED": return "destructive";
-      default: return "secondary";
+      case "PENDING":
+        return "warning";
+      case "UNDER_REVIEW":
+        return "info";
+      case "APPROVED":
+        return "success";
+      case "REJECTED":
+        return "destructive";
+      default:
+        return "secondary";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "APPROVED": return <UserCheck className="h-3 w-3" />;
-      case "REJECTED": return <UserX className="h-3 w-3" />;
-      case "UNDER_REVIEW": return <Shield className="h-3 w-3" />;
-      default: return <FileText className="h-3 w-3" />;
+      case "APPROVED":
+        return <UserCheck className="h-3 w-3" />;
+      case "REJECTED":
+        return <UserX className="h-3 w-3" />;
+      case "UNDER_REVIEW":
+        return <Shield className="h-3 w-3" />;
+      default:
+        return <FileText className="h-3 w-3" />;
     }
   };
 
@@ -76,7 +114,9 @@ export default function AdminApplicationsPage() {
             <Shield className="h-8 w-8 text-primary" />
             Technician Applications
           </h1>
-          <p className="text-muted-foreground mt-1">Review and approve technician applications</p>
+          <p className="text-muted-foreground mt-1">
+            Review and approve technician applications
+          </p>
         </div>
       </div>
 
@@ -118,7 +158,9 @@ export default function AdminApplicationsPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">Failed to load applications</div>
+            <div className="text-center text-red-500 py-4">
+              Failed to load applications
+            </div>
           )}
 
           {!error && (
@@ -147,21 +189,45 @@ export default function AdminApplicationsPage() {
                       </TableRow>
                     ) : applications?.data?.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={9}
+                          className="text-center py-8 text-muted-foreground"
+                        >
+                          No applications found
+                        </TableCell>
+                      </TableRow>
+                    ) : !applications?.data ||
+                      applications.data.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={9}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           No applications found
                         </TableCell>
                       </TableRow>
                     ) : (
                       applications.data.map((app) => (
                         <TableRow key={app.id} className="hover:bg-muted/50">
-                          <TableCell className="font-mono text-sm">#{app.id.slice(0, 8)}</TableCell>
-                          <TableCell className="font-medium">{app.name}</TableCell>
+                          <TableCell className="font-mono text-sm">
+                            #{app.id.slice(0, 8)}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {app.name}
+                          </TableCell>
                           <TableCell>{app.email}</TableCell>
                           <TableCell>{app.phone || "N/A"}</TableCell>
-                          <TableCell className="max-w-xs truncate">{app.skills || "N/A"}</TableCell>
-                          <TableCell>{app.experienceYears || 0} years</TableCell>
+                          <TableCell className="max-w-xs truncate">
+                            {app.skills || "N/A"}
+                          </TableCell>
                           <TableCell>
-                            <Badge variant={getStatusColor(app.status)} className="gap-1">
+                            {app.experienceYears || 0} years
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={getStatusColor(app.status)}
+                              className="gap-1"
+                            >
                               {getStatusIcon(app.status)}
                               {app.status}
                             </Badge>
@@ -209,7 +275,9 @@ export default function AdminApplicationsPage() {
               {applications?.meta && applications.meta.totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 pt-4 border-t">
                   <p className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to {Math.min(page * limit, applications.meta.total)} of {applications.meta.total} applications
+                    Showing {(page - 1) * limit + 1} to{" "}
+                    {Math.min(page * limit, applications.meta.total)} of{" "}
+                    {applications.meta.total} applications
                   </p>
                   <Pagination
                     page={page}

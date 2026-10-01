@@ -6,10 +6,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { Pagination } from "@/components/ui/pagination";
-import { Search, Filter, Download, Loader2, User, Clock, CheckCircle, AlertTriangle, MapPin, Shield } from "lucide-react";
+import {
+  Search,
+  Filter,
+  Download,
+  Loader2,
+  User,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  MapPin,
+  Shield,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import Link from "next/link";
@@ -21,7 +45,11 @@ export default function TechnicianOutagesPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data: outages, isLoading, error } = useOutages({
+  const {
+    data: outages,
+    isLoading,
+    error,
+  } = useOutages({
     searchTerm: searchTerm || undefined,
     status: statusFilter !== "all" ? [statusFilter as any] : undefined,
     page,
@@ -51,22 +79,33 @@ export default function TechnicianOutagesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "ASSIGNED": return "info";
-      case "IN_PROGRESS": return "default";
-      case "RESOLVED": return "success";
-      case "RESTORED": return "success";
-      case "PENDING": return "warning";
-      default: return "secondary";
+      case "ASSIGNED":
+        return "info";
+      case "IN_PROGRESS":
+        return "default";
+      case "RESOLVED":
+        return "success";
+      case "RESTORED":
+        return "success";
+      case "PENDING":
+        return "warning";
+      default:
+        return "secondary";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "ASSIGNED": return <User className="h-3 w-3" />;
-      case "IN_PROGRESS": return <Clock className="h-3 w-3" />;
-      case "RESOLVED": return <CheckCircle className="h-3 w-3" />;
-      case "RESTORED": return <CheckCircle className="h-3 w-3" />;
-      default: return <AlertTriangle className="h-3 w-3" />;
+      case "ASSIGNED":
+        return <User className="h-3 w-3" />;
+      case "IN_PROGRESS":
+        return <Clock className="h-3 w-3" />;
+      case "RESOLVED":
+        return <CheckCircle className="h-3 w-3" />;
+      case "RESTORED":
+        return <CheckCircle className="h-3 w-3" />;
+      default:
+        return <AlertTriangle className="h-3 w-3" />;
     }
   };
 
@@ -77,7 +116,9 @@ export default function TechnicianOutagesPage() {
           <AlertTriangle className="h-8 w-8 text-primary" />
           Assigned Outages
         </h1>
-        <p className="text-muted-foreground mt-1">View and manage all your assigned outage tasks</p>
+        <p className="text-muted-foreground mt-1">
+          View and manage all your assigned outage tasks
+        </p>
       </div>
 
       {/* Filters */}
@@ -124,7 +165,9 @@ export default function TechnicianOutagesPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">Failed to load outages</div>
+            <div className="text-center text-red-500 py-4">
+              Failed to load outages
+            </div>
           )}
 
           {!error && (
@@ -151,23 +194,33 @@ export default function TechnicianOutagesPage() {
                       </TableRow>
                     ) : !outages?.data || outages.data.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={7}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           No assigned outages found. Great work!
                         </TableCell>
                       </TableRow>
                     ) : (
                       outages.data.map((outage) => (
                         <TableRow key={outage.id} className="hover:bg-muted/50">
-                          <TableCell className="font-mono text-sm">#{outage.id.slice(0, 8)}</TableCell>
+                          <TableCell className="font-mono text-sm">
+                            #{outage.id.slice(0, 8)}
+                          </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <MapPin className="h-4 w-4 text-muted-foreground" />
                               {outage.area?.name || "Unknown"}
                             </div>
                           </TableCell>
-                          <TableCell className="max-w-xs truncate">{outage.description}</TableCell>
+                          <TableCell className="max-w-xs truncate">
+                            {outage.description}
+                          </TableCell>
                           <TableCell>
-                            <Badge variant={getStatusColor(outage.status)} className="gap-1">
+                            <Badge
+                              variant={getStatusColor(outage.status)}
+                              className="gap-1"
+                            >
                               {getStatusIcon(outage.status)}
                               {outage.status}
                             </Badge>
@@ -188,7 +241,9 @@ export default function TechnicianOutagesPage() {
                               href={`/technician/outage/${outage.id}`}
                               className="text-sm text-primary hover:underline font-medium"
                             >
-                              {outage.status === "ASSIGNED" ? "Start Work" : "Continue"}
+                              {outage.status === "ASSIGNED"
+                                ? "Start Work"
+                                : "Continue"}
                             </Link>
                           </TableCell>
                         </TableRow>
@@ -202,7 +257,9 @@ export default function TechnicianOutagesPage() {
               {outages?.meta && outages.meta.totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 pt-4 border-t">
                   <p className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to {Math.min(page * limit, outages.meta.total)} of {outages.meta.total} outages
+                    Showing {(page - 1) * limit + 1} to{" "}
+                    {Math.min(page * limit, outages.meta.total)} of{" "}
+                    {outages.meta.total} outages
                   </p>
                   <Pagination
                     page={page}

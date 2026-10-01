@@ -1,5 +1,10 @@
 export type PaymentType = "PRIORITY_RESTORATION" | "SLA_SUBSCRIPTION";
-export type PaymentStatus = "PENDING" | "SUCCESS" | "FAILED" | "CANCELLED" | "REFUNDED";
+export type PaymentStatus =
+  | "PENDING"
+  | "SUCCESS"
+  | "FAILED"
+  | "CANCELLED"
+  | "REFUNDED";
 
 export interface PaymentInitiatePayload {
   type: PaymentType;

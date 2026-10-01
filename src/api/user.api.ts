@@ -53,6 +53,9 @@ export const updateUserRole = (id: string, payload: UserRolePayload) =>
   });
 
 export const deleteUser = (id: string) =>
-  apiClient<{ success: boolean; statusCode: number; message: string }>(`/user/${id}`, {
-    method: "DELETE",
-  });
+  apiClient<{ success: boolean; statusCode: number; message: string }>(
+    `/user/${id}`,
+    {
+      method: "DELETE",
+    },
+  );

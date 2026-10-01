@@ -10,8 +10,10 @@ export function Toaster() {
         classNames: {
           toast: "group rounded-lg border bg-background p-4 shadow-lg",
           description: "text-sm text-muted-foreground",
-          actionButton: "px-3 py-1.5 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90",
-          cancelButton: "px-3 py-1.5 text-sm font-medium rounded-md bg-muted text-muted-foreground hover:bg-muted/80",
+          actionButton:
+            "px-3 py-1.5 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90",
+          cancelButton:
+            "px-3 py-1.5 text-sm font-medium rounded-md bg-muted text-muted-foreground hover:bg-muted/80",
         },
       }}
     />

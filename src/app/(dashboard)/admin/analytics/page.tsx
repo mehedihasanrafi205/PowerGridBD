@@ -1,21 +1,50 @@
 "use client";
 
 import { useAuth } from "@/hooks";
-import { useOperationalAnalytics, useFinancialAnalytics, usePerformanceAnalytics, useGeographicalAnalytics, useTrendsAnalytics } from "@/hooks";
+import {
+  useOperationalAnalytics,
+  useFinancialAnalytics,
+  usePerformanceAnalytics,
+  useGeographicalAnalytics,
+  useTrendsAnalytics,
+} from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Users, CreditCard, TrendingUp, BarChart3, MapPin, Loader2, Target, Shield, Clock, CheckCircle } from "lucide-react";
+import {
+  AlertTriangle,
+  Users,
+  CreditCard,
+  TrendingUp,
+  BarChart3,
+  MapPin,
+  Loader2,
+  Target,
+  Shield,
+  Clock,
+  CheckCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function AdminAnalyticsPage() {
   const { user, isLoading: authLoading } = useAuth();
-  const { data: analytics, isLoading: analyticsLoading } = useOperationalAnalytics();
-  const { data: financial, isLoading: financialLoading } = useFinancialAnalytics();
-  const { data: performance, isLoading: performanceLoading } = usePerformanceAnalytics();
-  const { data: geographical, isLoading: geographicalLoading } = useGeographicalAnalytics();
+  const { data: analytics, isLoading: analyticsLoading } =
+    useOperationalAnalytics();
+  const { data: financial, isLoading: financialLoading } =
+    useFinancialAnalytics();
+  const { data: performance, isLoading: performanceLoading } =
+    usePerformanceAnalytics();
+  const { data: geographical, isLoading: geographicalLoading } =
+    useGeographicalAnalytics();
   const { data: trends, isLoading: trendsLoading } = useTrendsAnalytics();
 
-  if (authLoading || analyticsLoading || financialLoading || performanceLoading || geographicalLoading || trendsLoading) {
+  if (
+    authLoading ||
+    analyticsLoading ||
+    financialLoading ||
+    performanceLoading ||
+    geographicalLoading ||
+    trendsLoading
+  ) {
     return (
       <div className="container mx-auto py-8">
         <div className="animate-pulse space-y-4">
@@ -47,7 +76,9 @@ export default function AdminAnalyticsPage() {
           <BarChart3 className="h-8 w-8 text-primary" />
           Platform Analytics
         </h1>
-        <p className="text-muted-foreground mt-1">Executive overview of platform metrics, financials, and performance</p>
+        <p className="text-muted-foreground mt-1">
+          Executive overview of platform metrics, financials, and performance
+        </p>
       </div>
 
       {/* Key Metrics */}
@@ -57,7 +88,9 @@ export default function AdminAnalyticsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Users</p>
-                <p className="text-3xl font-bold text-foreground mt-1">{a?.totalUsers || 0}</p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  {a?.totalUsers || 0}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-blue-100">
                 <Users className="h-6 w-6 text-blue-600" />
@@ -71,7 +104,9 @@ export default function AdminAnalyticsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active Outages</p>
-                <p className="text-3xl font-bold text-foreground mt-1">{a?.activeOutages || 0}</p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  {a?.activeOutages || 0}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-red-100">
                 <AlertTriangle className="h-6 w-6 text-red-600" />
@@ -85,7 +120,9 @@ export default function AdminAnalyticsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Revenue</p>
-                <p className="text-3xl font-bold text-foreground mt-1">BDT {f?.totalRevenue || 0}</p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  BDT {f?.totalRevenue || 0}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-green-100">
                 <CreditCard className="h-6 w-6 text-green-600" />
@@ -98,8 +135,12 @@ export default function AdminAnalyticsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">SLA Subscriptions</p>
-                <p className="text-3xl font-bold text-foreground mt-1">{f?.activeSlaSubscriptions || 0}</p>
+                <p className="text-sm text-muted-foreground">
+                  SLA Subscriptions
+                </p>
+                <p className="text-3xl font-bold text-foreground mt-1">
+                  {f?.activeSlaSubscriptions || 0}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-purple-100">
                 <Shield className="h-6 w-6 text-purple-600" />
@@ -122,34 +163,72 @@ export default function AdminAnalyticsPage() {
             <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 bg-green-50 rounded-lg">
                 <p className="text-sm text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-green-600">BDT {f?.totalRevenue || 0}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  BDT {f?.totalRevenue || 0}
+                </p>
               </div>
               <div className="p-4 bg-blue-50 rounded-lg">
                 <p className="text-sm text-muted-foreground">Success Rate</p>
-                <p className="text-2xl font-bold text-blue-600">{f?.successRate || 0}%</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {f?.successRate || 0}%
+                </p>
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 bg-purple-50 rounded-lg">
-                <p className="text-sm text-muted-foreground">Active SLA Subscriptions</p>
-                <p className="text-2xl font-bold text-purple-600">{f?.activeSlaSubscriptions || 0}</p>
+                <p className="text-sm text-muted-foreground">
+                  Active SLA Subscriptions
+                </p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {f?.activeSlaSubscriptions || 0}
+                </p>
               </div>
               <div className="p-4 bg-amber-50 rounded-lg">
-                <p className="text-sm text-muted-foreground">Priority Restoration Revenue</p>
-                <p className="text-2xl font-bold text-amber-600">BDT {f?.revenueByType?.priorityRestoration || 0}</p>
+                <p className="text-sm text-muted-foreground">
+                  Priority Restoration Revenue
+                </p>
+                <p className="text-2xl font-bold text-amber-600">
+                  BDT {f?.revenueByType?.priorityRestoration || 0}
+                </p>
               </div>
             </div>
             <div className="p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-muted-foreground">SLA Subscription Revenue</p>
-              <p className="text-2xl font-bold text-blue-600">BDT {f?.revenueByType?.slaSubscription || 0}</p>
+              <p className="text-sm text-muted-foreground">
+                SLA Subscription Revenue
+              </p>
+              <p className="text-2xl font-bold text-blue-600">
+                BDT {f?.revenueByType?.slaSubscription || 0}
+              </p>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-muted-foreground">Payments by Status</p>
+              <p className="text-sm text-muted-foreground">
+                Payments by Status
+              </p>
               <div className="grid md:grid-cols-4 gap-4 mt-2 text-sm">
-                <div><span className="text-green-600 font-semibold">{f?.paymentsByStatus?.success || 0}</span> Success</div>
-                <div><span className="text-red-600 font-semibold">{f?.paymentsByStatus?.failed || 0}</span> Failed</div>
-                <div><span className="text-amber-600 font-semibold">{f?.paymentsByStatus?.pending || 0}</span> Pending</div>
-                <div><span className="text-gray-600 font-semibold">{f?.paymentsByStatus?.cancelled || 0}</span> Cancelled</div>
+                <div>
+                  <span className="text-green-600 font-semibold">
+                    {f?.paymentsByStatus?.success || 0}
+                  </span>{" "}
+                  Success
+                </div>
+                <div>
+                  <span className="text-red-600 font-semibold">
+                    {f?.paymentsByStatus?.failed || 0}
+                  </span>{" "}
+                  Failed
+                </div>
+                <div>
+                  <span className="text-amber-600 font-semibold">
+                    {f?.paymentsByStatus?.pending || 0}
+                  </span>{" "}
+                  Pending
+                </div>
+                <div>
+                  <span className="text-gray-600 font-semibold">
+                    {f?.paymentsByStatus?.cancelled || 0}
+                  </span>{" "}
+                  Cancelled
+                </div>
               </div>
             </div>
           </CardContent>
@@ -165,44 +244,84 @@ export default function AdminAnalyticsPage() {
           <CardContent className="space-y-6">
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">MTTR (Mean Time To Resolution)</span>
-                <span className="font-semibold text-blue-600">{p?.mttr || 0}h</span>
+                <span className="text-muted-foreground">
+                  MTTR (Mean Time To Resolution)
+                </span>
+                <span className="font-semibold text-blue-600">
+                  {p?.mttr || 0}h
+                </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min((p?.mttr || 0) / 48 * 100, 100)}%` }} />
+                <div
+                  className="h-full bg-blue-500 rounded-full"
+                  style={{
+                    width: `${Math.min(((p?.mttr || 0) / 48) * 100, 100)}%`,
+                  }}
+                />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Target: {"<"} 24h</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Target: {"<"} 24h
+              </p>
             </div>
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">Avg Assignment Time</span>
-                <span className="font-semibold text-green-600">{p?.avgAssignmentTime || 0}h</span>
+                <span className="text-muted-foreground">
+                  Avg Assignment Time
+                </span>
+                <span className="font-semibold text-green-600">
+                  {p?.avgAssignmentTime || 0}h
+                </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-green-500 rounded-full" style={{ width: `${Math.min((p?.avgAssignmentTime || 0) / 24 * 100, 100)}%` }} />
+                <div
+                  className="h-full bg-green-500 rounded-full"
+                  style={{
+                    width: `${Math.min(((p?.avgAssignmentTime || 0) / 24) * 100, 100)}%`,
+                  }}
+                />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Target: {"<"} 4h</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Target: {"<"} 4h
+              </p>
             </div>
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">First-Time Fix Rate</span>
-                <span className="font-semibold text-purple-600">{p?.firstTimeFixRate || 0}%</span>
+                <span className="text-muted-foreground">
+                  First-Time Fix Rate
+                </span>
+                <span className="font-semibold text-purple-600">
+                  {p?.firstTimeFixRate || 0}%
+                </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-purple-500 rounded-full" style={{ width: `${p?.firstTimeFixRate || 0}%` }} />
+                <div
+                  className="h-full bg-purple-500 rounded-full"
+                  style={{ width: `${p?.firstTimeFixRate || 0}%` }}
+                />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Target: {">"} 90%</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Target: {">"} 90%
+              </p>
             </div>
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">Critical Feeders Down</span>
-                <span className="font-semibold text-amber-600">{a?.criticalFeedersDown || 0}</span>
+                <span className="text-muted-foreground">
+                  Critical Feeders Down
+                </span>
+                <span className="font-semibold text-amber-600">
+                  {a?.criticalFeedersDown || 0}
+                </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-amber-500 rounded-full" style={{ width: `${Math.min((a?.criticalFeedersDown || 0) / 10 * 100, 100)}%` }} />
+                <div
+                  className="h-full bg-amber-500 rounded-full"
+                  style={{
+                    width: `${Math.min(((a?.criticalFeedersDown || 0) / 10) * 100, 100)}%`,
+                  }}
+                />
               </div>
               <p className="text-xs text-muted-foreground mt-1">Target: 0</p>
             </div>
@@ -220,13 +339,18 @@ export default function AdminAnalyticsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {g?.outageByArea?.length > 0 ? (
+            {g?.outageByArea && g.outageByArea.length > 0 ? (
               <div className="space-y-3">
                 {g.outageByArea.slice(0, 10).map((area: any) => (
-                  <div key={area.areaId} className="flex items-center justify-between">
+                  <div
+                    key={area.areaId}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-primary" />
-                      <span className="text-sm font-medium">{area.areaName}</span>
+                      <span className="text-sm font-medium">
+                        {area.areaName}
+                      </span>
                     </div>
                     <Badge variant="secondary">{area.outageCount}</Badge>
                   </div>
@@ -249,13 +373,18 @@ export default function AdminAnalyticsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {g?.topWorstFeeders?.length > 0 ? (
+            {g?.topWorstFeeders && g.topWorstFeeders.length > 0 ? (
               <div className="space-y-3">
                 {g.topWorstFeeders.slice(0, 10).map((feeder: any) => (
-                  <div key={feeder.feederId} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                  <div
+                    key={feeder.feederId}
+                    className="flex items-center justify-between p-3 bg-red-50 rounded-lg"
+                  >
                     <div>
                       <p className="font-medium">{feeder.feederName}</p>
-                      <p className="text-xs text-muted-foreground">{feeder.outageCount} outages</p>
+                      <p className="text-xs text-muted-foreground">
+                        {feeder.outageCount} outages
+                      </p>
                     </div>
                     <Badge variant="destructive">Critical</Badge>
                   </div>
@@ -283,16 +412,30 @@ export default function AdminAnalyticsPage() {
           <CardContent>
             <div className="h-64 flex items-end justify-around gap-1 p-4">
               {t?.dailyOutages?.slice(-30).map((day: any, i) => (
-                <div key={day.date} className="flex-1 flex flex-col items-center">
+                <div
+                  key={day.date}
+                  className="flex-1 flex flex-col items-center"
+                >
                   <div
                     className="w-full bg-primary rounded-t transition-all hover:bg-primary/80"
-                    style={{ height: `${Math.max(day.count / Math.max(...t.dailyOutages.map((d: any) => d.count), 1)) * 80}%` }}
+                    style={{
+                      height: `${Math.max(day.count / Math.max(...t.dailyOutages.map((d: any) => d.count), 1)) * 80}%`,
+                    }}
                   />
-                  <span className="text-xs text-muted-foreground mt-1">{i % 5 === 0 ? day.date : ""}</span>
+                  <span className="text-xs text-muted-foreground mt-1">
+                    {i % 5 === 0 ? day.date : ""}
+                  </span>
                 </div>
               ))}
             </div>
-            <p className="text-center text-sm text-muted-foreground mt-4">Total: {t?.dailyOutages?.reduce((sum: number, d: any) => sum + d.count, 0) || 0} outages</p>
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              Total:{" "}
+              {t?.dailyOutages?.reduce(
+                (sum: number, d: any) => sum + d.count,
+                0,
+              ) || 0}{" "}
+              outages
+            </p>
           </CardContent>
         </Card>
 
@@ -306,14 +449,21 @@ export default function AdminAnalyticsPage() {
           <CardContent>
             <div className="space-y-3">
               {t?.peakLoadSheddingHours?.map((hour: any) => (
-                <div key={hour.hour} className="flex items-center justify-between">
+                <div
+                  key={hour.hour}
+                  className="flex items-center justify-between"
+                >
                   <span className="font-medium">{hour.hour}:00</span>
                   <div className="flex items-center gap-2">
                     <div
                       className="flex-1 h-4 bg-primary rounded max-w-xs"
-                      style={{ width: `${Math.max(hour.count / Math.max(...t.peakLoadSheddingHours.map((h: any) => h.count), 1)) * 100}%` }}
+                      style={{
+                        width: `${Math.max(hour.count / Math.max(...t.peakLoadSheddingHours.map((h: any) => h.count), 1)) * 100}%`,
+                      }}
                     />
-                    <span className="text-sm text-muted-foreground w-10 text-right">{hour.count}</span>
+                    <span className="text-sm text-muted-foreground w-10 text-right">
+                      {hour.count}
+                    </span>
                   </div>
                 </div>
               ))}

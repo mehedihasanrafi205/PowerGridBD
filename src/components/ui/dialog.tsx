@@ -14,10 +14,7 @@ const DialogOverlay = DialogPrimitive.Overlay;
 const DialogContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(function DialogContent(
-  { className, children, ...props },
-  ref
-) {
+>(function DialogContent({ className, children, ...props }, ref) {
   return (
     <DialogPortal>
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
@@ -25,7 +22,7 @@ const DialogContent = React.forwardRef<
         ref={ref}
         className={cn(
           "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
-          "max-h-[85vh] overflow-auto"
+          "max-h-[85vh] overflow-auto",
         )}
         {...props}
       >
@@ -40,39 +37,66 @@ const DialogContent = React.forwardRef<
 });
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
-const DialogHeader = function DialogHeader(
-  { className, ...props }: React.HTMLAttributes<HTMLDivElement>
-) {
-  return <div className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)} {...props} />;
+const DialogHeader = function DialogHeader({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col space-y-1.5 text-center sm:text-left",
+        className,
+      )}
+      {...props}
+    />
+  );
 };
 DialogHeader.displayName = "DialogHeader";
 
-const DialogFooter = function DialogFooter(
-  { className, ...props }: React.HTMLAttributes<HTMLDivElement>
-) {
-  return <div className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)} {...props} />;
+const DialogFooter = function DialogFooter({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+        className,
+      )}
+      {...props}
+    />
+  );
 };
 DialogFooter.displayName = "DialogFooter";
 
 const DialogTitle = React.forwardRef<
   HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
->(function DialogTitle(
-  { className, ...props },
-  ref
-) {
-  return <h2 ref={ref} className={cn("text-lg font-semibold leading-none tracking-tight", className)} {...props} />;
+>(function DialogTitle({ className, ...props }, ref) {
+  return (
+    <h2
+      ref={ref}
+      className={cn(
+        "text-lg font-semibold leading-none tracking-tight",
+        className,
+      )}
+      {...props}
+    />
+  );
 });
 DialogTitle.displayName = "DialogTitle";
 
 const DialogDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
->(function DialogDescription(
-  { className, ...props },
-  ref
-) {
-  return <p ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />;
+>(function DialogDescription({ className, ...props }, ref) {
+  return (
+    <p
+      ref={ref}
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  );
 });
 DialogDescription.displayName = "DialogDescription";
 

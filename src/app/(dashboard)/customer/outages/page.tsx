@@ -7,7 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Pagination } from "@/components/ui/pagination";
 import { useOutages } from "@/hooks";
 import { cn } from "@/lib/utils";
@@ -21,7 +27,11 @@ export default function CustomerOutagesPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { data: outages, isLoading, error } = useOutages({
+  const {
+    data: outages,
+    isLoading,
+    error,
+  } = useOutages({
     searchTerm: searchTerm || undefined,
     status: statusFilter !== "all" ? [statusFilter as any] : undefined,
     page,
@@ -53,13 +63,20 @@ export default function CustomerOutagesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "PENDING": return "warning";
-      case "ASSIGNED": return "info";
-      case "IN_PROGRESS": return "default";
-      case "RESOLVED": return "success";
-      case "RESTORED": return "success";
-      case "CANCELLED": return "secondary";
-      default: return "secondary";
+      case "PENDING":
+        return "warning";
+      case "ASSIGNED":
+        return "info";
+      case "IN_PROGRESS":
+        return "default";
+      case "RESOLVED":
+        return "success";
+      case "RESTORED":
+        return "success";
+      case "CANCELLED":
+        return "secondary";
+      default:
+        return "secondary";
     }
   };
 
@@ -77,9 +94,15 @@ export default function CustomerOutagesPage() {
     if (!outages?.data?.length) {
       return (
         <tr>
-          <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+          <td
+            colSpan={7}
+            className="px-4 py-8 text-center text-muted-foreground"
+          >
             No outage reports found.
-            <Link href="/customer/outage/report" className="text-primary hover:underline ml-2">
+            <Link
+              href="/customer/outage/report"
+              className="text-primary hover:underline ml-2"
+            >
               Report your first outage
             </Link>
           </td>
@@ -88,20 +111,19 @@ export default function CustomerOutagesPage() {
     }
 
     return outages.data.map((outage) => (
-      <tr key={outage.id} className="border-b border-border/50 hover:bg-muted/50">
+      <tr
+        key={outage.id}
+        className="border-b border-border/50 hover:bg-muted/50"
+      >
         <td className="px-4 py-3 text-sm font-mono text-muted-foreground">
           #{outage.id.slice(0, 8)}
         </td>
-        <td className="px-4 py-3 text-sm">
-          {outage.area?.name || "Unknown"}
-        </td>
+        <td className="px-4 py-3 text-sm">{outage.area?.name || "Unknown"}</td>
         <td className="px-4 py-3 text-sm max-w-xs truncate">
           {outage.description}
         </td>
         <td className="px-4 py-3">
-          <Badge variant={getStatusColor(outage.status)}>
-            {outage.status}
-          </Badge>
+          <Badge variant={getStatusColor(outage.status)}>{outage.status}</Badge>
         </td>
         <td className="px-4 py-3">
           {outage.isPriority && (
@@ -129,8 +151,12 @@ export default function CustomerOutagesPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">My Outage Reports</h1>
-        <p className="text-muted-foreground mt-1">View and manage all your reported power outages.</p>
+        <h1 className="text-3xl font-bold text-foreground">
+          My Outage Reports
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          View and manage all your reported power outages.
+        </p>
       </div>
 
       {/* Filters */}
@@ -192,18 +218,30 @@ export default function CustomerOutagesPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Outage ID</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Area</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Description</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Priority</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Reported</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Actions</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                      Outage ID
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                      Area
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                      Description
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                      Priority
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                      Reported
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
-                <tbody>
-                  {renderOutageRows()}
-                </tbody>
+                <tbody>{renderOutageRows()}</tbody>
               </table>
             </div>
 
@@ -229,12 +267,19 @@ export default function CustomerOutagesPage() {
 
 function getStatusColor(status: string) {
   switch (status) {
-    case "PENDING": return "warning";
-    case "ASSIGNED": return "info";
-    case "IN_PROGRESS": return "default";
-    case "RESOLVED": return "success";
-    case "RESTORED": return "success";
-    case "CANCELLED": return "secondary";
-    default: return "secondary";
+    case "PENDING":
+      return "warning";
+    case "ASSIGNED":
+      return "info";
+    case "IN_PROGRESS":
+      return "default";
+    case "RESOLVED":
+      return "success";
+    case "RESTORED":
+      return "success";
+    case "CANCELLED":
+      return "secondary";
+    default:
+      return "secondary";
   }
 }

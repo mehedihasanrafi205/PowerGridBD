@@ -6,10 +6,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { Pagination } from "@/components/ui/pagination";
-import { Search, Filter, Loader2, Download, AlertCircle, User, Database } from "lucide-react";
+import {
+  Search,
+  Filter,
+  Loader2,
+  Download,
+  AlertCircle,
+  User,
+  Database,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -21,7 +42,11 @@ export default function AdminAuditLogsPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
 
-  const { data: logs, isLoading, error } = useAuditLogs({
+  const {
+    data: logs,
+    isLoading,
+    error,
+  } = useAuditLogs({
     searchTerm: searchTerm || undefined,
     entity: entityFilter !== "all" ? entityFilter : undefined,
     action: actionFilter !== "all" ? actionFilter : undefined,
@@ -70,26 +95,41 @@ export default function AdminAuditLogsPage() {
 
   const getActionColor = (action: string) => {
     switch (action) {
-      case "CREATE": return "success";
-      case "UPDATE": return "info";
-      case "DELETE": return "destructive";
-      case "ASSIGN": return "warning";
-      case "STATUS_CHANGE": return "default";
-      case "APPROVE": return "success";
-      case "REJECT": return "destructive";
-      case "LOGIN": return "secondary";
-      case "LOGOUT": return "secondary";
-      default: return "secondary";
+      case "CREATE":
+        return "success";
+      case "UPDATE":
+        return "info";
+      case "DELETE":
+        return "destructive";
+      case "ASSIGN":
+        return "warning";
+      case "STATUS_CHANGE":
+        return "default";
+      case "APPROVE":
+        return "success";
+      case "REJECT":
+        return "destructive";
+      case "LOGIN":
+        return "secondary";
+      case "LOGOUT":
+        return "secondary";
+      default:
+        return "secondary";
     }
   };
 
   const getActionIcon = (action: string) => {
     switch (action) {
-      case "CREATE": return <Database className="h-3 w-3" />;
-      case "UPDATE": return <AlertCircle className="h-3 w-3" />;
-      case "DELETE": return <AlertCircle className="h-3 w-3" />;
-      case "ASSIGN": return <User className="h-3 w-3" />;
-      default: return <Database className="h-3 w-3" />;
+      case "CREATE":
+        return <Database className="h-3 w-3" />;
+      case "UPDATE":
+        return <AlertCircle className="h-3 w-3" />;
+      case "DELETE":
+        return <AlertCircle className="h-3 w-3" />;
+      case "ASSIGN":
+        return <User className="h-3 w-3" />;
+      default:
+        return <Database className="h-3 w-3" />;
     }
   };
 
@@ -101,7 +141,9 @@ export default function AdminAuditLogsPage() {
             <AlertCircle className="h-8 w-8 text-primary" />
             System Audit Logs
           </h1>
-          <p className="text-muted-foreground mt-1">Complete system activity trail for compliance and debugging</p>
+          <p className="text-muted-foreground mt-1">
+            Complete system activity trail for compliance and debugging
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" disabled={isLoading}>
@@ -161,7 +203,9 @@ export default function AdminAuditLogsPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">Failed to load audit logs</div>
+            <div className="text-center text-red-500 py-4">
+              Failed to load audit logs
+            </div>
           )}
 
           {!error && (
@@ -187,7 +231,10 @@ export default function AdminAuditLogsPage() {
                       </TableRow>
                     ) : !logs?.data || logs.data.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={6}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           No audit logs found
                         </TableCell>
                       </TableRow>
@@ -200,20 +247,33 @@ export default function AdminAuditLogsPage() {
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <User className="h-4 w-4 text-muted-foreground" />
-                              <span className="font-medium">{log.actor?.name || "System"}</span>
-                              <span className="text-xs text-muted-foreground">({log.actor?.role || "N/A"})</span>
+                              <span className="font-medium">
+                                {log.actor?.name || "System"}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                ({log.actor?.role || "N/A"})
+                              </span>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Badge variant={getActionColor(log.action)} className="gap-1">
+                            <Badge
+                              variant={getActionColor(log.action)}
+                              className="gap-1"
+                            >
                               {getActionIcon(log.action)}
                               {log.action}
                             </Badge>
                           </TableCell>
-                          <TableCell className="font-mono text-sm">{log.entity}</TableCell>
-                          <TableCell className="font-mono text-sm">{log.entityId}</TableCell>
+                          <TableCell className="font-mono text-sm">
+                            {log.entity}
+                          </TableCell>
+                          <TableCell className="font-mono text-sm">
+                            {log.entityId}
+                          </TableCell>
                           <TableCell className="text-sm text-muted-foreground max-w-xs truncate">
-                            {log.metadata ? JSON.stringify(log.metadata) : "No additional details"}
+                            {log.metadata
+                              ? JSON.stringify(log.metadata)
+                              : "No additional details"}
                           </TableCell>
                         </TableRow>
                       ))
@@ -226,7 +286,9 @@ export default function AdminAuditLogsPage() {
               {logs?.meta && logs.meta.totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 pt-4 border-t">
                   <p className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to {Math.min(page * limit, logs.meta.total)} of {logs.meta.total} logs
+                    Showing {(page - 1) * limit + 1} to{" "}
+                    {Math.min(page * limit, logs.meta.total)} of{" "}
+                    {logs.meta.total} logs
                   </p>
                   <Pagination
                     page={page}

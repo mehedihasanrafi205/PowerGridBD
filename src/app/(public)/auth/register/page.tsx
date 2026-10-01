@@ -76,7 +76,10 @@ export default function RegisterPage() {
         toast.error(response.message || "Registration failed");
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Registration failed. Please try again.";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.";
       toast.error(message);
     } finally {
       setIsLoading(false);

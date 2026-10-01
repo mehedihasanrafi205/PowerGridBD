@@ -1,6 +1,5 @@
 import { Role, UserStatus, User } from "./auth.type";
 
-
 export interface UserFilters {
   searchTerm?: string;
   role?: Role;

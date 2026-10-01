@@ -5,7 +5,13 @@ import { useMySummary, useSlaPlans, useSubscribeSla } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Shield, CreditCard, CheckCircle, AlertCircle, Info } from "lucide-react";
+import {
+  Shield,
+  CreditCard,
+  CheckCircle,
+  AlertCircle,
+  Info,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -41,7 +47,9 @@ export default function CustomerSlaPage() {
     <div className="container mx-auto py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground">SLA Subscription</h1>
-        <p className="text-muted-foreground mt-1">Manage your Service Level Agreement subscription</p>
+        <p className="text-muted-foreground mt-1">
+          Manage your Service Level Agreement subscription
+        </p>
       </div>
 
       {/* Current Status */}
@@ -54,13 +62,34 @@ export default function CustomerSlaPage() {
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className={cn("p-4 rounded-lg", summary?.data?.slaActive ? "bg-green-50 border border-green-200" : "bg-gray-50 border border-gray-200")}>
+            <div
+              className={cn(
+                "p-4 rounded-lg",
+                summary?.data?.slaActive
+                  ? "bg-green-50 border border-green-200"
+                  : "bg-gray-50 border border-gray-200",
+              )}
+            >
               <div className="flex items-center gap-3">
-                <div className={cn("p-3 rounded-lg", summary?.data?.slaActive ? "bg-green-100" : "bg-gray-100")}>
-                  <Shield className={cn("h-6 w-6", summary?.data?.slaActive ? "text-green-600" : "text-gray-400")} />
+                <div
+                  className={cn(
+                    "p-3 rounded-lg",
+                    summary?.data?.slaActive ? "bg-green-100" : "bg-gray-100",
+                  )}
+                >
+                  <Shield
+                    className={cn(
+                      "h-6 w-6",
+                      summary?.data?.slaActive
+                        ? "text-green-600"
+                        : "text-gray-400",
+                    )}
+                  />
                 </div>
                 <div>
-                  <p className="font-semibold">{summary?.data?.slaActive ? "SLA Active" : "No Active SLA"}</p>
+                  <p className="font-semibold">
+                    {summary?.data?.slaActive ? "SLA Active" : "No Active SLA"}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {summary?.data?.slaActive
                       ? `Expires: ${expiryDate ? new Date(expiryDate).toLocaleDateString() : "Unknown"}`
@@ -70,12 +99,20 @@ export default function CustomerSlaPage() {
               </div>
             </div>
             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="font-semibold text-blue-800 mb-2">Priority Restorations Used</p>
-              <p className="text-2xl font-bold text-blue-800">{summary?.data?.priorityCount || 0} / month</p>
+              <p className="font-semibold text-blue-800 mb-2">
+                Priority Restorations Used
+              </p>
+              <p className="text-2xl font-bold text-blue-800">
+                {summary?.data?.priorityCount || 0} / month
+              </p>
             </div>
             <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-              <p className="font-semibold text-purple-800 mb-2">Total Investment</p>
-              <p className="text-2xl font-bold text-purple-800">BDT {summary?.data?.totalPaid || 0}</p>
+              <p className="font-semibold text-purple-800 mb-2">
+                Total Investment
+              </p>
+              <p className="text-2xl font-bold text-purple-800">
+                BDT {summary?.data?.totalPaid || 0}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -98,18 +135,30 @@ export default function CustomerSlaPage() {
           ) : (
             <div className="grid md:grid-cols-3 gap-6">
               {plans.data.map((plan) => (
-                <div key={plan.id} className="bg-card border rounded-xl p-6 hover:shadow-lg transition-shadow relative">
+                <div
+                  key={plan.id}
+                  className="bg-card border rounded-xl p-6 hover:shadow-lg transition-shadow relative"
+                >
                   <div className="mb-4">
                     <h3 className="text-xl font-semibold">{plan.name}</h3>
-                    <p className="text-muted-foreground text-sm">{plan.description}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {plan.description}
+                    </p>
                   </div>
                   <div className="mb-4">
-                    <p className="text-3xl font-bold text-foreground">BDT {plan.price}</p>
-                    <p className="text-sm text-muted-foreground">/ {plan.durationDays} days</p>
+                    <p className="text-3xl font-bold text-foreground">
+                      BDT {plan.price}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      / {plan.durationDays} days
+                    </p>
                   </div>
                   <ul className="space-y-2 mb-6">
                     {plan.features.map((feature: string) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm">
+                      <li
+                        key={feature}
+                        className="flex items-center gap-2 text-sm"
+                      >
                         <CheckCircle className="h-4 w-4 text-green-500" />
                         {feature}
                       </li>
@@ -117,10 +166,18 @@ export default function CustomerSlaPage() {
                   </ul>
                   <Button
                     className="w-full"
-                    onClick={() => subscribeMutation.mutate({ planId: plan.id })}
-                    disabled={subscribeMutation.isPending || summary?.data?.slaActive}
+                    onClick={() =>
+                      subscribeMutation.mutate({ planId: plan.id })
+                    }
+                    disabled={
+                      subscribeMutation.isPending || summary?.data?.slaActive
+                    }
                   >
-                    {subscribeMutation.isPending ? "Subscribing..." : summary?.data?.slaActive ? "Already Subscribed" : "Subscribe Now"}
+                    {subscribeMutation.isPending
+                      ? "Subscribing..."
+                      : summary?.data?.slaActive
+                        ? "Already Subscribed"
+                        : "Subscribe Now"}
                   </Button>
                 </div>
               ))}
@@ -139,12 +196,26 @@ export default function CustomerSlaPage() {
         </CardHeader>
         <CardContent>
           <ul className="grid md:grid-cols-2 gap-4 text-sm text-amber-700">
-            <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4" /> Priority outage restoration (4-hour SLA)</li>
-            <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4" /> Dedicated support line</li>
-            <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4" /> Monthly priority restoration credits</li>
-            <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4" /> Real-time outage notifications</li>
-            <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4" /> Quarterly grid health reports</li>
-            <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4" /> Discounted emergency services</li>
+            <li className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" /> Priority outage restoration
+              (4-hour SLA)
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" /> Dedicated support line
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" /> Monthly priority restoration
+              credits
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" /> Real-time outage notifications
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" /> Quarterly grid health reports
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" /> Discounted emergency services
+            </li>
           </ul>
         </CardContent>
       </Card>

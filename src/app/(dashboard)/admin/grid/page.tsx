@@ -5,9 +5,25 @@ import { useZones, useSubstations, useFeeders, useAreas } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, GitBranch, Zap, MapPin, Loader2, Search, Edit, Trash2 } from "lucide-react";
+import {
+  PlusCircle,
+  GitBranch,
+  Zap,
+  MapPin,
+  Loader2,
+  Search,
+  Edit,
+  Trash2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -31,7 +47,8 @@ export default function AdminGridPage() {
     );
   }
 
-  const loading = zonesLoading || substationsLoading || feedersLoading || areasLoading;
+  const loading =
+    zonesLoading || substationsLoading || feedersLoading || areasLoading;
 
   const renderZonesTable = () => (
     <Table>
@@ -53,7 +70,12 @@ export default function AdminGridPage() {
           </TableRow>
         ) : !zones?.data || zones.data.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No zones found</TableCell>
+            <TableCell
+              colSpan={5}
+              className="text-center py-8 text-muted-foreground"
+            >
+              No zones found
+            </TableCell>
           </TableRow>
         ) : (
           zones.data.map((zone) => (
@@ -67,7 +89,9 @@ export default function AdminGridPage() {
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
-                <Button variant="ghost" size="sm">View</Button>
+                <Button variant="ghost" size="sm">
+                  View
+                </Button>
                 <Button variant="ghost" size="sm">
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -103,7 +127,12 @@ export default function AdminGridPage() {
           </TableRow>
         ) : !substations?.data || substations.data.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No substations found</TableCell>
+            <TableCell
+              colSpan={6}
+              className="text-center py-8 text-muted-foreground"
+            >
+              No substations found
+            </TableCell>
           </TableRow>
         ) : (
           substations.data.map((sub) => (
@@ -118,7 +147,9 @@ export default function AdminGridPage() {
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
-                <Button variant="ghost" size="sm">View</Button>
+                <Button variant="ghost" size="sm">
+                  View
+                </Button>
                 <Button variant="ghost" size="sm">
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -155,7 +186,12 @@ export default function AdminGridPage() {
           </TableRow>
         ) : !feeders?.data || feeders.data.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">No feeders found</TableCell>
+            <TableCell
+              colSpan={7}
+              className="text-center py-8 text-muted-foreground"
+            >
+              No feeders found
+            </TableCell>
           </TableRow>
         ) : (
           feeders.data.map((feeder) => (
@@ -171,7 +207,9 @@ export default function AdminGridPage() {
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
-                <Button variant="ghost" size="sm">View</Button>
+                <Button variant="ghost" size="sm">
+                  View
+                </Button>
                 <Button variant="ghost" size="sm">
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -207,7 +245,12 @@ export default function AdminGridPage() {
           </TableRow>
         ) : !areas?.data || areas.data.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No areas found</TableCell>
+            <TableCell
+              colSpan={6}
+              className="text-center py-8 text-muted-foreground"
+            >
+              No areas found
+            </TableCell>
           </TableRow>
         ) : (
           areas.data.map((area) => (
@@ -222,7 +265,9 @@ export default function AdminGridPage() {
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
-                <Button variant="ghost" size="sm">View</Button>
+                <Button variant="ghost" size="sm">
+                  View
+                </Button>
                 <Button variant="ghost" size="sm">
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -245,7 +290,9 @@ export default function AdminGridPage() {
             <GitBranch className="h-8 w-8 text-primary" />
             Grid Management
           </h1>
-          <p className="text-muted-foreground mt-1">Manage grid hierarchy: Zones → Substations → Feeders → Areas</p>
+          <p className="text-muted-foreground mt-1">
+            Manage grid hierarchy: Zones → Substations → Feeders → Areas
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
@@ -261,7 +308,11 @@ export default function AdminGridPage() {
 
       <Card>
         <CardHeader>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="zones">
                 <Zap className="h-4 w-4 mr-2" />

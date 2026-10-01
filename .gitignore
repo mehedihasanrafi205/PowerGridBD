@@ -41,4 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 requirements.md
-AGENTS.md
+
+/docs

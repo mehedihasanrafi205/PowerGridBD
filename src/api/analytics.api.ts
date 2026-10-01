@@ -54,5 +54,7 @@ export const getAuditLogs = (params?: AuditLogFilters) => {
   if (params?.limit) searchParams.append("limit", params.limit.toString());
   if (params?.sortBy) searchParams.append("sortBy", params.sortBy);
   if (params?.sortOrder) searchParams.append("sortOrder", params.sortOrder);
-  return apiClient<AuditLogResponse>(`/analytics/audit-logs?${searchParams.toString()}`);
+  return apiClient<AuditLogResponse>(
+    `/analytics/audit-logs?${searchParams.toString()}`,
+  );
 };

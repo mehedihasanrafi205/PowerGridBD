@@ -1,10 +1,10 @@
-export type OutageStatus = 
-  | "PENDING" 
-  | "ASSIGNED" 
-  | "IN_PROGRESS" 
-  | "RESOLVED" 
-  | "RESTORED" 
-  | "CANCELLED" 
+export type OutageStatus =
+  | "PENDING"
+  | "ASSIGNED"
+  | "IN_PROGRESS"
+  | "RESOLVED"
+  | "RESTORED"
+  | "CANCELLED"
   | "FAILED";
 
 export interface OutagePayload {

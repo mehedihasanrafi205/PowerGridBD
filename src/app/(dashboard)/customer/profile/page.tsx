@@ -8,7 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { User, Mail, Phone, MapPin, Camera, Save, Loader2, AlertCircle } from "lucide-react";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Camera,
+  Save,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -23,7 +32,8 @@ export default function CustomerProfilePage() {
   const updateProfileMutation = useUpdateProfile();
   const updateImageMutation = useUpdateProfileImage();
 
-  const isLoading = updateProfileMutation.isPending || updateImageMutation.isPending;
+  const isLoading =
+    updateProfileMutation.isPending || updateImageMutation.isPending;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -37,7 +47,9 @@ export default function CustomerProfilePage() {
   };
 
   const handleImageUpload = async () => {
-    const input = document.getElementById("profile-image-upload") as HTMLInputElement;
+    const input = document.getElementById(
+      "profile-image-upload",
+    ) as HTMLInputElement;
     const file = input?.files?.[0];
     if (!file) return;
 
@@ -84,7 +96,9 @@ export default function CustomerProfilePage() {
           <User className="h-8 w-8 text-primary" />
           Profile Settings
         </h1>
-        <p className="text-muted-foreground mt-1">Manage your account information and preferences</p>
+        <p className="text-muted-foreground mt-1">
+          Manage your account information and preferences
+        </p>
       </div>
 
       <Card>
@@ -97,7 +111,10 @@ export default function CustomerProfilePage() {
         <CardContent>
           <div className="flex items-center gap-6">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={previewImage || user?.profileImage || ""} alt={user?.name || ""} />
+              <AvatarImage
+                src={previewImage || user?.profileImage || ""}
+                alt={user?.name || ""}
+              />
               <AvatarFallback className="text-2xl font-medium">
                 {user?.name?.charAt(0).toUpperCase()}
               </AvatarFallback>
@@ -106,10 +123,18 @@ export default function CustomerProfilePage() {
               <p className="font-medium">{user?.name}</p>
               <p className="text-sm text-muted-foreground">{user?.email}</p>
               <div className="mt-4 flex items-center gap-4">
-                <label htmlFor="profile-image-upload" className="cursor-pointer">
-                  <Button variant="outline" disabled={updateImageMutation.isPending}>
+                <label
+                  htmlFor="profile-image-upload"
+                  className="cursor-pointer"
+                >
+                  <Button
+                    variant="outline"
+                    disabled={updateImageMutation.isPending}
+                  >
                     <Camera className="h-4 w-4 mr-2" />
-                    {updateImageMutation.isPending ? "Uploading..." : "Change Photo"}
+                    {updateImageMutation.isPending
+                      ? "Uploading..."
+                      : "Change Photo"}
                   </Button>
                   <input
                     id="profile-image-upload"
@@ -120,13 +145,19 @@ export default function CustomerProfilePage() {
                   />
                 </label>
                 {previewImage && (
-                  <Button variant="default" onClick={handleImageUpload} disabled={updateImageMutation.isPending}>
+                  <Button
+                    variant="default"
+                    onClick={handleImageUpload}
+                    disabled={updateImageMutation.isPending}
+                  >
                     <Save className="h-4 w-4 mr-2" />
                     Save Changes
                   </Button>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground mt-2">Max 5MB • JPG, PNG</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                Max 5MB • JPG, PNG
+              </p>
             </div>
           </div>
         </CardContent>
@@ -189,7 +220,11 @@ export default function CustomerProfilePage() {
           </CardContent>
           <CardContent className="pt-0">
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <Save className="h-4 w-4 mr-2" />
+              )}
               {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </CardContent>
@@ -207,7 +242,8 @@ export default function CustomerProfilePage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
-            Once you delete your account, there is no going back. Please be certain.
+            Once you delete your account, there is no going back. Please be
+            certain.
           </p>
           <Button variant="destructive" className="w-full">
             Delete Account

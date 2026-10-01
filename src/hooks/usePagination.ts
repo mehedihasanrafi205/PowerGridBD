@@ -24,7 +24,8 @@ export function usePagination(options: PaginationOptions = {}) {
   const page = Number(searchParams.get("page")) || defaultPage;
   const limit = Number(searchParams.get("limit")) || defaultLimit;
   const sortBy = searchParams.get("sortBy") || defaultSortBy;
-  const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || defaultSortOrder;
+  const sortOrder =
+    (searchParams.get("sortOrder") as "asc" | "desc") || defaultSortOrder;
 
   const createQueryString = useCallback(
     (params: Record<string, string | number | undefined>) => {
@@ -38,7 +39,7 @@ export function usePagination(options: PaginationOptions = {}) {
       });
       return newParams.toString();
     },
-    [searchParams]
+    [searchParams],
   );
 
   const setPage = useCallback(
@@ -46,7 +47,7 @@ export function usePagination(options: PaginationOptions = {}) {
       const queryString = createQueryString({ page: newPage });
       router.push(`?${queryString}`, { scroll: false });
     },
-    [createQueryString, router]
+    [createQueryString, router],
   );
 
   const setLimit = useCallback(
@@ -54,16 +55,22 @@ export function usePagination(options: PaginationOptions = {}) {
       const queryString = createQueryString({ limit: newLimit, page: 1 });
       router.push(`?${queryString}`, { scroll: false });
     },
-    [createQueryString, router]
+    [createQueryString, router],
   );
 
   const setSort = useCallback(
     (newSortBy: string, newSortOrder?: "asc" | "desc") => {
-      const order = newSortOrder || (sortBy === sortBy && sortOrder === "asc" ? "desc" : "asc");
-      const queryString = createQueryString({ sortBy: newSortBy, sortOrder: order, page: 1 });
+      const order =
+        newSortOrder ||
+        (sortBy === sortBy && sortOrder === "asc" ? "desc" : "asc");
+      const queryString = createQueryString({
+        sortBy: newSortBy,
+        sortOrder: order,
+        page: 1,
+      });
       router.push(`?${queryString}`, { scroll: false });
     },
-    [createQueryString, router, sortBy, sortOrder]
+    [createQueryString, router, sortBy, sortOrder],
   );
 
   const setFilters = useCallback(
@@ -71,7 +78,7 @@ export function usePagination(options: PaginationOptions = {}) {
       const queryString = createQueryString({ ...filters, page: 1 });
       router.push(`?${queryString}`, { scroll: false });
     },
-    [createQueryString, router]
+    [createQueryString, router],
   );
 
   return {
