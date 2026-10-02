@@ -138,7 +138,7 @@ export default function CustomerOutagesPage() {
         </td>
         <td className="px-4 py-3">
           <Link
-            href={`/customer/outage/${outage.id}`}
+            href={`/customer/outage?id=${outage.id}`}
             className="text-sm text-primary hover:underline"
           >
             View

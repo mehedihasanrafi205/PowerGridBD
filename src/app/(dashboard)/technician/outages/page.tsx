@@ -238,7 +238,7 @@ export default function TechnicianOutagesPage() {
                           </TableCell>
                           <TableCell className="text-right">
                             <Link
-                              href={`/technician/outage/${outage.id}`}
+                              href={`/technician/outage?id=${outage.id}`}
                               className="text-sm text-primary hover:underline font-medium"
                             >
                               {outage.status === "ASSIGNED"

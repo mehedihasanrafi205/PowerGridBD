@@ -152,7 +152,7 @@ export default function TechnicianDashboard() {
                     </Badge>
                   )}
                   <Link
-                    href={`/technician/outage/${outage.id}`}
+                    href={`/technician/outage?id=${outage.id}`}
                     className="text-sm text-primary hover:underline"
                   >
                     {outage.status === "ASSIGNED" ? "Start Work" : "Continue"}

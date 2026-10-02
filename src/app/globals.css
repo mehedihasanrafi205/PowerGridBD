@@ -211,58 +211,98 @@
 
   /* Status Badge Utilities - Using CSS variables with opacity */
   .badge-pending {
-    background-color: var(--color-amber / 0.1);
+    background-color: color-mix(in oklab, var(--color-amber) 10%, transparent);
     color: var(--color-amber);
-    border-color: var(--color-amber / 0.2);
+    border-color: color-mix(in oklab, var(--color-amber) 20%, transparent);
   }
   .badge-active {
-    background-color: var(--color-electric-blue / 0.1);
+    background-color: color-mix(
+      in oklab,
+      var(--color-electric-blue) 10%,
+      transparent
+    );
     color: var(--color-electric-blue);
-    border-color: var(--color-electric-blue / 0.2);
+    border-color: color-mix(
+      in oklab,
+      var(--color-electric-blue) 20%,
+      transparent
+    );
   }
   .badge-assigned {
-    background-color: var(--color-smart-teal / 0.1);
+    background-color: color-mix(
+      in oklab,
+      var(--color-smart-teal) 10%,
+      transparent
+    );
     color: var(--color-smart-teal);
-    border-color: var(--color-smart-teal / 0.2);
+    border-color: color-mix(in oklab, var(--color-smart-teal) 20%, transparent);
   }
   .badge-in-progress {
-    background-color: var(--color-electric-blue / 0.1);
+    background-color: color-mix(
+      in oklab,
+      var(--color-electric-blue) 10%,
+      transparent
+    );
     color: var(--color-electric-blue);
-    border-color: var(--color-electric-blue / 0.2);
+    border-color: color-mix(
+      in oklab,
+      var(--color-electric-blue) 20%,
+      transparent
+    );
   }
   .badge-resolved {
-    background-color: var(--color-emerald / 0.1);
+    background-color: color-mix(
+      in oklab,
+      var(--color-emerald) 10%,
+      transparent
+    );
     color: var(--color-emerald);
-    border-color: var(--color-emerald / 0.2);
+    border-color: color-mix(in oklab, var(--color-emerald) 20%, transparent);
   }
   .badge-restored {
-    background-color: var(--color-emerald / 0.1);
+    background-color: color-mix(
+      in oklab,
+      var(--color-emerald) 10%,
+      transparent
+    );
     color: var(--color-emerald);
-    border-color: var(--color-emerald / 0.2);
+    border-color: color-mix(in oklab, var(--color-emerald) 20%, transparent);
   }
   .badge-failed {
-    background-color: var(--destructive / 0.1);
+    background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
     color: var(--destructive);
-    border-color: var(--destructive / 0.2);
+    border-color: color-mix(in oklab, var(--destructive) 20%, transparent);
   }
   .badge-cancelled {
-    background-color: var(--muted / 0.5);
+    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
     color: var(--muted-foreground);
-    border-color: var(--muted / 0.3);
+    border-color: color-mix(in oklab, var(--muted) 30%, transparent);
   }
   .badge-warning {
-    background-color: var(--color-amber / 0.1);
+    background-color: color-mix(in oklab, var(--color-amber) 10%, transparent);
     color: var(--color-amber);
-    border-color: var(--color-amber / 0.2);
+    border-color: color-mix(in oklab, var(--color-amber) 20%, transparent);
   }
   .badge-critical {
-    background-color: var(--color-electric-blue / 0.1);
+    background-color: color-mix(
+      in oklab,
+      var(--color-electric-blue) 10%,
+      transparent
+    );
     color: var(--color-electric-blue);
-    border-color: var(--color-electric-blue / 0.2);
+    border-color: color-mix(
+      in oklab,
+      var(--color-electric-blue) 20%,
+      transparent
+    );
   }
   .badge-success {
-    background-color: var(--color-emerald / 0.1);
+    background-color: color-mix(
+      in oklab,
+      var(--color-emerald) 10%,
+      transparent
+    );
     color: var(--color-emerald);
-    border-color: var(--color-emerald / 0.2);
+    border-color: color-mix(in oklab, var(--color-emerald) 20%, transparent);
   }
 }

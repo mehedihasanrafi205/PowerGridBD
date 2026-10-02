@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/hooks";
 import { useOutage } from "@/hooks";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function CustomerOutageDetailPage() {
-  const params = useParams();
-  const outageId = params.id as string;
+  const searchParams = useSearchParams();
+  const outageId = searchParams.get("id") ?? "";
   const { user, isLoading: authLoading } = useAuth();
   const { data: outage, isLoading, error } = useOutage(outageId);
   const [activeTab, setActiveTab] = useState("details");

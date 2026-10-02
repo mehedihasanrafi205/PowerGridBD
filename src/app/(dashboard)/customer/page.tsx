@@ -199,7 +199,7 @@ export default function CustomerDashboard() {
                       </Badge>
                     )}
                     <Link
-                      href={`/customer/outage/${outage.id}`}
+                      href={`/customer/outage?id=${outage.id}`}
                       className="text-sm text-primary hover:underline"
                     >
                       View Details
