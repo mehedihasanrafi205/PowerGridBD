@@ -27,18 +27,18 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Commands
 ```bash
 bun dev          # dev server (Turbopack)
-bun build        # static export to /out
-bun start        # serve static export
+bun build        # production build (SSR + static pages)
+bun start        # serve production build
 bun lint         # biome check
 bun format       # biome format --write
 ```
 
 ## Key Config
-- `output: "export"` in `next.config.ts` — produces static site in `/out`
-- `reactCompiler: true` — automatic memoization, no `useMemo`/`useCallback` needed
+- `reactCompiler: true` in `next.config.ts` — automatic memoization, no `useMemo`/`useCallback` needed
 - Path alias `@/*` → `./src/*` (tsconfig + components.json)
 - CSS variables for all colors (globals.css) — dark mode via `.dark` class
 - `NEXT_PUBLIC_BASE_URL` env var for API base URL
+- **No `output: "export"`** — SSR enabled for dynamic routes; static pages prerendered
 
 ## Architecture
 - **Route groups**: `(public)` for auth pages, `(dashboard)` for role-based dashboards
@@ -49,14 +49,14 @@ bun format       # biome format --write
   - `(dashboard)/admin/*` — Admin console (users, payments, audit logs)
 - **API + Hooks pattern**: `src/api/*.api.ts` modules + `src/hooks/*.hook.ts` (TanStack Query)
 - **Types**: Centralized in `src/types/` with barrel export at `src/types/index.ts`
-- **Providers**: `AuthProvider`, `QueryProvider`, composed in `Providers` at `src/providers/index.tsx`
+- **Providers**: `AuthProvider` (with embedded QueryClient), composed in `Providers` at `src/providers/index.tsx`
 
 ## Conventions
 - **No `useMemo`/`useCallback`** — React Compiler handles it
 - **Class merging** — use `cn()` from `@/lib/utils` (re-exports `cn` package)
 - **Components** — colocate in `src/components/ui/` for shadcn components
 - **Fonts** — Geist Sans/Mono + Inter loaded via `next/font` in layout.tsx
-- **Images** — use `next/image` (configured for static export)
+- **Images** — use `next/image` (configured for SSR)
 - **Role checks** — use `useAuth()` hook, check `user.role` for conditional rendering
 - **API calls** — use `api.get/post/put/patch/delete` from `@/lib/apiClient`
 - **Type files** — use `.type.ts` suffix for type definitions (e.g., `outage.type.ts`)
@@ -65,15 +65,26 @@ bun format       # biome format --write
 ## Gotchas
 - `node_modules` + `.next` + `out` are ignored by Biome
 - `sharp` and `unrs-resolver` are trusted deps with ignored scripts
-- Static export means no API routes, no server components with dynamic data
+- **No `output: "export"`** — SSR enabled; dynamic routes render on demand
 - CSS uses `@import "tailwindcss"` (v4 syntax), not `@tailwind base/components/utilities`
 - **CSS warnings**: `var(--color-xxx / 0.1)` syntax produces warnings but doesn't block build
 - **TypeScript strict**: `noImplicitAny: true`, `alwaysStrict: true` — must type everything
 - **No `baseUrl` in tsconfig** — deprecated in TS 5.0+, use only `paths`
 - **Static export + Auth**: `AuthProvider` creates its own `QueryClient` to avoid "No QueryClient set" during static generation
-- **Operator analytics page**: Previously corrupted during write (shell escaping); use Node.js script or base64 to write large files
-- **File write truncation**: Here-documents with shell can truncate large TSX files; prefer Node.js `fs.writeFileSync` or base64 encoding
 - **Filter types**: Hook filters use strict union types (`Role`, `OutageStatus`, `ApplicationStatus`) — cast when passing string values from URL params
+- **Dynamic routes**: `/customer/outage/[id]` and `/technician/outage/[id]` are server-rendered (Dynamic); use `generateStaticParams` returning `[{id: "1"}]` for build to pass
+- **AuthProvider**: Creates its own `QueryClient` to avoid "No QueryClient set" during static generation
+
+## File Write Best Practice
+For large TSX files (>5KB), avoid shell here-documents. Use:
+```bash
+node -e "
+const fs = require('fs');
+const content = \`...entire file content...\`;
+fs.writeFileSync('path/to/file.tsx', content);
+"
+```
+Or write via Python with proper encoding.
 
 ## UI Components (shadcn/ui)
 All components in `src/components/ui/` — installed via `bunx --bun shadcn@latest add <component>`
@@ -94,11 +105,6 @@ Key components: `button`, `input`, `textarea`, `select`, `dialog`, `dropdown-men
 - `CustomerSummary` includes optional: `slaActive`, `slaExpiryDate`
 - `TechnicianSummary` includes optional: `firstTimeFixRate`
 - Hook filters use strict union types (`Role`, `OutageStatus`, `ApplicationStatus`) — cast when passing string values
-
-## Current Blocker (as of 2026-10-02)
-- `src/app/(dashboard)/operator/analytics/page.tsx` is truncated (8KB vs expected ~15KB)
-- Shell here-documents truncate large TSX files due to escaping issues
-- Fix: Write complete file using Node.js `fs.writeFileSync` or base64 encoding
 
 ## File Write Best Practice
 For large TSX files (>5KB), avoid shell here-documents. Use:
