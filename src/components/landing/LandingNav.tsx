@@ -7,21 +7,24 @@ import { Button } from "@/components/ui/button";
 
 export function LandingNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState<Date | null>(null);
 
-  // Live clock
+  // Live clock — starts after mount to avoid hydration mismatch on static export
   useEffect(() => {
+    setTime(new Date());
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (date: Date) =>
-    date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
+  const formatTime = (date: Date | null) =>
+    date
+      ? date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        })
+      : "00:00:00";
 
   const navLinks = [
     { href: "/#platform", label: "Platform" },
