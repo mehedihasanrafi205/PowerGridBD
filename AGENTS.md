@@ -100,19 +100,18 @@ Key components: `button`, `input`, `textarea`, `select`, `dialog`, `dropdown-men
 - Role-based dashboards with analytics
 - Audit logs (admin only)
 
+## Landing Page & Public Site
+- Public pages: `/` (landing), `/about`, `/services`, `/contact`, `/pricing` — Server Components with full metadata
+- Landing components in `src/components/landing/` (LandingNav, LiveStatusStrip, HeroCockpit, FeaturePanels, RoleShowcase, OperationsTable, PricingSection, LandingFooter, SectionHeading)
+- Brand colors registered in `@theme inline` in globals.css — opacity modifiers (`bg-electric-blue/10`) work natively
+- `font-mono` utility resolves to JetBrains Mono (loaded in layout.tsx); Inter is `font-sans`
+- Landing pages are always dark (explicit zinc/white classes, not theme-dependent `text-foreground`)
+- LiveStatusStrip + OperationsTable fetch real data via TanStack Query only when authenticated; anonymous visitors see an honest sign-in prompt (no mock data)
+- Scroll animations: `useReveal` hook (IntersectionObserver) + CSS keyframes — no animation library
+- Contact form is Zod-validated and composes a `mailto:` link (no backend contact endpoint exists)
+
 ## Type Safety Notes
 - `OperationalAnalytics` includes optional fields: `totalUsers`, `criticalFeeders`, `mttr`, `avgAssignmentTime`, `firstTimeFixRate`
 - `CustomerSummary` includes optional: `slaActive`, `slaExpiryDate`
 - `TechnicianSummary` includes optional: `firstTimeFixRate`
 - Hook filters use strict union types (`Role`, `OutageStatus`, `ApplicationStatus`) — cast when passing string values
-
-## File Write Best Practice
-For large TSX files (>5KB), avoid shell here-documents. Use:
-```bash
-node -e "
-const fs = require('fs');
-const content = \`...entire file content...\`;
-fs.writeFileSync('path/to/file.tsx', content);
-"
-```
-Or write via Python with proper encoding.
