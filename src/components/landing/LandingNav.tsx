@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock, Menu, Wifi, X, Zap } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -43,25 +44,14 @@ export function LandingNav() {
             className="flex items-center gap-2"
             aria-label="PowerGridBD Home"
           >
-            <svg
-              className="h-8 w-8 text-white"
-              viewBox="0 0 32 32"
-              fill="none"
-              aria-hidden="true"
-            >
-              <rect
-                width="32"
-                height="32"
-                rx="6"
-                className="fill-electric-blue"
-              />
-              <path
-                d="M16 6L16 26M6 16H26"
-                stroke="white"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-            </svg>
+            <Image
+              src="/logo.svg"
+              alt="PowerGridBD logo"
+              width={750}
+              height={750}
+              className="h-8 w-8"
+              priority
+            />
             <span className="text-xl font-bold text-white hidden sm:block">
               PowerGridBD
             </span>
