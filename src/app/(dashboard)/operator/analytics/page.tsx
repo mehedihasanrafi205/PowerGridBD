@@ -1,24 +1,25 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import {
-  useOperationalAnalytics,
-  usePerformanceAnalytics,
-  useGeographicalAnalytics,
-  useTrendsAnalytics,
-} from "@/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   AlertTriangle,
-  Users,
-  Clock,
-  TrendingUp,
   BarChart3,
-  MapPin,
+  Clock,
   Loader2,
+  MapPin,
   Target,
+  TrendingUp,
+  Users,
 } from "lucide-react";
+import { SimpleHorizontalBarChart, SimpleLineChart } from "@/components/charts";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  useAuth,
+  useGeographicalAnalytics,
+  useOperationalAnalytics,
+  usePerformanceAnalytics,
+  useTrendsAnalytics,
+} from "@/hooks";
 import { cn } from "@/lib/utils";
 
 export default function OperatorAnalyticsPage() {
@@ -60,6 +61,38 @@ export default function OperatorAnalyticsPage() {
   const p = performance?.data;
   const g = geographical?.data;
   const t = trends?.data;
+
+  // Prepare chart data
+  const dailyOutageData =
+    t?.dailyOutages?.slice(-30).map((day: any) => ({
+      date: day.date,
+      count: day.count,
+    })) || [];
+
+  const peakHoursData =
+    t?.peakLoadSheddingHours?.map((hour: any) => ({
+      name: `${hour.hour}:00`,
+      value: hour.count,
+    })) || [];
+
+  const outageByAreaData =
+    g?.outageByArea?.slice(0, 10).map((area: any) => ({
+      name: area.areaName,
+      value: area.outageCount,
+    })) || [];
+
+  const topFeedersData =
+    g?.topWorstFeeders?.slice(0, 10).map((feeder: any) => ({
+      name: feeder.feederName,
+      value: feeder.outageCount,
+    })) || [];
+
+  const technicianWorkloadData =
+    p?.technicianWorkload?.map((tech: any) => ({
+      name: tech.technicianName,
+      assigned: tech.assignedCount,
+      resolved: tech.resolvedCount,
+    })) || [];
 
   return (
     <div className="container mx-auto py-8">
@@ -172,7 +205,7 @@ export default function OperatorAnalyticsPage() {
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                Target: {"<"} 24h
+                Target: &lt; 24h
               </p>
             </div>
 
@@ -194,7 +227,7 @@ export default function OperatorAnalyticsPage() {
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                Target: {"<"} 4h
+                Target: &lt; 4h
               </p>
             </div>
 
@@ -214,7 +247,7 @@ export default function OperatorAnalyticsPage() {
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                Target: {">"} 90%
+                Target: &gt; 90%
               </p>
             </div>
           </CardContent>
@@ -228,32 +261,17 @@ export default function OperatorAnalyticsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {p?.technicianWorkload && p.technicianWorkload.length > 0 ? (
-              <div className="space-y-4">
-                {p.technicianWorkload.map((tech: any) => (
-                  <div key={tech.technicianId} className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="font-medium">{tech.technicianName}</span>
-                      <span className="text-muted-foreground">
-                        {tech.assignedCount} assigned / {tech.resolvedCount}{" "}
-                        resolved
-                      </span>
-                    </div>
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary rounded-full transition-all"
-                        style={{
-                          width: `${Math.min((tech.assignedCount / 10) * 100, 100)}%`,
-                        }}
-                      />
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Avg resolution: {tech.avgResolutionTime}h | Fix rate:{" "}
-                      {tech.firstTimeFixRate.toFixed(1)}%
-                    </p>
-                  </div>
-                ))}
-              </div>
+            {technicianWorkloadData.length > 0 ? (
+              <SimpleHorizontalBarChart
+                data={technicianWorkloadData.map((t) => ({
+                  name: t.name,
+                  value: t.assigned,
+                }))}
+                dataKey="value"
+                nameKey="name"
+                height={Math.max(technicianWorkloadData.length * 35, 200)}
+                color="hsl(var(--primary))"
+              />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
                 <Users className="h-12 w-12 mx-auto text-gray-400 mb-3" />
@@ -274,23 +292,14 @@ export default function OperatorAnalyticsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {g?.outageByArea && g.outageByArea.length > 0 ? (
-              <div className="space-y-3">
-                {g.outageByArea.slice(0, 10).map((area: any) => (
-                  <div
-                    key={area.areaId}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-primary" />
-                      <span className="text-sm font-medium">
-                        {area.areaName}
-                      </span>
-                    </div>
-                    <Badge variant="secondary">{area.outageCount}</Badge>
-                  </div>
-                ))}
-              </div>
+            {outageByAreaData.length > 0 ? (
+              <SimpleHorizontalBarChart
+                data={outageByAreaData}
+                dataKey="value"
+                nameKey="name"
+                height={Math.max(outageByAreaData.length * 35, 200)}
+                color="hsl(var(--primary))"
+              />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
                 <MapPin className="h-12 w-12 mx-auto text-gray-400 mb-3" />
@@ -308,23 +317,14 @@ export default function OperatorAnalyticsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {g?.topWorstFeeders && g.topWorstFeeders.length > 0 ? (
-              <div className="space-y-3">
-                {g.topWorstFeeders.slice(0, 10).map((feeder: any) => (
-                  <div
-                    key={feeder.feederId}
-                    className="flex items-center justify-between p-3 bg-red-50 rounded-lg"
-                  >
-                    <div>
-                      <p className="font-medium">{feeder.feederName}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {feeder.outageCount} outages
-                      </p>
-                    </div>
-                    <Badge variant="destructive">Critical</Badge>
-                  </div>
-                ))}
-              </div>
+            {topFeedersData.length > 0 ? (
+              <SimpleHorizontalBarChart
+                data={topFeedersData}
+                dataKey="value"
+                nameKey="name"
+                height={Math.max(topFeedersData.length * 35, 200)}
+                color="hsl(var(--destructive))"
+              />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
                 <Target className="h-12 w-12 mx-auto text-gray-400 mb-3" />
@@ -345,32 +345,31 @@ export default function OperatorAnalyticsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64 flex items-end justify-around gap-1 p-4">
-              {t?.dailyOutages?.slice(-30).map((day: any, i) => (
-                <div
-                  key={day.date}
-                  className="flex-1 flex flex-col items-center"
-                >
-                  <div
-                    className="w-full bg-primary rounded-t transition-all hover:bg-primary/80"
-                    style={{
-                      height: `${Math.max(day.count / Math.max(...t.dailyOutages.map((d: any) => d.count), 1)) * 80}%`,
-                    }}
-                  />
-                  <span className="text-xs text-muted-foreground mt-1">
-                    {i % 5 === 0 ? day.date : ""}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <p className="text-center text-sm text-muted-foreground mt-4">
-              Total:{" "}
-              {t?.dailyOutages?.reduce(
-                (sum: number, d: any) => sum + d.count,
-                0,
-              ) || 0}{" "}
-              outages
-            </p>
+            {dailyOutageData.length > 0 ? (
+              <>
+                <SimpleLineChart
+                  data={dailyOutageData}
+                  dataKey="count"
+                  nameKey="date"
+                  height={250}
+                  color="hsl(var(--primary))"
+                  showArea={true}
+                />
+                <p className="text-center text-sm text-muted-foreground mt-4">
+                  Total:{" "}
+                  {t?.dailyOutages?.reduce(
+                    (sum: number, d: any) => sum + d.count,
+                    0,
+                  ) || 0}{" "}
+                  outages
+                </p>
+              </>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <TrendingUp className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <p>No trend data available</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -382,27 +381,20 @@ export default function OperatorAnalyticsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {t?.peakLoadSheddingHours?.map((hour: any) => (
-                <div
-                  key={hour.hour}
-                  className="flex items-center justify-between"
-                >
-                  <span className="font-medium">{hour.hour}:00</span>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="flex-1 h-4 bg-primary rounded max-w-xs"
-                      style={{
-                        width: `${Math.max(hour.count / Math.max(...t.peakLoadSheddingHours.map((h: any) => h.count), 1)) * 100}%`,
-                      }}
-                    />
-                    <span className="text-sm text-muted-foreground w-10 text-right">
-                      {hour.count}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {peakHoursData.length > 0 ? (
+              <SimpleHorizontalBarChart
+                data={peakHoursData}
+                dataKey="value"
+                nameKey="name"
+                height={Math.max(peakHoursData.length * 35, 300)}
+                color="hsl(var(--secondary))"
+              />
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <Clock className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <p>No load-shedding data available</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
