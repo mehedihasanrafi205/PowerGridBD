@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useReveal } from "@/hooks";
+import { useAuth, useOperationalAnalytics, useReveal } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 const outageStages = [
@@ -48,6 +48,9 @@ const outageStages = [
 
 export function HeroCockpit() {
   const { ref, isVisible } = useReveal({ threshold: 0.1 });
+  const { isAuthenticated } = useAuth();
+  const { data: analytics } = useOperationalAnalytics();
+  const mttr = analytics?.data?.mttr;
 
   return (
     <section className="relative bg-deep-charcoal overflow-hidden">
@@ -274,13 +277,20 @@ export function HeroCockpit() {
               </div>
             </div>
 
-            {/* Floating stat card */}
+            {/* Floating stat card — real MTTR from operational analytics */}
             <div className="absolute -bottom-6 -left-6 rounded-xl border border-zinc-800 bg-zinc-950/90 backdrop-blur-sm px-5 py-4 shadow-xl shadow-black/40 hidden sm:block">
               <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-1">
                 MTTR
               </div>
               <div className="font-mono text-2xl font-bold text-white tabular-nums">
-                2.4<span className="text-sm text-zinc-500">h</span>
+                {isAuthenticated && typeof mttr === "number" ? (
+                  <>
+                    {mttr.toFixed(1)}
+                    <span className="text-sm text-zinc-500">h</span>
+                  </>
+                ) : (
+                  <span className="text-zinc-600">—</span>
+                )}
               </div>
             </div>
           </div>

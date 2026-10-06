@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, Menu, Wifi, X, Zap } from "lucide-react";
+import { Clock, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -69,19 +69,11 @@ export function LandingNav() {
               </Link>
             ))}
 
-            {/* Live Status Indicators */}
+            {/* Live Status Indicator */}
             <div className="flex items-center gap-4 px-4 py-1.5 rounded-full bg-zinc-900/50 border border-zinc-700">
               <div className="flex items-center gap-1.5 text-xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="font-mono text-emerald-400">LIVE</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                <Zap className="h-3.5 w-3.5 text-amber-400" />
-                <span className="font-mono tabular-nums">0</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                <Wifi className="h-3.5 w-3.5 text-smart-teal" />
-                <span className="font-mono tabular-nums">0</span>
               </div>
             </div>
 
