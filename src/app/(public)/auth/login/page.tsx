@@ -87,7 +87,14 @@ export default function LoginPage() {
       const response = await api.post<AuthResponse>("/auth/login", data);
       if (response.success) {
         toast.success("Login successful!");
-        router.push("/");
+        const role = response.data?.user?.role;
+        const roleRoutes: Record<string, string> = {
+          CUSTOMER: "/customer",
+          TECHNICIAN: "/technician",
+          POWER_OPERATOR: "/operator",
+          ADMIN: "/admin",
+        };
+        router.push(role ? roleRoutes[role] : "/");
         router.refresh();
       } else {
         toast.error(response.message || "Login failed");
@@ -112,7 +119,14 @@ export default function LoginPage() {
       });
       if (response.success) {
         toast.success(`Demo login as ${role} successful!`);
-        router.push("/");
+        const userRole = response.data?.user?.role ?? role;
+        const roleRoutes: Record<string, string> = {
+          CUSTOMER: "/customer",
+          TECHNICIAN: "/technician",
+          POWER_OPERATOR: "/operator",
+          ADMIN: "/admin",
+        };
+        router.push(roleRoutes[userRole] ?? "/");
         router.refresh();
       } else {
         toast.error(response.message || "Demo login failed");

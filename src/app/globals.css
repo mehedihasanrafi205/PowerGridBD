@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -39,6 +39,14 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  /* PowerGridBD semantic brand colors (registered so /opacity modifiers work) */
+  --color-deep-charcoal: var(--color-deep-charcoal);
+  --color-electric-blue: var(--color-electric-blue);
+  --color-smart-teal: var(--color-smart-teal);
+  --color-amber: var(--color-amber);
+  --color-emerald: var(--color-emerald);
+  --color-emerald-foreground: oklch(0.09 0.02 240);
+  --color-amber-foreground: oklch(0.09 0.02 240);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -138,8 +146,8 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 
-  /* PowerGridBD Semantic Colors - Dark Mode */
-  --color-deep-charcoal: oklch(0.95 0 0);
+  /* PowerGridBD Semantic Colors - Dark Mode (brand colors stay constant; deep-charcoal stays dark) */
+  --color-deep-charcoal: oklch(0.09 0.02 240);
   --color-electric-blue: oklch(0.58 0.25 264);
   --color-smart-teal: oklch(0.72 0.15 165);
   --color-amber: oklch(0.83 0.18 85);
@@ -178,35 +186,9 @@
 
 /* PowerGridBD Utility Classes */
 @layer utilities {
-  .bg-deep-charcoal {
-    background-color: var(--color-deep-charcoal);
-  }
-  .text-deep-charcoal {
-    color: var(--color-deep-charcoal);
-  }
-  .bg-electric-blue {
-    background-color: var(--color-electric-blue);
-  }
-  .text-electric-blue {
-    color: var(--color-electric-blue);
-  }
-  .bg-smart-teal {
-    background-color: var(--color-smart-teal);
-  }
-  .text-smart-teal {
-    color: var(--color-smart-teal);
-  }
-  .bg-amber {
-    background-color: var(--color-amber);
-  }
-  .text-amber {
-    color: var(--color-amber);
-  }
-  .bg-emerald {
-    background-color: var(--color-emerald);
-  }
-  .text-emerald {
-    color: var(--color-emerald);
+  /* Mobile nav drawer */
+  .animate-slide-down {
+    animation: slide-down 0.25s ease-out;
   }
 
   /* Status Badge Utilities - Using CSS variables with opacity */
@@ -304,5 +286,17 @@
     );
     color: var(--color-emerald);
     border-color: color-mix(in oklab, var(--color-emerald) 20%, transparent);
+  }
+}
+
+/* PowerGridBD keyframes */
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
