@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, stagger } from "framer-motion";
 import { AlertTriangle, Clock, Database, Zap } from "lucide-react";
 import {
   useAuth,
@@ -8,6 +9,7 @@ import {
   useSchedules,
   useZones,
 } from "@/hooks";
+import { easing } from "@/lib/animation";
 import { cn } from "@/lib/utils";
 
 interface StatusItem {
@@ -23,7 +25,6 @@ export function LiveStatusStrip() {
   const { data: outages } = useOutages({ limit: 100 });
   const { data: schedules } = useSchedules({ limit: 100 });
   const { data: zones } = useZones({ limit: 100 });
-
   const { ref, isVisible } = useReveal({ threshold: 0.1 });
 
   const activeOutages =
@@ -72,10 +73,26 @@ export function LiveStatusStrip() {
     },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.08 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: easing.easeOut },
+    },
+  };
+
   if (authLoading) {
     return (
-      <div
+      <motion.div
         ref={ref}
+        initial={false}
+        animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
         className={cn(
           "border-t border-zinc-800 bg-zinc-950/50",
           isVisible ? "opacity-100" : "opacity-0",
@@ -84,24 +101,54 @@ export function LiveStatusStrip() {
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center gap-8 overflow-x-auto pb-2">
             {[1, 2, 3, 4].map((i) => (
-              <div
+              <motion.div
                 key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
                 className="flex items-center gap-2 whitespace-nowrap"
               >
-                <div className="h-4 w-4 rounded animate-pulse bg-zinc-700" />
-                <div className="h-4 w-16 animate-pulse bg-zinc-700 rounded" />
-                <div className="h-4 w-12 animate-pulse bg-zinc-700 rounded" />
-              </div>
+                <motion.div
+                  className="h-4 w-4 rounded bg-zinc-700"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    delay: i * 0.2,
+                  }}
+                />
+                <motion.div
+                  className="h-4 w-16 bg-zinc-700 rounded"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    delay: i * 0.2 + 0.1,
+                  }}
+                />
+                <motion.div
+                  className="h-4 w-12 bg-zinc-700 rounded"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    delay: i * 0.2 + 0.2,
+                  }}
+                />
+              </motion.div>
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <section
+    <motion.section
       ref={ref}
+      initial="hidden"
+      animate={isVisible ? "visible" : "hidden"}
+      variants={containerVariants}
       className={cn(
         "border-t border-zinc-800 bg-zinc-950/50 transition-all duration-500",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
@@ -109,50 +156,71 @@ export function LiveStatusStrip() {
       aria-label="Live system status"
     >
       <div className="container mx-auto px-4 py-3">
-        <div className="flex flex-wrap items-center gap-6 md:gap-10">
-          <div className="flex items-center gap-2 text-xs font-medium text-zinc-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        <motion.div
+          className="flex flex-wrap items-center gap-6 md:gap-10"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
+          <motion.div
+            className="flex items-center gap-2 text-xs font-medium text-zinc-400"
+            variants={itemVariants}
+          >
+            <motion.span
+              className="w-1.5 h-1.5 rounded-full bg-emerald-500"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
             SYSTEM OPERATIONAL
-          </div>
+          </motion.div>
 
           <div className="w-px h-6 bg-zinc-800 md:hidden" />
 
           {statusItems.map((item, index) => (
-            <div
+            <motion.div
               key={item.label}
-              className={cn(
-                "flex items-center gap-2 whitespace-nowrap transition-all duration-300",
-                isVisible && "opacity-100 translate-y-0",
-                !isVisible && "opacity-0 translate-y-2",
-              )}
-              style={{ transitionDelay: `${index * 80}ms` }}
+              variants={itemVariants}
+              className="flex items-center gap-2 whitespace-nowrap"
             >
-              <span className={cn(item.color, "flex-shrink-0")}>
+              <motion.span
+                className={cn(item.color, "flex-shrink-0")}
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: index * 0.3,
+                }}
+              >
                 {item.icon}
-              </span>
-              <div className="flex flex-col">
+              </motion.span>
+              <motion.div className="flex flex-col" variants={itemVariants}>
                 <span className="text-xs text-zinc-500 uppercase tracking-wide">
                   {item.label}
                 </span>
                 <span className="font-mono text-sm font-medium tabular-nums text-white">
                   {item.value}
                 </span>
-              </div>
+              </motion.div>
               {index < statusItems.length - 1 && (
                 <div className="w-px h-6 bg-zinc-800 mx-2 hidden sm:block" />
               )}
-            </div>
+            </motion.div>
           ))}
 
           {!isAuthenticated && (
-            <div className="flex items-center gap-2 ml-auto text-xs text-zinc-500">
+            <motion.div
+              className="flex items-center gap-2 ml-auto text-xs text-zinc-500"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+            >
               <span className="hidden sm:inline">
                 Sign in to view live data
               </span>
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }

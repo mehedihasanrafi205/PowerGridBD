@@ -300,3 +300,155 @@
     transform: translateY(0);
   }
 }
+
+/* GSAP/SCADA Animation Keyframes */
+@keyframes radarScan {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.45;
+  }
+  80% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(600%);
+    opacity: 0;
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px rgba(147, 204, 255, 0.8));
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.9);
+    filter: drop-shadow(0 0 1px rgba(147, 204, 255, 0.2));
+  }
+}
+
+@keyframes transmissionPulse {
+  0% {
+    stroke-dashoffset: 60;
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 6px #00d2ff);
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.4;
+  }
+}
+
+@keyframes liveRingRipple {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.9;
+    box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.5);
+  }
+  70% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 6px rgba(0, 210, 255, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.9;
+    box-shadow: 0 0 0 0 rgba(0, 210, 255, 0);
+  }
+}
+
+/* Interactive Card Hover Lift */
+.interactive-card {
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.25s ease;
+}
+
+.interactive-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px -6px rgba(11, 28, 48, 0.12),
+    0 4px 10px -2px rgba(11, 28, 48, 0.06);
+}
+
+/* Staggered Entrance Animations */
+.fade-in-entry {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: enterView 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes enterView {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.delay-1 {
+  animation-delay: 0.1s;
+}
+.delay-2 {
+  animation-delay: 0.2s;
+}
+.delay-3 {
+  animation-delay: 0.35s;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .grid-scan-beam,
+  .transmission-line-flow,
+  .status-dot-pulse,
+  .badge-ripple,
+  .fade-in-entry {
+    animation: none !important;
+  }
+
+  .interactive-card {
+    transition: none !important;
+  }
+
+  .interactive-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Lenis Smooth Scroll */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}

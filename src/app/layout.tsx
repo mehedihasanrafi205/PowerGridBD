@@ -49,6 +49,7 @@ export default function RootLayout({
         jetbrainsMono.variable,
         "font-sans",
         inter.variable,
+        "scroll-smooth",
       )}
     >
       <Providers>

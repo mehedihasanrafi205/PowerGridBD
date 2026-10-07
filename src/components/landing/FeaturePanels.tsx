@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, type Variants } from "framer-motion";
 import {
   AlertTriangle,
   ArrowUpRight,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useReveal } from "@/hooks";
+import { easing } from "@/lib/animation";
 import { cn } from "@/lib/utils";
 
 interface FeaturePanel {
@@ -97,18 +99,56 @@ const features: FeaturePanel[] = [
   },
 ];
 
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: easing.easeOut },
+  },
+  hover: {
+    y: -8,
+    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.4)",
+    transition: { duration: 0.3, ease: easing.easeOut },
+  },
+};
+
+const iconVariants: Variants = {
+  initial: { scale: 1, transition: { duration: 0.3, ease: easing.easeOut } },
+  hover: {
+    scale: 1.1,
+    rotate: 3,
+    transition: { duration: 0.3, ease: easing.easeOut },
+  },
+};
+
 export function FeaturePanels() {
   const { ref, isVisible } = useReveal({ threshold: 0.05 });
 
   return (
     <section id="platform" className="bg-zinc-950 py-20 lg:py-28">
-      <div ref={ref} className="container mx-auto px-4">
+      <motion.div
+        ref={ref}
+        initial="hidden"
+        animate={isVisible ? "visible" : "hidden"}
+        variants={containerVariants}
+        className="container mx-auto px-4"
+      >
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
           {features.map((feature, index) => (
-            <article
+            <motion.article
               key={feature.title}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
               className={cn(
-                "group relative rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 transition-all duration-500 hover:border-electric-blue/40 hover:bg-zinc-900/60 hover:shadow-xl hover:shadow-black/30",
+                "group relative rounded-xl border border-zinc-800 bg-zinc-900/40 p-6",
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-6",
@@ -116,14 +156,16 @@ export function FeaturePanels() {
               style={{ transitionDelay: `${(index % 3) * 100}ms` }}
             >
               <div className="flex items-start justify-between mb-5">
-                <div
+                <motion.div
                   className={cn(
                     "p-3 rounded-lg bg-zinc-900 border border-zinc-800",
                     feature.iconColor,
                   )}
+                  whileHover="hover"
+                  variants={iconVariants}
                 >
                   {feature.icon}
-                </div>
+                </motion.div>
                 {feature.href && (
                   <Link
                     href={feature.href}
@@ -144,20 +186,26 @@ export function FeaturePanels() {
 
               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-800/80">
                 {feature.metrics.map((metric) => (
-                  <div key={metric.label}>
+                  <motion.div
+                    key={metric.label}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.4 }}
+                    className="text-center"
+                  >
                     <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
                       {metric.label}
                     </div>
                     <div className="font-mono text-sm font-medium text-zinc-200 tabular-nums">
                       {metric.value}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </article>
+            </motion.article>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

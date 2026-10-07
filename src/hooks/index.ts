@@ -10,4 +10,5 @@ export * from "./useDebounce";
 export * from "./useMobile";
 export * from "./usePagination";
 export * from "./useReveal";
+export * from "./useReducedMotion";
 export * from "./user.hook.type";

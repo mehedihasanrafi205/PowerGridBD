@@ -1,9 +1,11 @@
 "use client";
 
+import { motion, Variants } from "framer-motion";
 import { ArrowRight, Gauge, ShieldCheck, User, Wrench } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useReveal } from "@/hooks";
+import { easing } from "@/lib/animation";
 import { cn } from "@/lib/utils";
 
 interface RoleCard {
@@ -84,13 +86,50 @@ const roles: RoleCard[] = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: easing.easeOut },
+  },
+  hover: {
+    y: -6,
+    boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.3)",
+    transition: { duration: 0.3, ease: easing.easeOut },
+  },
+};
+
+const iconVariants = {
+  initial: { scale: 1 },
+  hover: { scale: 1.1, rotate: 5 },
+  transition: { duration: 0.3, ease: easing.easeOut },
+};
+
 export function RoleShowcase() {
   const { ref, isVisible } = useReveal({ threshold: 0.05 });
 
   return (
     <section id="roles" className="bg-deep-charcoal py-20 lg:py-28">
-      <div ref={ref} className="container mx-auto px-4">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+      <motion.div
+        ref={ref}
+        initial="hidden"
+        animate={isVisible ? "visible" : "hidden"}
+        variants={containerVariants}
+        className="container mx-auto px-4"
+      >
+        <motion.div
+          className="text-center max-w-2xl mx-auto mb-14"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 },
+          }}
+        >
           <div className="flex items-center justify-center gap-2 text-xs font-medium tracking-widest uppercase text-smart-teal mb-3">
             <span className="h-0.5 w-12 bg-smart-teal/30" />
             Role-Based Access
@@ -103,14 +142,18 @@ export function RoleShowcase() {
             Every role sees exactly the data and actions it needs — enforced at
             the route level, the UI level, and the API level.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
           {roles.map((role, index) => (
-            <article
+            <motion.article
               key={role.role}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
               className={cn(
-                "group flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 transition-all duration-500 hover:border-zinc-600 hover:bg-zinc-900/60 hover:-translate-y-1",
+                "group flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/40 p-6",
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-6",
@@ -118,15 +161,17 @@ export function RoleShowcase() {
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               <div className="flex items-center justify-between mb-5">
-                <div
+                <motion.div
                   className={cn(
                     "p-3 rounded-lg bg-zinc-900 border",
                     role.border,
                     role.accent,
                   )}
+                  whileHover="hover"
+                  variants={iconVariants}
                 >
                   {role.icon}
-                </div>
+                </motion.div>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
                   {role.role}
                 </span>
@@ -140,9 +185,12 @@ export function RoleShowcase() {
               </p>
 
               <ul className="space-y-2 mb-6 flex-1">
-                {role.capabilities.map((capability) => (
-                  <li
+                {role.capabilities.map((capability, i) => (
+                  <motion.li
                     key={capability}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.05 }}
                     className="flex items-start gap-2 text-sm text-zinc-300"
                   >
                     <span
@@ -152,7 +200,7 @@ export function RoleShowcase() {
                       )}
                     />
                     {capability}
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
 
@@ -168,15 +216,20 @@ export function RoleShowcase() {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-            </article>
+            </motion.article>
           ))}
         </div>
 
-        <p className="text-center text-xs font-mono text-zinc-600 mt-10">
+        <motion.p
+          className="text-center text-xs font-mono text-zinc-600 mt-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+        >
           Demo accounts available on the sign-in page — one click per role, no
           password required.
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
     </section>
   );
 }

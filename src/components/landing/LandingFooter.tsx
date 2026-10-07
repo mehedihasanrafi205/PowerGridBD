@@ -1,72 +1,48 @@
+"use client";
+
+import { motion, type Variants } from "framer-motion";
 import { Activity, ArrowUpRight, GitBranch, Shield, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { easing } from "@/lib/animation";
+import { cn } from "@/lib/utils";
 
-interface FooterLink {
-  label: string;
-  href: string;
-  external?: boolean;
-}
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
 
-interface FooterSection {
-  title: string;
-  links: FooterLink[];
-}
+const columnVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: easing.easeOut },
+  },
+};
 
-const footerSections: FooterSection[] = [
-  {
-    title: "Platform",
-    links: [
-      { label: "Outage Management", href: "/#platform" },
-      { label: "Load-Shedding Scheduler", href: "/#platform" },
-      { label: "Grid Hierarchy", href: "/#platform" },
-      { label: "SLA & Priority", href: "/pricing" },
-    ],
+const linkVariants: Variants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.3, ease: easing.easeOut },
   },
-  {
-    title: "Roles",
-    links: [
-      { label: "Customer Portal", href: "/#roles" },
-      { label: "Technician Portal", href: "/#roles" },
-      { label: "Power Operator", href: "/#roles" },
-      { label: "Admin Console", href: "/#roles" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "About", href: "/about" },
-      { label: "Services", href: "/services" },
-      { label: "Contact", href: "/contact" },
-      { label: "Pricing & FAQ", href: "/pricing" },
-    ],
-  },
-  {
-    title: "Repositories",
-    links: [
-      {
-        label: "Frontend",
-        href: "https://github.com/mehedihasanrafi205/PowerGridBD",
-        external: true,
-      },
-      {
-        label: "Backend",
-        href: "https://github.com/mehedihasanrafi205/PowerGridBD-Backend",
-        external: true,
-      },
-    ],
-  },
-];
+};
 
 export function LandingFooter() {
-  const year = new Date().getFullYear();
-
   return (
     <footer className="bg-zinc-950 border-t border-zinc-800">
-      <div className="container mx-auto px-4 py-14">
+      <motion.div
+        className="container mx-auto px-4 py-14"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={containerVariants}
+      >
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10">
-          {/* Brand */}
-          <div className="col-span-2">
+          {/* Brand Column */}
+          <motion.div className="col-span-2" variants={columnVariants}>
             <Link
               href="/"
               className="flex items-center gap-2 mb-4"
@@ -78,88 +54,231 @@ export function LandingFooter() {
                 width={750}
                 height={750}
                 className="h-8 w-8"
+                loading="lazy"
+                decoding="async"
               />
               <span className="text-xl font-bold text-white">PowerGridBD</span>
             </Link>
             <p className="text-sm text-zinc-400 leading-relaxed mb-6 max-w-xs">
-              Load Shedding &amp; Power Outage Management Platform for
+              Load Shedding & Power Outage Management Platform for
               Bangladesh&apos;s power distribution ecosystem.
             </p>
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 font-mono text-[10px] text-zinc-400">
+              <motion.span
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 font-mono text-[10px] text-zinc-400"
+                whileHover={{ scale: 1.02 }}
+              >
                 <Activity className="h-3 w-3 text-emerald-400" />
                 v1.0
-              </span>
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 font-mono text-[10px] text-zinc-400">
+              </motion.span>
+              <motion.span
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 font-mono text-[10px] text-zinc-400"
+                whileHover={{ scale: 1.02 }}
+              >
                 <Shield className="h-3 w-3 text-smart-teal" />
                 SSLCommerz
-              </span>
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 font-mono text-[10px] text-zinc-400">
+              </motion.span>
+              <motion.span
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 font-mono text-[10px] text-zinc-400"
+                whileHover={{ scale: 1.02 }}
+              >
                 <Zap className="h-3 w-3 text-amber-400" />4 ROLES
-              </span>
+              </motion.span>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Link columns */}
-          {footerSections.map((section) => (
-            <nav key={section.title} aria-label={section.title}>
-              <h3 className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-4">
-                {section.title}
-              </h3>
-              <ul className="space-y-2.5">
-                {section.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      target={link.external ? "_blank" : undefined}
-                      rel={link.external ? "noopener noreferrer" : undefined}
-                      className="text-sm text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1"
-                    >
-                      {link.label}
-                      {link.external && <ArrowUpRight className="h-3 w-3" />}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
-        </div>
-
-        <div className="mt-12 pt-8 border-t border-zinc-800/80 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-zinc-500">
-            © {year} PowerGridBD. All rights reserved.
-          </p>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/#platform"
-              className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+          {/* Platform Column */}
+          <motion.nav variants={columnVariants} aria-label="Platform">
+            <motion.h3
+              className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-4"
+              variants={linkVariants}
             >
               Platform
-            </Link>
-            <Link
-              href="/#roles"
-              className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+            </motion.h3>
+            <motion.ul
+              className="space-y-2.5"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+              }}
+            >
+              {[
+                { href: "/#platform", label: "Outage Management" },
+                { href: "/#platform", label: "Load-Shedding Scheduler" },
+                { href: "/#platform", label: "Grid Hierarchy" },
+                { href: "/pricing", label: "SLA & Priority" },
+              ].map((item) => (
+                <motion.li key={item.href} variants={linkVariants}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1"
+                  >
+                    {item.label}
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </motion.nav>
+
+          {/* Roles Column */}
+          <motion.nav variants={columnVariants} aria-label="Roles">
+            <motion.h3
+              className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-4"
+              variants={linkVariants}
             >
               Roles
-            </Link>
-            <Link
+            </motion.h3>
+            <motion.ul
+              className="space-y-2.5"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+              }}
+            >
+              {[
+                { href: "/#roles", label: "Customer Portal" },
+                { href: "/#roles", label: "Technician Portal" },
+                { href: "/#roles", label: "Power Operator" },
+                { href: "/#roles", label: "Admin Console" },
+              ].map((item) => (
+                <motion.li key={item.href} variants={linkVariants}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1"
+                  >
+                    {item.label}
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </motion.nav>
+
+          {/* Resources Column */}
+          <motion.nav variants={columnVariants} aria-label="Resources">
+            <motion.h3
+              className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-4"
+              variants={linkVariants}
+            >
+              Resources
+            </motion.h3>
+            <motion.ul
+              className="space-y-2.5"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+              }}
+            >
+              {[
+                { href: "/about", label: "About" },
+                { href: "/services", label: "Services" },
+                { href: "/contact", label: "Contact" },
+                { href: "/pricing", label: "Pricing & FAQ" },
+              ].map((item) => (
+                <motion.li key={item.href} variants={linkVariants}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1"
+                  >
+                    {item.label}
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </motion.nav>
+
+          {/* Repositories Column */}
+          <motion.nav variants={columnVariants} aria-label="Repositories">
+            <motion.h3
+              className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-4"
+              variants={linkVariants}
+            >
+              Repositories
+            </motion.h3>
+            <motion.ul
+              className="space-y-2.5"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+              }}
+            >
+              {[
+                {
+                  href: "https://github.com/mehedihasanrafi205/PowerGridBD",
+                  label: "Frontend",
+                  external: true,
+                },
+                {
+                  href: "https://github.com/mehedihasanrafi205/PowerGridBD-Backend",
+                  label: "Backend",
+                  external: true,
+                },
+              ].map((item) => (
+                <motion.li key={item.href} variants={linkVariants}>
+                  <Link
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={item.href}
+                    className="text-sm text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1"
+                  >
+                    {item.label}
+                    <ArrowUpRight className="h-3 w-3" />
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </motion.nav>
+        </div>
+
+        <motion.div
+          className="mt-12 pt-8 border-t border-zinc-800/80 flex flex-col md:flex-row items-center justify-between gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <p className="text-xs text-zinc-500">
+            © 2026 PowerGridBD. All rights reserved.
+          </p>
+          <motion.div
+            className="flex items-center gap-6"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+            }}
+          >
+            <motion.a
+              href="/#platform"
+              className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+              variants={linkVariants}
+            >
+              Platform
+            </motion.a>
+            <motion.a
+              href="/#roles"
+              className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+              variants={linkVariants}
+            >
+              Roles
+            </motion.a>
+            <motion.a
               href="/pricing"
               className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+              variants={linkVariants}
             >
               Pricing
-            </Link>
-            <Link
-              href="https://github.com/mehedihasanrafi205/PowerGridBD"
+            </motion.a>
+            <motion.a
               target="_blank"
               rel="noopener noreferrer"
+              href="https://github.com/mehedihasanrafi205/PowerGridBD"
               className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors inline-flex items-center gap-1"
+              variants={linkVariants}
             >
               <GitBranch className="h-3.5 w-3.5" />
               GitHub
-            </Link>
-          </div>
-        </div>
-      </div>
+            </motion.a>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </footer>
   );
 }
