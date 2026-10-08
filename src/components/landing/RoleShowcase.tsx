@@ -17,7 +17,8 @@ interface RoleCard {
   border: string;
   description: string;
   capabilities: string[];
-  demoEmail: string;
+  ctaHref: string;
+  ctaLabel: string;
 }
 
 const roles: RoleCard[] = [
@@ -35,7 +36,8 @@ const roles: RoleCard[] = [
       "Priority restoration passes",
       "30-day SLA subscription",
     ],
-    demoEmail: "customer@powergridbd.com",
+    ctaHref: "/auth/login",
+    ctaLabel: "Try Demo",
   },
   {
     role: "TECHNICIAN",
@@ -51,7 +53,8 @@ const roles: RoleCard[] = [
       "Resolution timestamping",
       "Performance summary",
     ],
-    demoEmail: "technician@powergridbd.com",
+    ctaHref: "/apply",
+    ctaLabel: "Apply as Technician",
   },
   {
     role: "POWER_OPERATOR",
@@ -67,7 +70,8 @@ const roles: RoleCard[] = [
       "Load-shedding scheduler",
       "Application review & approval",
     ],
-    demoEmail: "operator@powergridbd.com",
+    ctaHref: "/auth/login",
+    ctaLabel: "Try Demo",
   },
   {
     role: "ADMIN",
@@ -83,7 +87,8 @@ const roles: RoleCard[] = [
       "Financial & operational analytics",
       "Audit log export",
     ],
-    demoEmail: "admin@powergridbd.com",
+    ctaHref: "/auth/login",
+    ctaLabel: "Try Demo",
   },
 ];
 
@@ -191,7 +196,7 @@ export function RoleShowcase() {
                 ))}
               </ul>
 
-              <Link href="/auth/login" className="mt-auto">
+              <Link href={role.ctaHref} className="mt-auto">
                 <Button
                   variant="outline"
                   className={cn(
@@ -199,7 +204,7 @@ export function RoleShowcase() {
                     role.border,
                   )}
                 >
-                  Try Demo
+                  {role.ctaLabel}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>

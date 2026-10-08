@@ -78,3 +78,24 @@ test("unknown routes render the branded 404", async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByRole("link", { name: /back to home/i })).toBeVisible();
 });
+
+test("technician application flow renders", async ({ page }) => {
+  await page.goto("/apply");
+  await expect(
+    page.getByRole("heading", { name: /apply as a field technician/i }),
+  ).toBeVisible();
+  await expect(page.getByLabel(/full name/i)).toBeVisible();
+  await expect(page.getByLabel(/experience/i)).toBeVisible();
+  // Submission is intentionally never triggered here: it would
+  // create a real applicant record and send a real OTP email.
+});
+
+test("application verification renders with prefilled email", async ({
+  page,
+}) => {
+  await page.goto("/apply/verify?email=tech%40example.com");
+  await expect(
+    page.getByRole("heading", { name: /confirm your application/i }),
+  ).toBeVisible();
+  await expect(page.getByLabel(/email/i)).toHaveValue("tech@example.com");
+});
