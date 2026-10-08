@@ -200,11 +200,11 @@ export default function AdminDashboard() {
                   {financial?.data?.activeSlaSubscriptions || 0}
                 </p>
               </div>
-              <div className="p-4 bg-amber-50 rounded-lg">
+              <div className="p-4 bg-amber/10 rounded-lg">
                 <p className="text-sm text-muted-foreground">
                   Priority Revenue
                 </p>
-                <p className="text-2xl font-bold text-amber-600">
+                <p className="text-2xl font-bold text-amber">
                   BDT {financial?.data?.revenueByType?.priorityRestoration || 0}
                 </p>
               </div>
@@ -271,8 +271,8 @@ export default function AdminDashboard() {
               <p className="text-3xl font-bold text-emerald">0</p>
               <p className="text-sm text-muted-foreground">Technicians</p>
             </div>
-            <div className="p-4 bg-amber-50 rounded-lg text-center">
-              <p className="text-3xl font-bold text-amber-600">0</p>
+            <div className="p-4 bg-amber/10 rounded-lg text-center">
+              <p className="text-3xl font-bold text-amber">0</p>
               <p className="text-sm text-muted-foreground">Operators</p>
             </div>
             <div className="p-4 bg-destructive/10 rounded-lg text-center">
@@ -298,9 +298,9 @@ export default function AdminDashboard() {
             <p className="text-sm text-muted-foreground">Error Rate</p>
             <p className="text-2xl font-bold text-primary">{"<"} 0.1%</p>
           </div>
-          <div className="p-4 bg-amber-50 rounded-lg">
+          <div className="p-4 bg-amber/10 rounded-lg">
             <p className="text-sm text-muted-foreground">Active Alerts</p>
-            <p className="text-2xl font-bold text-amber-600">0</p>
+            <p className="text-2xl font-bold text-amber">0</p>
           </div>
         </div>
       </div>

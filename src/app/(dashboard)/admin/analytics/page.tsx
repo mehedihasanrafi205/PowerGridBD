@@ -243,11 +243,11 @@ export default function AdminAnalyticsPage() {
                   {f?.activeSlaSubscriptions || 0}
                 </p>
               </div>
-              <div className="p-4 bg-amber-50 rounded-lg">
+              <div className="p-4 bg-amber/10 rounded-lg">
                 <p className="text-sm text-muted-foreground">
                   Priority Restoration Revenue
                 </p>
-                <p className="text-2xl font-bold text-amber-600">
+                <p className="text-2xl font-bold text-amber">
                   BDT {f?.revenueByType?.priorityRestoration || 0}
                 </p>
               </div>
@@ -381,13 +381,13 @@ export default function AdminAnalyticsPage() {
                 <span className="text-muted-foreground">
                   Critical Feeders Down
                 </span>
-                <span className="font-semibold text-amber-600">
+                <span className="font-semibold text-amber">
                   {a?.criticalFeedersDown || 0}
                 </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-amber-500 rounded-full"
+                  className="h-full bg-amber rounded-full"
                   style={{
                     width: `${Math.min(((a?.criticalFeedersDown || 0) / 10) * 100, 100)}%`,
                   }}

@@ -176,11 +176,11 @@ export default function TechnicianOutageDetailPage() {
       )}
 
       {canContinueWork && (
-        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+        <div className="mb-6 p-4 bg-amber/10 border border-amber/30 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-amber-800">Work in progress</p>
-              <p className="text-sm text-amber-600">
+              <p className="font-medium text-amber">Work in progress</p>
+              <p className="text-sm text-amber">
                 Update status when resolved or add notes
               </p>
             </div>
@@ -383,7 +383,7 @@ export default function TechnicianOutageDetailPage() {
                   </div>
                 )}
                 {o.inProgressAt && (
-                  <div className="relative pb-6 before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-amber-500">
+                  <div className="relative pb-6 before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-amber">
                     <p className="text-sm font-medium">Work Started</p>
                     <p className="text-muted-foreground text-sm">
                       {new Date(o.inProgressAt).toLocaleString()}
@@ -411,12 +411,12 @@ export default function TechnicianOutageDetailPage() {
 
           {activeTab === "resolve" && canContinueWork && (
             <div className="space-y-6">
-              <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <h3 className="font-semibold text-amber-800 mb-2 flex items-center gap-2">
+              <div className="p-4 bg-amber/10 border border-amber/30 rounded-lg">
+                <h3 className="font-semibold text-amber mb-2 flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5" />
                   Resolve Outage
                 </h3>
-                <p className="text-amber-700">
+                <p className="text-amber">
                   Mark this outage as resolved. Please provide resolution notes
                   for the customer.
                 </p>

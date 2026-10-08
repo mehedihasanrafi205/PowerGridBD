@@ -135,8 +135,8 @@ export default function OperatorAnalyticsPage() {
                   {a?.priorityOutages || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-amber-100">
-                <Target className="h-6 w-6 text-amber-600" />
+              <div className="p-3 rounded-xl bg-amber/15">
+                <Target className="h-6 w-6 text-amber" />
               </div>
             </div>
           </CardContent>

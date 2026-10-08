@@ -187,15 +187,15 @@ export default function CustomerSlaPage() {
       </Card>
 
       {/* Benefits Info */}
-      <Card className="mt-8 border-amber-200 bg-amber-50">
+      <Card className="mt-8 border-amber/30 bg-amber/10">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-amber-800">
+          <CardTitle className="flex items-center gap-2 text-amber">
             <AlertCircle className="h-5 w-5" />
             SLA Benefits
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="grid md:grid-cols-2 gap-4 text-sm text-amber-700">
+          <ul className="grid md:grid-cols-2 gap-4 text-sm text-amber">
             <li className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4" /> Priority outage restoration
               (4-hour SLA)
