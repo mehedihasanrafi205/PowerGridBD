@@ -93,11 +93,11 @@ export function PowerGridMap({ data, className }: PowerGridMapProps) {
         className="h-full w-full"
         style={{ background: "var(--color-deep-charcoal)" }}
       >
+        {/* Stadia Maps Alidade Smooth Dark — free tier, no API key required for development */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          subdomains="abcd"
+          url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
           maxZoom={20}
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
         <ZoomControl position="topright" />
         {links.map((link) => (
