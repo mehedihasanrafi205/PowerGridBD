@@ -1,22 +1,20 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { useMySummary, useSlaPlans, useSubscribeSla } from "@/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
-  Shield,
-  CreditCard,
-  CheckCircle,
   AlertCircle,
+  CheckCircle,
+  CreditCard,
   Info,
+  Shield,
 } from "lucide-react";
+import { EmptyState, PageHeader } from "@/components/dashboard";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth, useMySummary, useSlaPlans, useSubscribeSla } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 
 export default function CustomerSlaPage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const { data: summary, isLoading: summaryLoading } = useMySummary();
   const { data: plans, isLoading: plansLoading } = useSlaPlans();
   const subscribeMutation = useSubscribeSla();
@@ -40,17 +38,26 @@ export default function CustomerSlaPage() {
     );
   }
 
-  const currentPlan = summary?.data?.slaActive ? "Active" : "None";
   const expiryDate = summary?.data?.slaExpiryDate;
 
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">SLA Subscription</h1>
-        <p className="text-muted-foreground mt-1">
-          Manage your Service Level Agreement subscription
-        </p>
-      </div>
+      <PageHeader
+        title="SLA Subscription"
+        description="Manage your Service Level Agreement subscription."
+        status={
+          <span
+            className={
+              summary?.data?.slaActive
+                ? "inline-flex items-center gap-2 text-sm text-emerald"
+                : "inline-flex items-center gap-2 text-sm text-muted-foreground"
+            }
+          >
+            <Shield className="h-4 w-4" aria-hidden="true" />
+            {summary?.data?.slaActive ? "SLA Active" : "No active SLA"}
+          </span>
+        }
+      />
 
       {/* Current Status */}
       <Card className="mb-8">
@@ -128,10 +135,11 @@ export default function CustomerSlaPage() {
         </CardHeader>
         <CardContent>
           {!plans?.data || plans.data.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <Info className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-              <p>No SLA plans available at the moment.</p>
-            </div>
+            <EmptyState
+              icon={<Info className="h-5 w-5" />}
+              title="No SLA plans available at the moment"
+              description="New plans will appear here when published."
+            />
           ) : (
             <div className="grid md:grid-cols-3 gap-6">
               {plans.data.map((plan) => (
@@ -146,7 +154,7 @@ export default function CustomerSlaPage() {
                     </p>
                   </div>
                   <div className="mb-4">
-                    <p className="text-3xl font-bold text-foreground">
+                    <p className="font-mono text-3xl font-bold tabular-nums text-foreground">
                       BDT {plan.price}
                     </p>
                     <p className="text-sm text-muted-foreground">
