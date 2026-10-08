@@ -1,44 +1,98 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { AlertCircle, CreditCard, FileText, Shield, Users } from "lucide-react";
 import Link from "next/link";
 import {
-  Users,
-  CreditCard,
-  BarChart3,
-  FileText,
-  GitBranch,
-  AlertCircle,
-  Shield,
-  TrendingUp,
-} from "lucide-react";
-import { useOperationalAnalytics } from "@/hooks";
-import { useFinancialAnalytics } from "@/hooks";
-import { useOutages } from "@/hooks";
-import { cn } from "@/lib/utils";
+  EmptyState,
+  GridStatusIndicator,
+  OperationalMetric,
+  PageHeader,
+  TelemetryRow,
+} from "@/components/dashboard";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CardTitle } from "@/components/ui/card";
+import {
+  useAuth,
+  useFinancialAnalytics,
+  useOperationalAnalytics,
+  useOutages,
+  useUsers,
+} from "@/hooks";
+
+/** Map outage status to a semantic Badge variant. */
+function outageVariant(status: string) {
+  if (status === "PENDING") return "warning" as const;
+  if (status === "ASSIGNED") return "info" as const;
+  if (status === "IN_PROGRESS") return "default" as const;
+  if (status === "RESOLVED" || status === "RESTORED") return "success" as const;
+  if (status === "FAILED") return "destructive" as const;
+  return "secondary" as const;
+}
 
 export default function AdminDashboard() {
-  const { user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
   const { data: analytics, isLoading: analyticsLoading } =
     useOperationalAnalytics();
-  const { data: financial, isLoading: financialLoading } =
-    useFinancialAnalytics();
-  const { data: outages, isLoading: outagesLoading } = useOutages({ limit: 5 });
+  const { data: financial } = useFinancialAnalytics();
+  const { data: outages } = useOutages({ limit: 5 });
 
-  if (isLoading) {
+  // Real per-role user counts: one lightweight query per role
+  // (limit 1 — only the meta.total is read).
+  const { data: customers } = useUsers({ role: "CUSTOMER", limit: 1 });
+  const { data: technicians } = useUsers({ role: "TECHNICIAN", limit: 1 });
+  const { data: operators } = useUsers({ role: "POWER_OPERATOR", limit: 1 });
+  const { data: admins } = useUsers({ role: "ADMIN", limit: 1 });
+
+  const roleCounts = [
+    {
+      label: "Customers",
+      value: customers?.meta?.total,
+      tint: "bg-electric-blue/10",
+      text: "text-electric-blue",
+    },
+    {
+      label: "Technicians",
+      value: technicians?.meta?.total,
+      tint: "bg-emerald/10",
+      text: "text-emerald",
+    },
+    {
+      label: "Operators",
+      value: operators?.meta?.total,
+      tint: "bg-amber/10",
+      text: "text-amber",
+    },
+    {
+      label: "Admins",
+      value: admins?.meta?.total,
+      tint: "bg-destructive/10",
+      text: "text-destructive",
+    },
+  ];
+
+  const activeOutages = analytics?.data?.activeOutages ?? 0;
+  const criticalFeedersDown = analytics?.data?.criticalFeedersDown ?? 0;
+
+  // Honest platform-health state derived from real telemetry.
+  const platformStatus =
+    criticalFeedersDown > 0
+      ? "critical"
+      : activeOutages > 0
+        ? "warning"
+        : "operational";
+
+  if (isLoading || analyticsLoading) {
     return (
       <div className="container mx-auto py-8">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="bg-card border rounded-xl p-6 animate-pulse"
+              className="animate-pulse rounded-xl border bg-card p-6"
             >
-              <div className="h-4 w-1/4 bg-muted rounded mb-2" />
-              <div className="h-8 w-1/2 bg-muted rounded" />
+              <div className="mb-2 h-4 w-1/4 rounded bg-muted" />
+              <div className="h-8 w-1/2 rounded bg-muted" />
             </div>
           ))}
         </div>
@@ -46,79 +100,62 @@ export default function AdminDashboard() {
     );
   }
 
-  const stats = [
-    {
-      title: "Total Users",
-      value: analytics?.data?.totalUsers || 0,
-      icon: Users,
-      color: "text-electric-blue",
-      bg: "bg-electric-blue/15",
-    },
-    {
-      title: "Active Outages",
-      value: analytics?.data?.activeOutages || 0,
-      icon: AlertCircle,
-      color: "text-destructive",
-      bg: "bg-destructive/15",
-    },
-    {
-      title: "Total Revenue",
-      value: `BDT ${financial?.data?.totalRevenue || 0}`,
-      icon: CreditCard,
-      color: "text-emerald",
-      bg: "bg-emerald/15",
-    },
-    {
-      title: "SLA Subscriptions",
-      value: financial?.data?.activeSlaSubscriptions || 0,
-      icon: Shield,
-      color: "text-primary",
-      bg: "bg-primary/15",
-    },
-  ];
-
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Admin Console</h1>
-        <p className="text-muted-foreground mt-1">
-          Executive overview of platform metrics and system health.
-        </p>
+      <PageHeader
+        title="Admin Console"
+        description="Executive overview of platform metrics and system health."
+        status={
+          <GridStatusIndicator
+            status={platformStatus}
+            label={
+              platformStatus === "critical"
+                ? "Critical feeders down"
+                : platformStatus === "warning"
+                  ? "Active outages"
+                  : "Platform operational"
+            }
+          />
+        }
+      />
+
+      {/* KPI metrics */}
+      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <OperationalMetric
+          label="Total Users"
+          value={analytics?.data?.totalUsers || 0}
+          icon={<Users className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="Active Outages"
+          value={activeOutages}
+          icon={<AlertCircle className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="Total Revenue"
+          value={`BDT ${financial?.data?.totalRevenue || 0}`}
+          icon={<CreditCard className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="SLA Subscriptions"
+          value={financial?.data?.activeSlaSubscriptions || 0}
+          icon={<Shield className="h-5 w-5" />}
+        />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        {stats.map((stat) => (
-          <div
-            key={stat.title}
-            className="bg-card border rounded-xl p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{stat.title}</p>
-                <p className="text-3xl font-bold text-foreground mt-1">
-                  {stat.value}
-                </p>
-              </div>
-              <div className={cn(stat.bg, "p-3 rounded-xl")}>
-                <stat.icon className={cn(stat.color, "h-6 w-6")} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-card border rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
+      <div className="mb-8 grid gap-6 md:grid-cols-2">
+        {/* Quick links */}
+        <div className="rounded-xl border bg-card p-6">
+          <div className="mb-4 flex items-center justify-between">
             <CardTitle className="text-xl">Quick Links</CardTitle>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2">
             <Link href="/admin/users">
               <Button
                 variant="outline"
-                className="h-20 justify-start gap-3 p-4"
+                className="h-20 w-full justify-start gap-3 p-4"
               >
-                <Users className="h-6 w-6" />
+                <Users className="h-6 w-6 shrink-0" />
                 <div className="text-left">
                   <p className="font-medium">User Management</p>
                   <p className="text-sm text-muted-foreground">
@@ -130,9 +167,9 @@ export default function AdminDashboard() {
             <Link href="/admin/applications">
               <Button
                 variant="outline"
-                className="h-20 justify-start gap-3 p-4"
+                className="h-20 w-full justify-start gap-3 p-4"
               >
-                <Shield className="h-6 w-6" />
+                <Shield className="h-6 w-6 shrink-0" />
                 <div className="text-left">
                   <p className="font-medium">Applications</p>
                   <p className="text-sm text-muted-foreground">
@@ -144,9 +181,9 @@ export default function AdminDashboard() {
             <Link href="/admin/payments">
               <Button
                 variant="outline"
-                className="h-20 justify-start gap-3 p-4"
+                className="h-20 w-full justify-start gap-3 p-4"
               >
-                <CreditCard className="h-6 w-6" />
+                <CreditCard className="h-6 w-6 shrink-0" />
                 <div className="text-left">
                   <p className="font-medium">Payments</p>
                   <p className="text-sm text-muted-foreground">
@@ -158,9 +195,9 @@ export default function AdminDashboard() {
             <Link href="/admin/audit-logs">
               <Button
                 variant="outline"
-                className="h-20 justify-start gap-3 p-4"
+                className="h-20 w-full justify-start gap-3 p-4"
               >
-                <FileText className="h-6 w-6" />
+                <FileText className="h-6 w-6 shrink-0" />
                 <div className="text-left">
                   <p className="font-medium">Audit Logs</p>
                   <p className="text-sm text-muted-foreground">
@@ -172,39 +209,40 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-card border rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
+        {/* Financial overview */}
+        <div className="rounded-xl border bg-card p-6">
+          <div className="mb-4 flex items-center justify-between">
             <CardTitle className="text-xl">Financial Overview</CardTitle>
           </div>
           <div className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-emerald/10 rounded-lg">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-lg bg-emerald/10 p-4">
                 <p className="text-sm text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-emerald">
+                <p className="font-mono text-2xl font-bold tabular-nums text-emerald">
                   BDT {financial?.data?.totalRevenue || 0}
                 </p>
               </div>
-              <div className="p-4 bg-electric-blue/10 rounded-lg">
+              <div className="rounded-lg bg-electric-blue/10 p-4">
                 <p className="text-sm text-muted-foreground">Success Rate</p>
-                <p className="text-2xl font-bold text-electric-blue">
+                <p className="font-mono text-2xl font-bold tabular-nums text-electric-blue">
                   {financial?.data?.successRate || 0}%
                 </p>
               </div>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-primary/10 rounded-lg">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-lg bg-primary/10 p-4">
                 <p className="text-sm text-muted-foreground">
                   Active SLA Subscriptions
                 </p>
-                <p className="text-2xl font-bold text-primary">
+                <p className="font-mono text-2xl font-bold tabular-nums text-primary">
                   {financial?.data?.activeSlaSubscriptions || 0}
                 </p>
               </div>
-              <div className="p-4 bg-amber/10 rounded-lg">
+              <div className="rounded-lg bg-amber/10 p-4">
                 <p className="text-sm text-muted-foreground">
                   Priority Revenue
                 </p>
-                <p className="text-2xl font-bold text-amber">
+                <p className="font-mono text-2xl font-bold tabular-nums text-amber">
                   BDT {financial?.data?.revenueByType?.priorityRestoration || 0}
                 </p>
               </div>
@@ -213,9 +251,10 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-card border rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
+      <div className="mb-8 grid gap-6 md:grid-cols-2">
+        {/* Recent outages */}
+        <div className="rounded-xl border bg-card p-6">
+          <div className="mb-4 flex items-center justify-between">
             <CardTitle className="text-xl">Recent Outages</CardTitle>
             <Link
               href="/admin/outages"
@@ -225,18 +264,18 @@ export default function AdminDashboard() {
             </Link>
           </div>
           <div className="space-y-3">
-            {outages && outages.data && outages.data.length > 0 ? (
+            {outages?.data && outages.data.length > 0 ? (
               outages.data.slice(0, 5).map((outage) => (
                 <div
                   key={outage.id}
-                  className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
+                  className="flex items-center justify-between rounded-lg bg-muted/50 p-3 transition-colors hover:bg-muted"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="px-2 py-1 text-xs rounded-full bg-destructive/15 text-destructive font-medium">
+                    <Badge variant={outageVariant(outage.status)}>
                       {outage.status}
-                    </span>
+                    </Badge>
                     <div>
-                      <p className="font-medium text-sm">
+                      <p className="text-sm font-medium">
                         Outage #{outage.id.slice(0, 8)}
                       </p>
                       <p className="text-xs text-muted-foreground">
@@ -253,55 +292,74 @@ export default function AdminDashboard() {
                 </div>
               ))
             ) : (
-              <p className="text-center text-muted-foreground py-4">
-                No recent outages
-              </p>
+              <EmptyState
+                title="No recent outages"
+                description="Outage reports will appear here."
+              />
             )}
           </div>
         </div>
 
-        <div className="bg-card border rounded-xl p-6">
-          <CardTitle className="text-xl mb-4">Role Distribution</CardTitle>
-          <div className="grid gap-4 md:grid-cols-4">
-            <div className="p-4 bg-electric-blue/10 rounded-lg text-center">
-              <p className="text-3xl font-bold text-electric-blue">0</p>
-              <p className="text-sm text-muted-foreground">Customers</p>
-            </div>
-            <div className="p-4 bg-emerald/10 rounded-lg text-center">
-              <p className="text-3xl font-bold text-emerald">0</p>
-              <p className="text-sm text-muted-foreground">Technicians</p>
-            </div>
-            <div className="p-4 bg-amber/10 rounded-lg text-center">
-              <p className="text-3xl font-bold text-amber">0</p>
-              <p className="text-sm text-muted-foreground">Operators</p>
-            </div>
-            <div className="p-4 bg-destructive/10 rounded-lg text-center">
-              <p className="text-3xl font-bold text-destructive">0</p>
-              <p className="text-sm text-muted-foreground">Admins</p>
-            </div>
+        {/* Role distribution — real counts from the users API */}
+        <div className="rounded-xl border bg-card p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <CardTitle className="text-xl">Role Distribution</CardTitle>
+            <Link
+              href="/admin/users"
+              className="text-sm text-primary hover:underline"
+            >
+              Manage
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {roleCounts.map((role) => (
+              <div
+                key={role.label}
+                className={`rounded-lg p-4 text-center ${role.tint}`}
+              >
+                {role.value === undefined ? (
+                  <div className="mx-auto h-8 w-12 animate-pulse rounded bg-muted" />
+                ) : (
+                  <p
+                    className={`font-mono text-3xl font-bold tabular-nums ${role.text}`}
+                  >
+                    {role.value}
+                  </p>
+                )}
+                <p className="text-sm text-muted-foreground">{role.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="bg-card border rounded-xl p-6">
-        <CardTitle className="text-xl mb-4">System Health</CardTitle>
-        <div className="grid md:grid-cols-4 gap-6">
-          <div className="p-4 bg-emerald/10 rounded-lg">
-            <p className="text-sm text-muted-foreground">Grid Uptime</p>
-            <p className="text-2xl font-bold text-emerald">99.9%</p>
-          </div>
-          <div className="p-4 bg-electric-blue/10 rounded-lg">
-            <p className="text-sm text-muted-foreground">API Response</p>
-            <p className="text-2xl font-bold text-electric-blue">{"<"} 200ms</p>
-          </div>
-          <div className="p-4 bg-primary/10 rounded-lg">
-            <p className="text-sm text-muted-foreground">Error Rate</p>
-            <p className="text-2xl font-bold text-primary">{"<"} 0.1%</p>
-          </div>
-          <div className="p-4 bg-amber/10 rounded-lg">
-            <p className="text-sm text-muted-foreground">Active Alerts</p>
-            <p className="text-2xl font-bold text-amber">0</p>
-          </div>
+      {/* Operational telemetry — real backend data, never invented */}
+      <div className="rounded-xl border bg-card p-6">
+        <CardTitle className="mb-4 text-xl">Operational Telemetry</CardTitle>
+        <div className="grid gap-x-8 gap-y-1 md:grid-cols-2">
+          <TelemetryRow label="Active Outages" value={activeOutages} />
+          <TelemetryRow
+            label="Priority Outages"
+            value={analytics?.data?.priorityOutages ?? 0}
+          />
+          <TelemetryRow
+            label="Available Technicians"
+            value={`${analytics?.data?.availableTechnicians ?? 0} / ${analytics?.data?.totalTechnicians ?? 0}`}
+          />
+          <TelemetryRow
+            label="Active Schedules"
+            value={analytics?.data?.activeSchedules ?? 0}
+          />
+          <TelemetryRow
+            label="Critical Feeders Down"
+            value={criticalFeedersDown}
+            status={criticalFeedersDown > 0 ? "critical" : "operational"}
+          />
+          <TelemetryRow
+            label="MTTR"
+            value={analytics?.data?.mttr ?? 0}
+            unit="h"
+          />
         </div>
       </div>
     </div>
