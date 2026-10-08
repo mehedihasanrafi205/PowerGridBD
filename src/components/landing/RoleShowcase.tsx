@@ -1,12 +1,13 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Gauge, ShieldCheck, User, Wrench } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useReveal } from "@/hooks";
 import { easing } from "@/lib/animation";
 import { cn } from "@/lib/utils";
+import { SectionHeading } from "./SectionHeading";
 
 interface RoleCard {
   role: string;
@@ -40,8 +41,8 @@ const roles: RoleCard[] = [
     role: "TECHNICIAN",
     title: "Technician",
     icon: <Wrench className="h-5 w-5" />,
-    accent: "text-emerald-400",
-    border: "border-emerald-400/30",
+    accent: "text-emerald",
+    border: "border-emerald/30",
     description:
       "Receive assigned outages, advance them through resolution stages, and maintain first-time-fix performance metrics.",
     capabilities: [
@@ -56,8 +57,8 @@ const roles: RoleCard[] = [
     role: "POWER_OPERATOR",
     title: "Power Operator",
     icon: <Gauge className="h-5 w-5" />,
-    accent: "text-amber-400",
-    border: "border-amber-400/30",
+    accent: "text-amber",
+    border: "border-amber/30",
     description:
       "Run grid operations: manage hierarchy, dispatch technicians, publish load-shedding schedules, and monitor operational KPIs.",
     capabilities: [
@@ -72,8 +73,8 @@ const roles: RoleCard[] = [
     role: "ADMIN",
     title: "Admin",
     icon: <ShieldCheck className="h-5 w-5" />,
-    accent: "text-red-400",
-    border: "border-red-400/30",
+    accent: "text-destructive",
+    border: "border-destructive/30",
     description:
       "Full platform oversight: user management, payment administration, system-wide analytics, and compliance-grade audit logs.",
     capabilities: [
@@ -123,26 +124,12 @@ export function RoleShowcase() {
         variants={containerVariants}
         className="container mx-auto px-4"
       >
-        <motion.div
-          className="text-center max-w-2xl mx-auto mb-14"
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            visible: { opacity: 1, y: 0 },
-          }}
-        >
-          <div className="flex items-center justify-center gap-2 text-xs font-medium tracking-widest uppercase text-smart-teal mb-3">
-            <span className="h-0.5 w-12 bg-smart-teal/30" />
-            Role-Based Access
-            <span className="h-0.5 w-12 bg-smart-teal/30" />
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4">
-            Four roles. One operational picture.
-          </h2>
-          <p className="text-lg text-zinc-400">
-            Every role sees exactly the data and actions it needs — enforced at
-            the route level, the UI level, and the API level.
-          </p>
-        </motion.div>
+        <SectionHeading
+          align="center"
+          eyebrow="Role-Based Access"
+          title="Four roles. One operational picture."
+          description="Every role sees exactly the data and actions it needs — enforced at the route level, the UI level, and the API level."
+        />
 
         <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
           {roles.map((role, index) => (

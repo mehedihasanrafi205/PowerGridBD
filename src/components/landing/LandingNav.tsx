@@ -110,10 +110,10 @@ export function LandingNav() {
             {/* Live status pill — platform connectivity, not a grid metric */}
             <div className="hidden items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/50 px-3 py-1.5 md:flex">
               <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald" />
               </span>
-              <span className="font-mono text-xs font-semibold text-emerald-400">
+              <span className="font-mono text-xs font-semibold text-emerald">
                 LIVE
               </span>
               <Radio className="h-3.5 w-3.5 text-zinc-500" aria-hidden="true" />

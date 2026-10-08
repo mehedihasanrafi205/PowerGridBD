@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/table";
 import { useAuth, useOutages, useReveal, useSchedules } from "@/hooks";
 import { easing } from "@/lib/animation";
-import { cn } from "@/lib/utils";
 
 const statusBadgeVariant: Record<
   string,
@@ -104,7 +103,7 @@ export function OperationsTable() {
           </div>
           <span className="hidden md:flex items-center gap-1.5 font-mono text-xs text-zinc-500">
             <motion.span
-              className="w-1.5 h-1.5 rounded-full bg-emerald-500"
+              className="w-1.5 h-1.5 rounded-full bg-emerald"
               animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             />
@@ -224,7 +223,7 @@ export function OperationsTable() {
               >
                 <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-800/80 bg-zinc-900/40">
                   <div className="flex items-center gap-2 text-sm font-medium text-zinc-200">
-                    <AlertTriangle className="h-4 w-4 text-amber-400" />
+                    <AlertTriangle className="h-4 w-4 text-amber" />
                     Recent Outage Reports
                   </div>
                   <span className="font-mono text-xs text-zinc-500">
@@ -317,7 +316,7 @@ export function OperationsTable() {
                                 <TableCell className="text-right">
                                   {outage.isPriority ? (
                                     <motion.span
-                                      className="font-mono text-xs font-medium text-amber-400"
+                                      className="font-mono text-xs font-medium text-amber"
                                       animate={{
                                         boxShadow: [
                                           "0 0 0px rgba(251,191,36,0)",

@@ -5,7 +5,6 @@ import { Activity, ArrowUpRight, GitBranch, Shield, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { easing } from "@/lib/animation";
-import { cn } from "@/lib/utils";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -68,7 +67,7 @@ export function LandingFooter() {
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 font-mono text-[10px] text-zinc-400"
                 whileHover={{ scale: 1.02 }}
               >
-                <Activity className="h-3 w-3 text-emerald-400" />
+                <Activity className="h-3 w-3 text-emerald" />
                 v1.0
               </motion.span>
               <motion.span
@@ -82,7 +81,7 @@ export function LandingFooter() {
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 font-mono text-[10px] text-zinc-400"
                 whileHover={{ scale: 1.02 }}
               >
-                <Zap className="h-3 w-3 text-amber-400" />4 ROLES
+                <Zap className="h-3 w-3 text-amber" />4 ROLES
               </motion.span>
             </div>
           </motion.div>

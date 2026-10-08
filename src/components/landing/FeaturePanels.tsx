@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useReveal } from "@/hooks";
 import { easing } from "@/lib/animation";
 import { cn } from "@/lib/utils";
+import { SectionHeading } from "./SectionHeading";
 
 interface FeaturePanel {
   icon: React.ReactNode;
@@ -27,7 +28,7 @@ interface FeaturePanel {
 const features: FeaturePanel[] = [
   {
     icon: <AlertTriangle className="h-5 w-5" />,
-    iconColor: "text-amber-400",
+    iconColor: "text-amber",
     title: "Outage Lifecycle Management",
     description:
       "End-to-end outage tracking from PENDING report to RESTORED power, with technician assignment, resolution notes, and full timestamp audit trail.",
@@ -63,7 +64,7 @@ const features: FeaturePanel[] = [
   },
   {
     icon: <CreditCard className="h-5 w-5" />,
-    iconColor: "text-emerald-400",
+    iconColor: "text-emerald",
     title: "SLA & Priority Restoration",
     description:
       "30-day SLA subscriptions and BDT 500 priority restoration passes via SSLCommerz, with server-side cascade verification and transactional side effects.",
@@ -87,7 +88,7 @@ const features: FeaturePanel[] = [
   },
   {
     icon: <FileSearch className="h-5 w-5" />,
-    iconColor: "text-amber-400",
+    iconColor: "text-amber",
     title: "Audit Logging & Analytics",
     description:
       "Every authenticated action writes an audit record with entity, actor, and metadata. Filterable, exportable, and paired with operational analytics.",
@@ -139,6 +140,12 @@ export function FeaturePanels() {
         variants={containerVariants}
         className="container mx-auto px-4"
       >
+        <SectionHeading
+          align="center"
+          eyebrow="Platform Capabilities"
+          title="Everything the grid operation needs."
+          description="Outage lifecycles, load-shedding schedules, grid hierarchy, SLAs, dispatch, and audit — one coherent system."
+        />
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
           {features.map((feature, index) => (
             <motion.article

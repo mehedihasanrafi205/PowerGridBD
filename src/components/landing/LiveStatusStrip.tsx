@@ -49,13 +49,13 @@ export function LiveStatusStrip() {
       label: "Active Outages",
       value: isAuthenticated ? activeOutages : "—",
       icon: <AlertTriangle className="h-4 w-4" aria-hidden="true" />,
-      color: "text-amber-400",
+      color: "text-amber",
     },
     {
       label: "Priority Outages",
       value: isAuthenticated ? priorityOutages : "—",
       icon: <Zap className="h-4 w-4" aria-hidden="true" />,
-      color: "text-red-400",
+      color: "text-destructive",
     },
     {
       label: "Active Schedules",
@@ -96,8 +96,8 @@ export function LiveStatusStrip() {
             {/* System status */}
             <div className="flex items-center gap-2 text-xs font-medium text-zinc-400">
               <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald" />
               </span>
               SYSTEM OPERATIONAL
             </div>

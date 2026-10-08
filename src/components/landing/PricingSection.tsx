@@ -1,12 +1,13 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Check, Lock, Shield, Zap } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useReveal } from "@/hooks";
 import { easing } from "@/lib/animation";
 import { cn } from "@/lib/utils";
+import { SectionHeading } from "./SectionHeading";
 
 interface Product {
   name: string;
@@ -31,7 +32,7 @@ const products: Product[] = [
     price: "BDT 500",
     period: "per outage",
     icon: <Zap className="h-5 w-5" />,
-    iconColor: "text-amber-400",
+    iconColor: "text-amber",
     features: [
       "Outage flagged as PRIORITY instantly",
       "Top of all technician work queues",
@@ -43,7 +44,7 @@ const products: Product[] = [
     ctaHref: "/customer/outage/report",
     ctaVariant: "outline",
     badge: "PER OUTAGE",
-    badgeColor: "text-amber-400",
+    badgeColor: "text-amber",
   },
   {
     name: "SLA Subscription",
@@ -108,27 +109,12 @@ export function PricingSection() {
         variants={containerVariants}
         className="container mx-auto px-4"
       >
-        <motion.div
-          className="text-center max-w-2xl mx-auto mb-14"
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            visible: { opacity: 1, y: 0 },
-          }}
-        >
-          <div className="flex items-center justify-center gap-2 text-xs font-medium tracking-widest uppercase text-smart-teal mb-3">
-            <span className="h-0.5 w-12 bg-smart-teal/30" />
-            Service Products
-            <span className="h-0.5 w-12 bg-smart-teal/30" />
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4">
-            Pay for priority when it matters.
-          </h2>
-          <p className="text-lg text-zinc-400">
-            Two SSLCommerz-verified products. No hidden fees, no fake checkout —
-            real payments processed through Bangladesh&apos;s leading gateway in
-            test mode.
-          </p>
-        </motion.div>
+        <SectionHeading
+          align="center"
+          eyebrow="Service Products"
+          title="Pay for priority when it matters."
+          description="Two SSLCommerz-verified products. No hidden fees, no fake checkout — real payments processed through Bangladesh's leading gateway in test mode."
+        />
 
         <motion.div
           className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto"
@@ -227,7 +213,7 @@ export function PricingSection() {
                     className="flex items-start gap-2.5 text-sm text-zinc-300"
                   >
                     <motion.span
-                      className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400"
+                      className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{
