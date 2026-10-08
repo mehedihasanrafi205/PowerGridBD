@@ -43,3 +43,5 @@ next-env.d.ts
 requirements.md
 
 /docs
+test-results/
+playwright-report/

@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "biome check",
     "test": "bun test",
+    "test:e2e": "playwright test",
     "format": "biome format --write"
   },
   "dependencies": {
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.2",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

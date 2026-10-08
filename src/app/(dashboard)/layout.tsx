@@ -16,7 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme";
 import { useAuth } from "@/hooks";
@@ -203,6 +203,19 @@ const navItems: NavItem[] = [
   },
 ];
 
+/**
+ * Navigates unauthenticated visitors to the login page.
+ * Rendered only in the unauthenticated branch so the
+ * redirect effect itself stays unconditional.
+ */
+function AuthRedirect() {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/auth/login");
+  }, [router]);
+  return null;
+}
+
 export default function DashboardLayout({
   children,
 }: {
@@ -252,6 +265,7 @@ export default function DashboardLayout({
   if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <AuthRedirect />
         Redirecting...
       </div>
     );
