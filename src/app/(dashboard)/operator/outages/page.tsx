@@ -280,7 +280,7 @@ export default function OperatorOutagesPage() {
                           </TableCell>
                           <TableCell className="text-right">
                             <Link
-                              href={`/operator/outages/${outage.id}`}
+                              href={`/operator/outage?id=${outage.id}`}
                               className="text-sm font-medium text-primary hover:underline"
                             >
                               Manage

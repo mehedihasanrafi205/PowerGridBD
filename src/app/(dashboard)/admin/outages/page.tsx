@@ -1,11 +1,20 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { useOutages } from "@/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AlertTriangle,
+  Loader2,
+  MapPin,
+  Search,
+  Shield,
+  User,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -15,36 +24,21 @@ import {
 } from "@/components/ui/select";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableRow,
-  TableHead,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { Pagination } from "@/components/ui/pagination";
-import {
-  Search,
-  Filter,
-  Download,
-  Loader2,
-  User,
-  AlertTriangle,
-  MapPin,
-  Shield,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import Link from "next/link";
+import { useAuth, useOutages } from "@/hooks";
+import type { OutageStatus } from "@/types";
 
 export default function AdminOutagesPage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
 
   const {
     data: outages,
@@ -52,7 +46,7 @@ export default function AdminOutagesPage() {
     error,
   } = useOutages({
     searchTerm: searchTerm || undefined,
-    status: statusFilter !== "all" ? [statusFilter as any] : undefined,
+    status: statusFilter !== "all" ? [statusFilter as OutageStatus] : undefined,
     page,
     limit,
     sortBy: "reportedAt",
@@ -110,12 +104,6 @@ export default function AdminOutagesPage() {
           <p className="text-muted-foreground mt-1">
             View and manage all outage reports across the platform
           </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" disabled={isLoading}>
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
         </div>
       </div>
 
@@ -245,23 +233,11 @@ export default function AdminOutagesPage() {
                             {new Date(outage.reportedAt).toLocaleDateString()}
                           </TableCell>
                           <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <Link href={`/admin/outages/${outage.id}`}>
-                                <Button variant="ghost" size="sm">
-                                  View
-                                </Button>
-                              </Link>
+                            <Link href={`/admin/outage?id=${outage.id}`}>
                               <Button variant="ghost" size="sm">
-                                <Edit className="h-4 w-4" />
+                                View
                               </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-destructive hover:text-destructive"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
+                            </Link>
                           </TableCell>
                         </TableRow>
                       ))

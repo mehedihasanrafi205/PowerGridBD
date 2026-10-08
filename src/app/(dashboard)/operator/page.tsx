@@ -236,7 +236,7 @@ export default function OperatorDashboard() {
                     </div>
                   </div>
                   <Link
-                    href={`/operator/outages/${outage.id}`}
+                    href={`/operator/outage?id=${outage.id}`}
                     className="text-sm text-primary hover:underline"
                   >
                     Manage

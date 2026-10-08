@@ -284,7 +284,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <Link
-                    href={`/admin/outages/${outage.id}`}
+                    href={`/admin/outage?id=${outage.id}`}
                     className="text-sm text-primary hover:underline"
                   >
                     View

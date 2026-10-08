@@ -6,6 +6,7 @@ export {
   GridStatusIndicator,
 } from "./GridStatusIndicator";
 export { OperationalMetric } from "./OperationalMetric";
+export { OutageDispatchDetail } from "./OutageDispatchDetail";
 export { OutageStatusTimeline } from "./OutageStatusTimeline";
 export { PageHeader } from "./PageHeader";
 export { TelemetryRow } from "./TelemetryRow";
