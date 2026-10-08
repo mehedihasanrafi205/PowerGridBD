@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { ThemeToggle } from "@/components/theme";
+import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -93,122 +93,109 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted px-4 py-12">
-      {/* Theme control — accessible before sign-in */}
-      <div className="fixed right-4 top-4">
-        <ThemeToggle />
+    <AuthShell>
+      <div className="mb-8 text-center lg:text-left">
+        <h1 className="mb-2 text-3xl font-bold text-foreground">
+          Create Account
+        </h1>
+        <p className="text-muted-foreground">
+          Register to start managing power outages
+        </p>
       </div>
 
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+      <form onSubmit={handleSubmit(handleRegister)} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">Full Name</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder="John Doe"
+            {...register("name")}
+            disabled={isLoading}
+            className={cn(
+              errors.name &&
+                "border-destructive focus:border-destructive focus:ring-destructive/20",
+            )}
+          />
+          {errors.name && (
+            <p className="text-sm text-destructive">{errors.name.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            {...register("email")}
+            disabled={isLoading}
+            className={cn(
+              errors.email &&
+                "border-destructive focus:border-destructive focus:ring-destructive/20",
+            )}
+          />
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            {...register("password")}
+            disabled={isLoading}
+            className={cn(
+              errors.password &&
+                "border-destructive focus:border-destructive focus:ring-destructive/20",
+            )}
+          />
+          {errors.password && (
+            <p className="text-sm text-destructive">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="••••••••"
+            {...register("confirmPassword")}
+            disabled={isLoading}
+            className={cn(
+              errors.confirmPassword &&
+                "border-destructive focus:border-destructive focus:ring-destructive/20",
+            )}
+          />
+          {errors.confirmPassword && (
+            <p className="text-sm text-destructive">
+              {errors.confirmPassword.message}
+            </p>
+          )}
+        </div>
+
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Creating account..." : "Create Account"}
+        </Button>
+      </form>
+
+      <div className="mt-6 text-center">
+        <p className="text-sm text-muted-foreground">
+          Already have an account?{" "}
           <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-2xl font-bold text-primary mb-6"
+            href="/auth/login"
+            className="text-primary hover:underline font-medium"
           >
-            PowerGridBD
+            Sign In
           </Link>
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Create Account
-          </h1>
-          <p className="text-muted-foreground">
-            Register to start managing power outages
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit(handleRegister)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="John Doe"
-              {...register("name")}
-              disabled={isLoading}
-              className={cn(
-                errors.name &&
-                  "border-destructive focus:border-destructive focus:ring-destructive/20",
-              )}
-            />
-            {errors.name && (
-              <p className="text-sm text-destructive">{errors.name.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              {...register("email")}
-              disabled={isLoading}
-              className={cn(
-                errors.email &&
-                  "border-destructive focus:border-destructive focus:ring-destructive/20",
-              )}
-            />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register("password")}
-              disabled={isLoading}
-              className={cn(
-                errors.password &&
-                  "border-destructive focus:border-destructive focus:ring-destructive/20",
-              )}
-            />
-            {errors.password && (
-              <p className="text-sm text-destructive">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              {...register("confirmPassword")}
-              disabled={isLoading}
-              className={cn(
-                errors.confirmPassword &&
-                  "border-destructive focus:border-destructive focus:ring-destructive/20",
-              )}
-            />
-            {errors.confirmPassword && (
-              <p className="text-sm text-destructive">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
-
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating account..." : "Create Account"}
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link
-              href="/auth/login"
-              className="text-primary hover:underline font-medium"
-            >
-              Sign In
-            </Link>
-          </p>
-        </div>
+        </p>
       </div>
-    </div>
+    </AuthShell>
   );
 }

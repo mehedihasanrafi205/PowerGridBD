@@ -1,13 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff, Shield, Wrench, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { ThemeToggle } from "@/components/theme";
+import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,6 +35,7 @@ const demoAccounts = [
     password: "Admin@12345",
     label: "Admin",
     description: "Full system access",
+    icon: Shield,
     color: "bg-destructive/10 text-destructive border-destructive/20",
   },
   {
@@ -43,6 +45,7 @@ const demoAccounts = [
     password: "Operator@12345",
     label: "Power Operator",
     description: "Grid & outage management",
+    icon: Zap,
     color: "bg-amber/10 text-amber border-amber/20",
   },
   {
@@ -52,6 +55,7 @@ const demoAccounts = [
     password: "Tech@12345",
     label: "Technician",
     description: "Assigned outage resolution",
+    icon: Wrench,
     color: "bg-emerald/10 text-emerald border-emerald/20",
   },
 ];
@@ -73,6 +77,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -152,133 +157,148 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted px-4 py-12">
-      {/* Theme control — accessible before sign-in */}
-      <div className="fixed right-4 top-4">
-        <ThemeToggle />
+    <AuthShell>
+      <div className="mb-8 text-center lg:text-left">
+        <h1 className="mb-2 text-3xl font-bold text-foreground">
+          Sign In to Console
+        </h1>
+        <p className="text-muted-foreground">
+          Enter your credentials or continue with a tester account
+        </p>
       </div>
 
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-2xl font-bold text-primary mb-6"
-          >
-            PowerGridBD
-          </Link>
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Welcome Back
-          </h1>
-          <p className="text-muted-foreground">
-            Sign in to your account to continue
-          </p>
-        </div>
-
-        {/* Tester Login Section */}
-        <div className="mb-8">
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with a tester account
-              </span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-3 mb-6 sm:grid-cols-3">
-            {demoAccounts.map((account) => (
-              <button
-                type="button"
-                key={account.role}
-                onClick={() =>
-                  handleDemoLogin(account.email, account.password, account.role)
-                }
-                disabled={demoLoading !== null}
-                className={cn(
-                  "p-4 rounded-lg border transition-all hover:shadow-md text-left",
-                  account.color,
-                  demoLoading === account.role && "opacity-50 cursor-wait",
-                )}
-              >
-                <div className="font-semibold">{account.label}</div>
-                <div className="text-xs font-medium mt-0.5">{account.name}</div>
-                <div className="text-xs text-muted-foreground mt-1 font-mono break-all">
-                  {account.email}
-                </div>
-                {demoLoading === account.role && (
-                  <div className="text-xs text-primary mt-1">Logging in...</div>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Login Form */}
-        <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              {...register("email")}
-              disabled={isLoading}
+      {/* Tester persona cards */}
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {demoAccounts.map((account) => {
+          const Icon = account.icon;
+          return (
+            <button
+              type="button"
+              key={account.role}
+              onClick={() =>
+                handleDemoLogin(account.email, account.password, account.role)
+              }
+              disabled={demoLoading !== null}
               className={cn(
-                errors.email &&
-                  "border-destructive focus:border-destructive focus:ring-destructive/20",
+                "group rounded-lg border p-3.5 text-left transition-all hover:shadow-md",
+                account.color,
+                demoLoading === account.role && "cursor-wait opacity-50",
               )}
-            />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
+            >
+              <span className="mb-2 flex items-center justify-between">
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                <span className="rounded border border-current px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider opacity-80">
+                  {account.label}
+                </span>
+              </span>
+              <span className="block text-sm font-semibold text-foreground">
+                {account.name}
+              </span>
+              <span className="mt-0.5 block break-all font-mono text-[11px] text-muted-foreground">
+                {account.email}
+              </span>
+              {demoLoading === account.role && (
+                <span className="mt-1 block text-xs text-primary">
+                  Logging in...
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                href="/auth/forgot-password"
-                className="text-sm text-primary hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
+      <div className="relative mb-6">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or sign in manually
+          </span>
+        </div>
+      </div>
+
+      {/* Login Form */}
+      <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            {...register("email")}
+            disabled={isLoading}
+            className={cn(
+              errors.email &&
+                "border-destructive focus:border-destructive focus:ring-destructive/20",
+            )}
+          />
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label>
+            <Link
+              href="/auth/forgot-password"
+              className="text-sm text-primary hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+          <div className="relative">
             <Input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="••••••••"
+              autoComplete="current-password"
               {...register("password")}
               disabled={isLoading}
               className={cn(
+                "pr-10",
                 errors.password &&
                   "border-destructive focus:border-destructive focus:ring-destructive/20",
               )}
             />
-            {errors.password && (
-              <p className="text-sm text-destructive">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link
-              href="/auth/register"
-              className="text-primary hover:underline font-medium"
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground transition-colors hover:text-foreground"
             >
-              Register
-            </Link>
-          </p>
+              {showPassword ? (
+                <EyeOff className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <Eye className="h-4 w-4" aria-hidden="true" />
+              )}
+            </button>
+          </div>
+          {errors.password && (
+            <p className="text-sm text-destructive">
+              {errors.password.message}
+            </p>
+          )}
         </div>
+
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Signing in..." : "Sign In to Grid Console"}
+        </Button>
+      </form>
+
+      <div className="mt-6 text-center">
+        <p className="text-sm text-muted-foreground">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/auth/register"
+            className="font-medium text-primary hover:underline"
+          >
+            Register
+          </Link>
+        </p>
       </div>
-    </div>
+    </AuthShell>
   );
 }
