@@ -1,21 +1,32 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Clock, Menu, X } from "lucide-react";
+import { Menu, Radio, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLenis } from "@/components/animation";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/#platform", label: "Platform" },
   { href: "/#roles", label: "Roles" },
+  { href: "/#operations", label: "Operations" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/contact", label: "Contact" },
 ];
 
+/**
+ * LandingNav — edge-to-edge utility bar.
+ *
+ * Brand left, cockpit navigation center, utility cluster right
+ * (live status pill + real clock, Report Outage quick link,
+ * Operator Console CTA). The telemetry rail below it is the
+ * separate LiveStatusStrip.
+ *
+ * The live pill reports platform connectivity (LIVE + real clock)
+ * — never an invented grid measurement such as frequency or MW.
+ */
 export function LandingNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [time, setTime] = useState<Date | null>(null);
@@ -49,10 +60,10 @@ export function LandingNav() {
       : "00:00:00";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-deep-charcoal/95 backdrop-blur-sm border-b border-electric-blue/20">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-electric-blue/20 bg-deep-charcoal/95 backdrop-blur-sm">
       <nav className="container mx-auto px-4" aria-label="Main navigation">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
+          {/* Brand */}
           <Link
             href="/"
             className="flex items-center gap-2"
@@ -70,18 +81,18 @@ export function LandingNav() {
               className="h-8 w-8"
               priority
             />
-            <span className="text-xl font-bold text-white hidden sm:block">
+            <span className="hidden text-xl font-bold text-white sm:block">
               PowerGridBD
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          {/* Center cockpit navigation */}
+          <div className="hidden items-center gap-8 lg:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-zinc-300 hover:text-white transition-colors"
+                className="text-sm font-medium text-zinc-300 transition-colors hover:text-white"
                 onClick={(e) => {
                   if (link.href.startsWith("#")) {
                     e.preventDefault();
@@ -92,81 +103,81 @@ export function LandingNav() {
                 {link.label}
               </Link>
             ))}
+          </div>
 
-            {/* Live Status Indicator */}
-            <div className="flex items-center gap-4 px-4 py-1.5 rounded-full bg-zinc-900/50 border border-zinc-700">
-              <div className="flex items-center gap-1.5 text-xs">
-                <motion.span
-                  className="w-1.5 h-1.5 rounded-full bg-emerald-500"
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                />
-                <span className="font-mono text-emerald-400">LIVE</span>
-              </div>
-            </div>
-
-            {/* Clock */}
-            <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900/50 border border-zinc-700">
-              <Clock className="h-3.5 w-3.5 text-zinc-500" />
-              <span className="font-mono tabular-nums text-xs text-zinc-300">
+          {/* Right utility cluster */}
+          <div className="flex items-center gap-3">
+            {/* Live status pill — platform connectivity, not a grid metric */}
+            <div className="hidden items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/50 px-3 py-1.5 md:flex">
+              <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              </span>
+              <span className="font-mono text-xs font-semibold text-emerald-400">
+                LIVE
+              </span>
+              <Radio className="h-3.5 w-3.5 text-zinc-500" aria-hidden="true" />
+              <span className="hidden font-mono tabular-nums text-xs text-zinc-300 xl:inline">
                 {formatTime(time)}
               </span>
             </div>
-          </div>
 
-          {/* Desktop CTA */}
-          <div className="hidden lg:flex items-center gap-3">
-            <Link href="/auth/login">
-              <Button
-                variant="ghost"
-                className="text-zinc-300 hover:text-white"
-              >
-                Sign In
+            {/* Report Outage quick link */}
+            <Link
+              href="/customer/outage/report"
+              className="hidden items-center gap-1.5 text-sm font-medium text-zinc-300 transition-colors hover:text-white lg:flex"
+            >
+              <Radio
+                className="h-4 w-4 text-electric-blue"
+                aria-hidden="true"
+              />
+              Report Outage
+            </Link>
+
+            {/* Operator Console CTA */}
+            <Link href="/auth/login" className="hidden lg:block">
+              <Button className="bg-electric-blue text-white hover:bg-electric-blue/90">
+                Operator Console
               </Button>
             </Link>
-            <Link href="/auth/login">
-              <Button className="bg-electric-blue hover:bg-electric-blue/90 text-white">
-                Get Started
-              </Button>
-            </Link>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <motion.button
-            type="button"
-            className="lg:hidden p-2 rounded-lg text-zinc-300 hover:text-white hover:bg-zinc-800"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-            whileTap={{ scale: 0.95 }}
-          >
-            <AnimatePresence mode="wait">
-              {mobileOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X className="h-6 w-6" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="open"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu className="h-6 w-6" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
+            {/* Mobile menu button */}
+            <motion.button
+              type="button"
+              className="rounded-lg p-2 text-zinc-300 hover:bg-zinc-800 hover:text-white lg:hidden"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
+              whileTap={{ scale: 0.95 }}
+            >
+              <AnimatePresence mode="wait">
+                {mobileOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="h-6 w-6" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="open"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Menu className="h-6 w-6" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          </div>
         </div>
 
-        {/* Mobile Drawer with Framer Motion */}
+        {/* Mobile drawer */}
         <AnimatePresence mode="wait">
           {mobileOpen && (
             <motion.div
@@ -174,10 +185,10 @@ export function LandingNav() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden overflow-hidden"
+              className="overflow-hidden lg:hidden"
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-              <div className="py-4 border-t border-zinc-800">
+              <div className="border-t border-zinc-800 py-4">
                 <motion.div
                   className="flex flex-col gap-2"
                   initial={{ opacity: 0, y: -20 }}
@@ -188,7 +199,7 @@ export function LandingNav() {
                     <motion.link
                       key={link.href}
                       href={link.href}
-                      className="px-3 py-2 text-base font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-lg"
+                      className="rounded-lg px-3 py-2 text-base font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white"
                       onClick={(e) => {
                         if (link.href.startsWith("#")) {
                           e.preventDefault();
@@ -201,20 +212,20 @@ export function LandingNav() {
                     </motion.link>
                   ))}
                   <motion.div
-                    className="pt-4 border-t border-zinc-800 flex flex-col gap-2"
+                    className="flex flex-col gap-2 border-t border-zinc-800 pt-4"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                   >
                     <Link
-                      href="/auth/login"
+                      href="/customer/outage/report"
                       onClick={() => setMobileOpen(false)}
                     >
                       <Button
                         variant="outline"
                         className="w-full justify-start"
                       >
-                        Sign In
+                        Report Outage
                       </Button>
                     </Link>
                     <Link
@@ -222,7 +233,7 @@ export function LandingNav() {
                       onClick={() => setMobileOpen(false)}
                     >
                       <Button className="w-full justify-start">
-                        Get Started
+                        Operator Console
                       </Button>
                     </Link>
                   </motion.div>

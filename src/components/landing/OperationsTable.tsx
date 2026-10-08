@@ -80,6 +80,7 @@ export function OperationsTable() {
 
   return (
     <motion.section
+      id="operations"
       ref={ref}
       initial="hidden"
       animate={isVisible ? "visible" : "hidden"}
