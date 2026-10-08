@@ -1,15 +1,7 @@
 "use client";
 
-import { motion, stagger } from "framer-motion";
 import { AlertTriangle, Clock, Database, Zap } from "lucide-react";
-import {
-  useAuth,
-  useOutages,
-  useReveal,
-  useSchedules,
-  useZones,
-} from "@/hooks";
-import { easing } from "@/lib/animation";
+import { useAuth, useOutages, useSchedules, useZones } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 interface StatusItem {
@@ -17,15 +9,25 @@ interface StatusItem {
   value: string | number;
   icon: React.ReactNode;
   color: string;
-  trend?: "up" | "down" | "stable";
 }
 
+/**
+ * LiveStatusStrip — telemetry rail anchored directly under the
+ * navigation bar.
+ *
+ * Visibility-first: the strip renders statically and is fully
+ * visible on the first paint. Ambient status pulses are CSS-only
+ * (animate-ping) and are disabled under prefers-reduced-motion.
+ *
+ * Data integrity: values come from the real backend via TanStack
+ * Query. Unauthenticated visitors see an honest "—" placeholder
+ * and a sign-in prompt — never invented grid measurements.
+ */
 export function LiveStatusStrip() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { data: outages } = useOutages({ limit: 100 });
   const { data: schedules } = useSchedules({ limit: 100 });
   const { data: zones } = useZones({ limit: 100 });
-  const { ref, isVisible } = useReveal({ threshold: 0.1 });
 
   const activeOutages =
     outages?.data?.filter((o) =>
@@ -46,181 +48,93 @@ export function LiveStatusStrip() {
     {
       label: "Active Outages",
       value: isAuthenticated ? activeOutages : "—",
-      icon: <AlertTriangle className="h-4 w-4" />,
+      icon: <AlertTriangle className="h-4 w-4" aria-hidden="true" />,
       color: "text-amber-400",
-      trend: activeOutages > 10 ? "up" : "stable",
     },
     {
       label: "Priority Outages",
       value: isAuthenticated ? priorityOutages : "—",
-      icon: <Zap className="h-4 w-4" />,
+      icon: <Zap className="h-4 w-4" aria-hidden="true" />,
       color: "text-red-400",
-      trend: "stable",
     },
     {
       label: "Active Schedules",
       value: isAuthenticated ? activeSchedules : "—",
-      icon: <Clock className="h-4 w-4" />,
+      icon: <Clock className="h-4 w-4" aria-hidden="true" />,
       color: "text-electric-blue",
-      trend: "stable",
     },
     {
       label: "Grid Zones",
       value: isAuthenticated ? totalZones : "—",
-      icon: <Database className="h-4 w-4" />,
+      icon: <Database className="h-4 w-4" aria-hidden="true" />,
       color: "text-smart-teal",
-      trend: "stable",
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.08 } },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: easing.easeOut },
-    },
-  };
-
-  if (authLoading) {
-    return (
-      <motion.div
-        ref={ref}
-        initial={false}
-        animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
-        className={cn(
-          "border-t border-zinc-800 bg-zinc-950/50",
-          isVisible ? "opacity-100" : "opacity-0",
-        )}
-      >
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center gap-8 overflow-x-auto pb-2">
-            {[1, 2, 3, 4].map((i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-2 whitespace-nowrap"
-              >
-                <motion.div
-                  className="h-4 w-4 rounded bg-zinc-700"
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{
-                    duration: 1.2,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                  }}
-                />
-                <motion.div
-                  className="h-4 w-16 bg-zinc-700 rounded"
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{
-                    duration: 1.2,
-                    repeat: Infinity,
-                    delay: i * 0.2 + 0.1,
-                  }}
-                />
-                <motion.div
-                  className="h-4 w-12 bg-zinc-700 rounded"
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{
-                    duration: 1.2,
-                    repeat: Infinity,
-                    delay: i * 0.2 + 0.2,
-                  }}
-                />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
-
   return (
-    <motion.section
-      ref={ref}
-      initial="hidden"
-      animate={isVisible ? "visible" : "hidden"}
-      variants={containerVariants}
-      className={cn(
-        "border-t border-zinc-800 bg-zinc-950/50 transition-all duration-500",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
-      )}
+    <section
+      className="border-t border-zinc-800 bg-zinc-950/50"
       aria-label="Live system status"
     >
       <div className="container mx-auto px-4 py-3">
-        <motion.div
-          className="flex flex-wrap items-center gap-6 md:gap-10"
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-        >
-          <motion.div
-            className="flex items-center gap-2 text-xs font-medium text-zinc-400"
-            variants={itemVariants}
-          >
-            <motion.span
-              className="w-1.5 h-1.5 rounded-full bg-emerald-500"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            />
-            SYSTEM OPERATIONAL
-          </motion.div>
-
-          <div className="w-px h-6 bg-zinc-800 md:hidden" />
-
-          {statusItems.map((item, index) => (
-            <motion.div
-              key={item.label}
-              variants={itemVariants}
-              className="flex items-center gap-2 whitespace-nowrap"
-            >
-              <motion.span
-                className={cn(item.color, "flex-shrink-0")}
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  delay: index * 0.3,
-                }}
+        {authLoading ? (
+          /* Loading state — visible placeholder bars, never opacity-0 */
+          <div className="flex items-center gap-8 overflow-x-auto">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="flex items-center gap-2 whitespace-nowrap"
+                aria-hidden="true"
               >
-                {item.icon}
-              </motion.span>
-              <motion.div className="flex flex-col" variants={itemVariants}>
-                <span className="text-xs text-zinc-500 uppercase tracking-wide">
+                <div className="h-4 w-4 animate-pulse rounded bg-zinc-700" />
+                <div className="h-4 w-20 animate-pulse rounded bg-zinc-700" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 md:gap-10">
+            {/* System status */}
+            <div className="flex items-center gap-2 text-xs font-medium text-zinc-400">
+              <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              </span>
+              SYSTEM OPERATIONAL
+            </div>
+
+            {statusItems.map((item, index) => (
+              <div
+                key={item.label}
+                className="flex items-center gap-2 whitespace-nowrap"
+              >
+                <span className={cn(item.color, "flex-shrink-0")}>
+                  {item.icon}
+                </span>
+                <span className="text-xs uppercase tracking-wide text-zinc-500">
                   {item.label}
                 </span>
                 <span className="font-mono text-sm font-medium tabular-nums text-white">
                   {item.value}
                 </span>
-              </motion.div>
-              {index < statusItems.length - 1 && (
-                <div className="w-px h-6 bg-zinc-800 mx-2 hidden sm:block" />
-              )}
-            </motion.div>
-          ))}
+                {index < statusItems.length - 1 && (
+                  <span
+                    className="mx-2 hidden h-6 w-px bg-zinc-800 sm:block"
+                    aria-hidden="true"
+                  />
+                )}
+              </div>
+            ))}
 
-          {!isAuthenticated && (
-            <motion.div
-              className="flex items-center gap-2 ml-auto text-xs text-zinc-500"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <span className="hidden sm:inline">
-                Sign in to view live data
-              </span>
-            </motion.div>
-          )}
-        </motion.div>
+            {!isAuthenticated && (
+              <div className="ml-auto flex items-center gap-2 text-xs text-zinc-500">
+                <span className="hidden sm:inline">
+                  Sign in to view live data
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    </motion.section>
+    </section>
   );
 }
