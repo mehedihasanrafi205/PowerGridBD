@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -18,17 +19,100 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useTheme } from "@/components/theme";
 import { cn } from "@/lib/utils";
 
-const COLORS = {
-  primary: "hsl(var(--primary))",
-  secondary: "hsl(var(--secondary))",
-  success: "hsl(var(--success))",
-  warning: "hsl(var(--warning))",
-  destructive: "hsl(var(--destructive))",
-  muted: "hsl(var(--muted))",
-  accent: "hsl(var(--accent))",
+/** Resolved concrete colors for Recharts SVG attributes. */
+export interface ChartColors {
+  primary: string;
+  secondary: string;
+  success: string;
+  warning: string;
+  destructive: string;
+  muted: string;
+  accent: string;
+  card: string;
+  border: string;
+  foreground: string;
+  mutedForeground: string;
+  background: string;
+}
+
+/** Pre-hydration OKLCH fallbacks per theme (resolved live after mount). */
+const FALLBACKS: { light: ChartColors; dark: ChartColors } = {
+  light: {
+    primary: "oklch(0.58 0.25 264)",
+    secondary: "oklch(0.97 0 0)",
+    success: "oklch(0.65 0.18 145)",
+    warning: "oklch(0.83 0.18 85)",
+    destructive: "oklch(0.577 0.245 27.325)",
+    muted: "oklch(0.97 0 0)",
+    accent: "oklch(0.72 0.15 165)",
+    card: "oklch(1 0 0)",
+    border: "oklch(0.922 0 0)",
+    foreground: "oklch(0.145 0 0)",
+    mutedForeground: "oklch(0.556 0 0)",
+    background: "oklch(1 0 0)",
+  },
+  dark: {
+    primary: "oklch(0.58 0.25 264)",
+    secondary: "oklch(0.269 0 0)",
+    success: "oklch(0.65 0.18 145)",
+    warning: "oklch(0.83 0.18 85)",
+    destructive: "oklch(0.704 0.191 22.216)",
+    muted: "oklch(0.269 0 0)",
+    accent: "oklch(0.72 0.15 165)",
+    card: "oklch(0.205 0 0)",
+    border: "oklch(1 0 0 / 10%)",
+    foreground: "oklch(0.985 0 0)",
+    mutedForeground: "oklch(0.708 0 0)",
+    background: "oklch(0.145 0 0)",
+  },
 };
+
+function readVar(name: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+  return value || fallback;
+}
+
+/**
+ * useChartColors — theme-aware concrete colors for Recharts.
+ *
+ * Recharts renders SVG attributes, which need resolved color
+ * values (CSS `var()` references like the old `hsl(var(--…))`
+ * strings never resolved — the tokens are OKLCH). This hook
+ * reads the computed design tokens after mount and re-resolves
+ * whenever the theme changes, so charts follow light/dark mode.
+ * SSR-safe: returns light-mode fallbacks before hydration.
+ */
+export function useChartColors(): ChartColors {
+  const { resolvedTheme } = useTheme();
+  const [colors, setColors] = useState<ChartColors>({ ...FALLBACKS.light });
+
+  useEffect(() => {
+    const fallback =
+      resolvedTheme === "dark" ? FALLBACKS.dark : FALLBACKS.light;
+    setColors({
+      primary: readVar("--primary", fallback.primary),
+      secondary: readVar("--secondary", fallback.secondary),
+      success: readVar("--color-emerald", fallback.success),
+      warning: readVar("--color-amber", fallback.warning),
+      destructive: readVar("--destructive", fallback.destructive),
+      muted: readVar("--muted", fallback.muted),
+      accent: readVar("--accent", fallback.accent),
+      card: readVar("--card", fallback.card),
+      border: readVar("--border", fallback.border),
+      foreground: readVar("--foreground", fallback.foreground),
+      mutedForeground: readVar("--muted-foreground", fallback.mutedForeground),
+      background: readVar("--background", fallback.background),
+    });
+  }, [resolvedTheme]);
+
+  return colors;
+}
 
 export interface ChartDataPoint {
   name: string;
@@ -64,11 +148,13 @@ export function SimpleBarChart({
   dataKey,
   nameKey = "name",
   height = 200,
-  color = COLORS.primary,
+  color,
   showGrid = false,
   showTooltip = true,
   className,
 }: BarChartProps) {
+  const theme = useChartColors();
+  const resolvedColor = color ?? theme.primary;
   if (!data || data.length === 0) {
     return (
       <div
@@ -88,36 +174,36 @@ export function SimpleBarChart({
         {showGrid && (
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke="hsl(var(--muted))"
+            stroke={theme.muted}
             vertical={false}
           />
         )}
         <XAxis
           dataKey={nameKey}
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: theme.mutedForeground }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: theme.mutedForeground }}
           axisLine={false}
           tickLine={false}
         />
         {showTooltip && (
           <Tooltip
             contentStyle={{
-              backgroundColor: "hsl(var(--card))",
-              border: "1px solid hsl(var(--border))",
+              backgroundColor: theme.card,
+              border: `1px solid ${theme.border}`,
               borderRadius: "8px",
-              boxShadow: "0 4px 12px hsl(var(--border))",
+              boxShadow: `0 4px 12px ${theme.border}`,
             }}
-            labelStyle={{ color: "hsl(var(--foreground))" }}
+            labelStyle={{ color: theme.foreground }}
             formatter={(value: unknown) => [Number(value) || 0, dataKey]}
           />
         )}
         <Bar
           dataKey={dataKey}
-          fill={color}
+          fill={resolvedColor}
           radius={[4, 4, 0, 0]}
           barSize={40}
         />
@@ -143,12 +229,14 @@ export function SimpleLineChart({
   dataKey,
   nameKey = "date",
   height = 250,
-  color = COLORS.primary,
+  color,
   showGrid = true,
   showTooltip = true,
   showArea = false,
   className,
 }: LineChartProps) {
+  const theme = useChartColors();
+  const resolvedColor = color ?? theme.primary;
   if (!data || data.length === 0) {
     return (
       <div
@@ -172,39 +260,39 @@ export function SimpleLineChart({
           {showGrid && (
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="hsl(var(--muted))"
+              stroke={theme.muted}
               vertical={false}
             />
           )}
           <XAxis
             dataKey={nameKey}
-            tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+            tick={{ fontSize: 11, fill: theme.mutedForeground }}
             axisLine={false}
             tickLine={false}
             interval="preserveStartEnd"
           />
           <YAxis
-            tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+            tick={{ fontSize: 11, fill: theme.mutedForeground }}
             axisLine={false}
             tickLine={false}
           />
           {showTooltip && (
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(var(--card))",
-                border: "1px solid hsl(var(--border))",
+                backgroundColor: theme.card,
+                border: `1px solid ${theme.border}`,
                 borderRadius: "8px",
-                boxShadow: "0 4px 12px hsl(var(--border))",
+                boxShadow: `0 4px 12px ${theme.border}`,
               }}
-              labelStyle={{ color: "hsl(var(--foreground))" }}
+              labelStyle={{ color: theme.foreground }}
               formatter={(value: unknown) => [Number(value) || 0, dataKey]}
             />
           )}
           <Area
             type="monotone"
             dataKey={dataKey}
-            stroke={color}
-            fill={color}
+            stroke={resolvedColor}
+            fill={resolvedColor}
             fillOpacity={0.1}
             strokeWidth={2}
           />
@@ -217,40 +305,40 @@ export function SimpleLineChart({
           {showGrid && (
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="hsl(var(--muted))"
+              stroke={theme.muted}
               vertical={false}
             />
           )}
           <XAxis
             dataKey={nameKey}
-            tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+            tick={{ fontSize: 11, fill: theme.mutedForeground }}
             axisLine={false}
             tickLine={false}
             interval="preserveStartEnd"
           />
           <YAxis
-            tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+            tick={{ fontSize: 11, fill: theme.mutedForeground }}
             axisLine={false}
             tickLine={false}
           />
           {showTooltip && (
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(var(--card))",
-                border: "1px solid hsl(var(--border))",
+                backgroundColor: theme.card,
+                border: `1px solid ${theme.border}`,
                 borderRadius: "8px",
-                boxShadow: "0 4px 12px hsl(var(--border))",
+                boxShadow: `0 4px 12px ${theme.border}`,
               }}
-              labelStyle={{ color: "hsl(var(--foreground))" }}
+              labelStyle={{ color: theme.foreground }}
               formatter={(value: unknown) => [Number(value) || 0, dataKey]}
             />
           )}
           <Line
             type="monotone"
             dataKey={dataKey}
-            stroke={color}
+            stroke={resolvedColor}
             strokeWidth={2}
-            dot={{ r: 4, strokeWidth: 2, fill: "hsl(var(--background))" }}
+            dot={{ r: 4, strokeWidth: 2, fill: theme.background }}
             activeDot={{ r: 6, strokeWidth: 2 }}
           />
         </LineChart>
@@ -269,24 +357,24 @@ interface PieChartProps {
   className?: string;
 }
 
-const DEFAULT_PIE_COLORS = [
-  COLORS.primary,
-  COLORS.secondary,
-  COLORS.success,
-  COLORS.warning,
-  COLORS.destructive,
-  COLORS.accent,
-];
-
 export function SimplePieChart({
   data,
   dataKey,
   nameKey = "name",
   height = 250,
-  colors = DEFAULT_PIE_COLORS,
+  colors,
   showTooltip = true,
   className,
 }: PieChartProps) {
+  const theme = useChartColors();
+  const resolvedColors = colors ?? [
+    theme.primary,
+    theme.secondary,
+    theme.success,
+    theme.warning,
+    theme.destructive,
+    theme.accent,
+  ];
   if (!data || data.length === 0) {
     return (
       <div
@@ -315,23 +403,23 @@ export function SimplePieChart({
             `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
           }
           labelLine={false}
-          stroke="hsl(var(--background))"
+          stroke={theme.background}
           strokeWidth={2}
         >
           {data.map((item, index) => (
             <Cell
               key={item.name ?? `cell-${index}`}
-              fill={colors[index % colors.length]}
+              fill={resolvedColors[index % resolvedColors.length]}
             />
           ))}
         </Pie>
         {showTooltip && (
           <Tooltip
             contentStyle={{
-              backgroundColor: "hsl(var(--card))",
-              border: "1px solid hsl(var(--border))",
+              backgroundColor: theme.card,
+              border: `1px solid ${theme.border}`,
               borderRadius: "8px",
-              boxShadow: "0 4px 12px hsl(var(--border))",
+              boxShadow: `0 4px 12px ${theme.border}`,
             }}
             formatter={(value: unknown) => [Number(value) || 0, dataKey]}
           />
@@ -358,6 +446,7 @@ export function SimpleComposedChart({
   height = 250,
   className,
 }: ComposedChartProps) {
+  const theme = useChartColors();
   if (!data || data.length === 0) {
     return (
       <div
@@ -379,29 +468,29 @@ export function SimpleComposedChart({
       >
         <CartesianGrid
           strokeDasharray="3 3"
-          stroke="hsl(var(--muted))"
+          stroke={theme.muted}
           vertical={false}
         />
         <XAxis
           dataKey={nameKey}
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: theme.mutedForeground }}
           axisLine={false}
           tickLine={false}
           interval="preserveStartEnd"
         />
         <YAxis
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: theme.mutedForeground }}
           axisLine={false}
           tickLine={false}
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "hsl(var(--card))",
-            border: "1px solid hsl(var(--border))",
+            backgroundColor: theme.card,
+            border: `1px solid ${theme.border}`,
             borderRadius: "8px",
-            boxShadow: "0 4px 12px hsl(var(--border))",
+            boxShadow: `0 4px 12px ${theme.border}`,
           }}
-          labelStyle={{ color: "hsl(var(--foreground))" }}
+          labelStyle={{ color: theme.foreground }}
         />
         <Legend />
         {bars.map((bar) => (
@@ -422,7 +511,7 @@ export function SimpleComposedChart({
             stroke={line.color}
             strokeWidth={2}
             name={line.name}
-            dot={{ r: 3, strokeWidth: 2, fill: "hsl(var(--background))" }}
+            dot={{ r: 3, strokeWidth: 2, fill: theme.background }}
             activeDot={{ r: 5, strokeWidth: 2 }}
           />
         ))}
@@ -446,10 +535,12 @@ export function SimpleHorizontalBarChart({
   dataKey,
   nameKey = "name",
   height,
-  color = COLORS.primary,
+  color,
   barSize = 30,
   className,
 }: HorizontalBarChartProps) {
+  const theme = useChartColors();
+  const resolvedColor = color ?? theme.primary;
   if (!data || data.length === 0) {
     return (
       <div
@@ -474,35 +565,35 @@ export function SimpleHorizontalBarChart({
       >
         <CartesianGrid
           strokeDasharray="3 3"
-          stroke="hsl(var(--muted))"
+          stroke={theme.muted}
           horizontal={false}
         />
         <XAxis
           type="number"
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: theme.mutedForeground }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
           type="category"
           dataKey={nameKey}
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: theme.mutedForeground }}
           axisLine={false}
           tickLine={false}
           width={140}
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "hsl(var(--card))",
-            border: "1px solid hsl(var(--border))",
+            backgroundColor: theme.card,
+            border: `1px solid ${theme.border}`,
             borderRadius: "8px",
-            boxShadow: "0 4px 12px hsl(var(--border))",
+            boxShadow: `0 4px 12px ${theme.border}`,
           }}
           formatter={(value: unknown) => [Number(value) || 0, dataKey]}
         />
         <Bar
           dataKey={dataKey}
-          fill={color}
+          fill={resolvedColor}
           radius={[0, 4, 4, 0]}
           barSize={barSize}
         />

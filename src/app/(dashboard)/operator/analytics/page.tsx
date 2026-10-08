@@ -4,14 +4,22 @@ import {
   AlertTriangle,
   BarChart3,
   Clock,
-  Loader2,
   MapPin,
   Target,
   TrendingUp,
   Users,
 } from "lucide-react";
-import { SimpleHorizontalBarChart, SimpleLineChart } from "@/components/charts";
-import { Badge } from "@/components/ui/badge";
+import {
+  SimpleHorizontalBarChart,
+  SimpleLineChart,
+  useChartColors,
+} from "@/components/charts";
+import {
+  EmptyState,
+  OperationalMetric,
+  PageHeader,
+  TelemetryRow,
+} from "@/components/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   useAuth,
@@ -20,10 +28,9 @@ import {
   usePerformanceAnalytics,
   useTrendsAnalytics,
 } from "@/hooks";
-import { cn } from "@/lib/utils";
 
 export default function OperatorAnalyticsPage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const { data: analytics, isLoading: analyticsLoading } =
     useOperationalAnalytics();
   const { data: performance, isLoading: performanceLoading } =
@@ -31,6 +38,7 @@ export default function OperatorAnalyticsPage() {
   const { data: geographical, isLoading: geographicalLoading } =
     useGeographicalAnalytics();
   const { data: trends, isLoading: trendsLoading } = useTrendsAnalytics();
+  const chartColors = useChartColors();
 
   if (
     authLoading ||
@@ -42,16 +50,16 @@ export default function OperatorAnalyticsPage() {
     return (
       <div className="container mx-auto py-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 w-1/4 bg-muted rounded" />
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="h-8 w-1/4 rounded bg-muted" />
+          <div className="grid gap-4 md:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-card border rounded-xl p-6">
-                <div className="h-4 w-1/4 bg-muted rounded mb-2" />
-                <div className="h-8 w-1/2 bg-muted rounded" />
+              <div key={i} className="rounded-xl border bg-card p-6">
+                <div className="mb-2 h-4 w-1/4 rounded bg-muted" />
+                <div className="h-8 w-1/2 rounded bg-muted" />
               </div>
             ))}
           </div>
-          <div className="mt-8 h-64 bg-muted rounded" />
+          <div className="mt-8 h-64 rounded bg-muted" />
         </div>
       </div>
     );
@@ -62,123 +70,80 @@ export default function OperatorAnalyticsPage() {
   const g = geographical?.data;
   const t = trends?.data;
 
-  // Prepare chart data
+  // Prepare chart data (typed — backend shapes from analytics.type.ts)
   const dailyOutageData =
-    t?.dailyOutages?.slice(-30).map((day: any) => ({
+    t?.dailyOutages?.slice(-30).map((day) => ({
       date: day.date,
       count: day.count,
     })) || [];
 
   const peakHoursData =
-    t?.peakLoadSheddingHours?.map((hour: any) => ({
+    t?.peakLoadSheddingHours?.map((hour) => ({
       name: `${hour.hour}:00`,
       value: hour.count,
     })) || [];
 
   const outageByAreaData =
-    g?.outageByArea?.slice(0, 10).map((area: any) => ({
+    g?.outageByArea?.slice(0, 10).map((area) => ({
       name: area.areaName,
       value: area.outageCount,
     })) || [];
 
   const topFeedersData =
-    g?.topWorstFeeders?.slice(0, 10).map((feeder: any) => ({
+    g?.topWorstFeeders?.slice(0, 10).map((feeder) => ({
       name: feeder.feederName,
       value: feeder.outageCount,
     })) || [];
 
   const technicianWorkloadData =
-    p?.technicianWorkload?.map((tech: any) => ({
+    p?.technicianWorkload?.map((tech) => ({
       name: tech.technicianName,
       assigned: tech.assignedCount,
       resolved: tech.resolvedCount,
     })) || [];
 
+  const totalTrendOutages =
+    t?.dailyOutages?.reduce((sum, d) => sum + d.count, 0) || 0;
+
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-          <BarChart3 className="h-8 w-8 text-primary" />
-          Operational Analytics
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Real-time performance metrics and grid insights
-        </p>
+      <PageHeader
+        title="Operational Analytics"
+        description="Real-time performance metrics and grid insights."
+        status={
+          <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <BarChart3 className="h-4 w-4 text-primary" aria-hidden="true" />
+            Live backend telemetry
+          </span>
+        }
+      />
+
+      {/* Key metrics */}
+      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <OperationalMetric
+          label="Active Outages"
+          value={a?.activeOutages || 0}
+          icon={<AlertTriangle className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="Priority Outages"
+          value={a?.priorityOutages || 0}
+          icon={<Target className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="Available Techs"
+          value={`${a?.availableTechnicians || 0} / ${a?.totalTechnicians || 0}`}
+          icon={<Users className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="Active Schedules"
+          value={a?.activeSchedules || 0}
+          icon={<Clock className="h-5 w-5" />}
+        />
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Active Outages</p>
-                <p className="text-3xl font-bold text-foreground mt-1">
-                  {a?.activeOutages || 0}
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-destructive/15">
-                <AlertTriangle className="h-6 w-6 text-destructive" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Priority Outages
-                </p>
-                <p className="text-3xl font-bold text-foreground mt-1">
-                  {a?.priorityOutages || 0}
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-amber/15">
-                <Target className="h-6 w-6 text-amber" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Available Techs</p>
-                <p className="text-3xl font-bold text-foreground mt-1">
-                  {a?.availableTechnicians || 0} / {a?.totalTechnicians || 0}
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-emerald/15">
-                <Users className="h-6 w-6 text-emerald" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Active Schedules
-                </p>
-                <p className="text-3xl font-bold text-foreground mt-1">
-                  {a?.activeSchedules || 0}
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-electric-blue/15">
-                <Clock className="h-6 w-6 text-electric-blue" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Performance Metrics */}
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      {/* Performance metrics */}
+      <div className="mb-8 grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -188,65 +153,53 @@ export default function OperatorAnalyticsPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">
-                  MTTR (Mean Time To Resolution)
-                </span>
-                <span className="font-semibold text-electric-blue">
-                  {p?.mttr || 0}h
-                </span>
-              </div>
-              <div className="h-3 bg-muted rounded-full overflow-hidden">
+              <TelemetryRow
+                label="MTTR (Mean Time To Resolution)"
+                value={`${p?.mttr || 0}h`}
+              />
+              <div className="mt-1 h-3 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full bg-electric-blue rounded-full transition-all"
+                  className="h-full rounded-full bg-electric-blue transition-all"
                   style={{
                     width: `${Math.min(((p?.mttr || 0) / 48) * 100, 100)}%`,
                   }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Target: &lt; 24h
               </p>
             </div>
 
             <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">
-                  Avg Assignment Time
-                </span>
-                <span className="font-semibold text-emerald">
-                  {p?.avgAssignmentTime || 0}h
-                </span>
-              </div>
-              <div className="h-3 bg-muted rounded-full overflow-hidden">
+              <TelemetryRow
+                label="Avg Assignment Time"
+                value={`${p?.avgAssignmentTime || 0}h`}
+              />
+              <div className="mt-1 h-3 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full bg-emerald rounded-full transition-all"
+                  className="h-full rounded-full bg-emerald transition-all"
                   style={{
                     width: `${Math.min(((p?.avgAssignmentTime || 0) / 24) * 100, 100)}%`,
                   }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Target: &lt; 4h
               </p>
             </div>
 
             <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground">
-                  First-Time Fix Rate
-                </span>
-                <span className="font-semibold text-primary">
-                  {p?.firstTimeFixRate || 0}%
-                </span>
-              </div>
-              <div className="h-3 bg-muted rounded-full overflow-hidden">
+              <TelemetryRow
+                label="First-Time Fix Rate"
+                value={`${p?.firstTimeFixRate || 0}%`}
+              />
+              <div className="mt-1 h-3 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full bg-primary rounded-full transition-all"
+                  className="h-full rounded-full bg-primary transition-all"
                   style={{ width: `${p?.firstTimeFixRate || 0}%` }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Target: &gt; 90%
               </p>
             </div>
@@ -270,20 +223,21 @@ export default function OperatorAnalyticsPage() {
                 dataKey="value"
                 nameKey="name"
                 height={Math.max(technicianWorkloadData.length * 35, 200)}
-                color="hsl(var(--primary))"
+                color={chartColors.primary}
               />
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <Users className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <p>No workload data available</p>
-              </div>
+              <EmptyState
+                icon={<Users className="h-5 w-5" />}
+                title="No workload data available"
+                description="Technician assignments will appear here."
+              />
             )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Geographical Analytics */}
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      {/* Geographical analytics */}
+      <div className="mb-8 grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -298,13 +252,14 @@ export default function OperatorAnalyticsPage() {
                 dataKey="value"
                 nameKey="name"
                 height={Math.max(outageByAreaData.length * 35, 200)}
-                color="hsl(var(--primary))"
+                color={chartColors.primary}
               />
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <MapPin className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <p>No geographical data available</p>
-              </div>
+              <EmptyState
+                icon={<MapPin className="h-5 w-5" />}
+                title="No geographical data available"
+                description="Area-level outage distribution will appear here."
+              />
             )}
           </CardContent>
         </Card>
@@ -323,20 +278,21 @@ export default function OperatorAnalyticsPage() {
                 dataKey="value"
                 nameKey="name"
                 height={Math.max(topFeedersData.length * 35, 200)}
-                color="hsl(var(--destructive))"
+                color={chartColors.destructive}
               />
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <Target className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <p>No critical feeders identified</p>
-              </div>
+              <EmptyState
+                icon={<Target className="h-5 w-5" />}
+                title="No critical feeders identified"
+                description="Feeders with repeated outages will appear here."
+              />
             )}
           </CardContent>
         </Card>
       </div>
 
       {/* Trends */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -352,23 +308,23 @@ export default function OperatorAnalyticsPage() {
                   dataKey="count"
                   nameKey="date"
                   height={250}
-                  color="hsl(var(--primary))"
+                  color={chartColors.primary}
                   showArea={true}
                 />
-                <p className="text-center text-sm text-muted-foreground mt-4">
+                <p className="mt-4 text-center text-sm text-muted-foreground">
                   Total:{" "}
-                  {t?.dailyOutages?.reduce(
-                    (sum: number, d: any) => sum + d.count,
-                    0,
-                  ) || 0}{" "}
+                  <span className="font-mono font-medium tabular-nums text-foreground">
+                    {totalTrendOutages}
+                  </span>{" "}
                   outages
                 </p>
               </>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <TrendingUp className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <p>No trend data available</p>
-              </div>
+              <EmptyState
+                icon={<TrendingUp className="h-5 w-5" />}
+                title="No trend data available"
+                description="Daily outage history will appear here."
+              />
             )}
           </CardContent>
         </Card>
@@ -387,13 +343,14 @@ export default function OperatorAnalyticsPage() {
                 dataKey="value"
                 nameKey="name"
                 height={Math.max(peakHoursData.length * 35, 300)}
-                color="hsl(var(--secondary))"
+                color={chartColors.secondary}
               />
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <p>No load-shedding data available</p>
-              </div>
+              <EmptyState
+                icon={<Clock className="h-5 w-5" />}
+                title="No load-shedding data available"
+                description="Peak-hour distribution will appear here."
+              />
             )}
           </CardContent>
         </Card>
