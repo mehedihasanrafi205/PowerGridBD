@@ -1,14 +1,16 @@
 "use client";
 
-import { useAuth } from "@/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertTriangle, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -16,14 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCreateOutage } from "@/hooks";
-import { useAreas } from "@/hooks";
+import { Textarea } from "@/components/ui/textarea";
+import { useAreas, useAuth, useCreateOutage } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { AlertTriangle, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { toast } from "sonner";
 
 const outageSchema = z.object({
   description: z
@@ -37,7 +34,7 @@ const outageSchema = z.object({
 type OutageForm = z.infer<typeof outageSchema>;
 
 export default function ReportOutagePage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const router = useRouter();
   const { data: areas, isLoading: areasLoading } = useAreas();
   const { mutate: createOutage, isPending } = useCreateOutage();
@@ -64,7 +61,7 @@ export default function ReportOutagePage() {
       await createOutage(data);
       toast.success("Outage reported successfully!");
       router.push("/customer/outages");
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   };
