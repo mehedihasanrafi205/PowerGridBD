@@ -11,20 +11,16 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { EmptyState, ErrorState, PageHeader } from "@/components/dashboard";
+import {
+  ApplicationReviewDialog,
+  EmptyState,
+  ErrorState,
+  PageHeader,
+} from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
@@ -41,8 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import { useApplications, useAuth, useReviewApplication } from "@/hooks";
+import { useApplications, useAuth } from "@/hooks";
 import type { Application, ApplicationStatus } from "@/types";
 
 const statusOptions: Array<{ value: string; label: string }> = [
@@ -84,8 +79,6 @@ export default function AdminApplicationsPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [selected, setSelected] = useState<Application | null>(null);
-  const [rejectReason, setRejectReason] = useState("");
-  const [confirmReject, setConfirmReject] = useState(false);
 
   const {
     data: applications,
@@ -102,7 +95,8 @@ export default function AdminApplicationsPage() {
     sortOrder: "desc",
   });
 
-  const review = useReviewApplication();
+  const rows = applications?.data ?? [];
+  const pendingCount = rows.filter((a) => isReviewable(a.status)).length;
 
   if (authLoading) {
     return (
@@ -114,35 +108,6 @@ export default function AdminApplicationsPage() {
       </div>
     );
   }
-
-  const rows = applications?.data ?? [];
-  const pendingCount = rows.filter((a) => isReviewable(a.status)).length;
-
-  const approve = (app: Application) => {
-    review.mutate(
-      { id: app.id, payload: { status: "APPROVED" } },
-      { onSuccess: () => setSelected(null) },
-    );
-  };
-
-  const reject = (app: Application) => {
-    review.mutate(
-      {
-        id: app.id,
-        payload: {
-          status: "REJECTED",
-          reason: rejectReason.trim() || undefined,
-        },
-      },
-      {
-        onSuccess: () => {
-          setSelected(null);
-          setConfirmReject(false);
-          setRejectReason("");
-        },
-      },
-    );
-  };
 
   return (
     <div className="container mx-auto py-8">
@@ -294,11 +259,7 @@ export default function AdminApplicationsPage() {
                                 variant="ghost"
                                 size="sm"
                                 title={`Review ${app.name}`}
-                                onClick={() => {
-                                  setSelected(app);
-                                  setRejectReason("");
-                                  setConfirmReject(false);
-                                }}
+                                onClick={() => setSelected(app)}
                               >
                                 <FileText
                                   className="h-4 w-4"
@@ -313,8 +274,7 @@ export default function AdminApplicationsPage() {
                                     size="sm"
                                     title={`Approve ${app.name}`}
                                     className="text-emerald hover:text-emerald"
-                                    disabled={review.isPending}
-                                    onClick={() => approve(app)}
+                                    onClick={() => setSelected(app)}
                                   >
                                     <Check
                                       className="h-4 w-4"
@@ -327,12 +287,7 @@ export default function AdminApplicationsPage() {
                                     size="sm"
                                     title={`Reject ${app.name}`}
                                     className="text-destructive hover:text-destructive"
-                                    disabled={review.isPending}
-                                    onClick={() => {
-                                      setSelected(app);
-                                      setRejectReason("");
-                                      setConfirmReject(true);
-                                    }}
+                                    onClick={() => setSelected(app)}
                                   >
                                     <X className="h-4 w-4" aria-hidden="true" />
                                   </Button>
@@ -393,151 +348,11 @@ export default function AdminApplicationsPage() {
         </CardContent>
       </Card>
 
-      {/* Review dialog — full application + decision */}
-      <Dialog
-        open={selected !== null}
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelected(null);
-            setConfirmReject(false);
-          }
-        }}
-      >
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              Application — {selected?.name}
-            </DialogTitle>
-            <DialogDescription>
-              Applied on{" "}
-              {selected?.createdAt
-                ? new Date(selected.createdAt).toLocaleDateString()
-                : "—"}
-            </DialogDescription>
-          </DialogHeader>
-
-          {selected && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Badge variant={applicationVariant(selected.status)}>
-                  {selected.status}
-                </Badge>
-                {selected.reviewer && (
-                  <span className="text-xs text-muted-foreground">
-                    Reviewed by {selected.reviewer.name}
-                    {selected.reviewedAt
-                      ? ` on ${new Date(selected.reviewedAt).toLocaleDateString()}`
-                      : ""}
-                  </span>
-                )}
-              </div>
-
-              <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-                <dt className="text-muted-foreground">Email</dt>
-                <dd>{selected.email}</dd>
-                <dt className="text-muted-foreground">Phone</dt>
-                <dd className="font-mono">{selected.phone}</dd>
-                <dt className="text-muted-foreground">Experience</dt>
-                <dd className="font-mono tabular-nums">
-                  {selected.experienceYears ?? selected.experience ?? 0} years
-                </dd>
-                <dt className="text-muted-foreground">Skills</dt>
-                <dd>{selected.skills || "—"}</dd>
-              </dl>
-
-              <div>
-                <p className="mb-1 text-sm font-medium">Motivation</p>
-                <p className="whitespace-pre-wrap rounded-lg bg-muted/50 p-3 text-sm text-muted-foreground">
-                  {selected.motivation || "—"}
-                </p>
-              </div>
-
-              {selected.rejectionReason && (
-                <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3">
-                  <p className="mb-1 text-sm font-medium text-destructive">
-                    Rejection reason
-                  </p>
-                  <p className="text-sm text-destructive/90">
-                    {selected.rejectionReason}
-                  </p>
-                </div>
-              )}
-
-              {isReviewable(selected.status) &&
-                (confirmReject ? (
-                  <div className="space-y-3 border-t pt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="reject-reason">
-                        Rejection reason{" "}
-                        <span className="font-normal text-muted-foreground">
-                          (optional, shared with the applicant)
-                        </span>
-                      </Label>
-                      <Textarea
-                        id="reject-reason"
-                        placeholder="e.g. Insufficient field experience for high-voltage work…"
-                        value={rejectReason}
-                        onChange={(e) => setRejectReason(e.target.value)}
-                        rows={3}
-                      />
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="flex-1"
-                        onClick={() => setConfirmReject(false)}
-                      >
-                        Back
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        className="flex-1"
-                        disabled={review.isPending}
-                        onClick={() => reject(selected)}
-                      >
-                        {review.isPending ? "Rejecting…" : "Confirm rejection"}
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex gap-2 border-t pt-4">
-                    <Button
-                      type="button"
-                      className="flex-1 gap-2"
-                      disabled={review.isPending}
-                      onClick={() => approve(selected)}
-                    >
-                      <Check className="h-4 w-4" aria-hidden="true" />
-                      {review.isPending ? "Approving…" : "Approve"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      className="flex-1 gap-2"
-                      disabled={review.isPending}
-                      onClick={() => setConfirmReject(true)}
-                    >
-                      <X className="h-4 w-4" aria-hidden="true" />
-                      Reject
-                    </Button>
-                  </div>
-                ))}
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setSelected(null)}
-            >
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Review dialog — shared workspace */}
+      <ApplicationReviewDialog
+        application={selected}
+        onClose={() => setSelected(null)}
+      />
     </div>
   );
 }
