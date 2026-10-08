@@ -1,11 +1,29 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { useUsers } from "@/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Ban,
+  CheckCircle,
+  Search,
+  Shield,
+  Trash2,
+  User,
+  UserCheck,
+} from "lucide-react";
+import { useState } from "react";
+import { EmptyState, ErrorState, PageHeader } from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -15,144 +33,143 @@ import {
 } from "@/components/ui/select";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableRow,
-  TableHead,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { Pagination } from "@/components/ui/pagination";
 import {
-  Search,
-  Filter,
-  Loader2,
-  Download,
-  User,
-  UserPlus,
-  Shield,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import Link from "next/link";
+  useAuth,
+  useDeleteUser,
+  useUpdateUserRole,
+  useUpdateUserStatus,
+  useUsers,
+} from "@/hooks";
+import type { Role, UserStatus } from "@/types";
+
+const roleOptions: Array<{ value: string; label: string }> = [
+  { value: "all", label: "All Roles" },
+  { value: "CUSTOMER", label: "Customer" },
+  { value: "TECHNICIAN", label: "Technician" },
+  { value: "POWER_OPERATOR", label: "Power Operator" },
+  { value: "ADMIN", label: "Admin" },
+];
+
+const statusOptions: Array<{ value: string; label: string }> = [
+  { value: "all", label: "All Statuses" },
+  { value: "ACTIVE", label: "Active" },
+  { value: "BLOCKED", label: "Blocked" },
+];
+
+const assignableRoles: Role[] = [
+  "CUSTOMER",
+  "TECHNICIAN",
+  "POWER_OPERATOR",
+  "ADMIN",
+];
+
+/** Map user role to a semantic Badge variant. */
+function roleVariant(role: string) {
+  if (role === "ADMIN") return "destructive" as const;
+  if (role === "POWER_OPERATOR") return "warning" as const;
+  if (role === "TECHNICIAN") return "success" as const;
+  if (role === "CUSTOMER") return "info" as const;
+  return "secondary" as const;
+}
 
 export default function AdminUsersPage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   const {
     data: users,
     isLoading,
     error,
+    refetch,
   } = useUsers({
     searchTerm: searchTerm || undefined,
-    role: roleFilter !== "all" ? (roleFilter as any) : undefined,
-    status: statusFilter !== "all" ? (statusFilter as any) : undefined,
+    role: roleFilter !== "all" ? (roleFilter as Role) : undefined,
+    status: statusFilter !== "all" ? (statusFilter as UserStatus) : undefined,
     page,
     limit,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
 
+  const updateRole = useUpdateUserRole();
+  const updateStatus = useUpdateUserStatus();
+  const deleteUser = useDeleteUser();
+
   if (authLoading) {
     return (
       <div className="container mx-auto py-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 w-1/4 bg-muted rounded" />
-          <div className="h-64 bg-muted rounded" />
+          <div className="h-8 w-1/4 rounded bg-muted" />
+          <div className="h-64 rounded bg-muted" />
         </div>
       </div>
     );
   }
 
-  const roleOptions = [
-    { value: "all", label: "All Roles" },
-    { value: "CUSTOMER", label: "Customer" },
-    { value: "TECHNICIAN", label: "Technician" },
-    { value: "POWER_OPERATOR", label: "Power Operator" },
-    { value: "ADMIN", label: "Admin" },
-  ];
-
-  const statusOptions = [
-    { value: "all", label: "All Status" },
-    { value: "ACTIVE", label: "Active" },
-    { value: "BLOCKED", label: "Blocked" },
-  ];
-
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case "ADMIN":
-        return "destructive";
-      case "POWER_OPERATOR":
-        return "warning";
-      case "TECHNICIAN":
-        return "success";
-      case "CUSTOMER":
-        return "info";
-      default:
-        return "secondary";
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "ACTIVE":
-        return "success";
-      case "BLOCKED":
-        return "destructive";
-      default:
-        return "secondary";
-    }
-  };
+  const rows = users?.data ?? [];
+  const busy = updateRole.isPending || updateStatus.isPending;
 
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-            <User className="h-8 w-8 text-primary" />
-            User Management
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Manage users, roles, and account status
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" disabled={isLoading}>
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
-          <Link href="/admin/users/create">
-            <Button>
-              <UserPlus className="h-4 w-4 mr-2" />
-              Add User
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        title="User Management"
+        description="Manage users, roles, and account status."
+        status={
+          users?.meta ? (
+            <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <UserCheck className="h-4 w-4 text-primary" aria-hidden="true" />
+              <span className="font-mono tabular-nums">
+                {users.meta.total} registered users
+              </span>
+            </span>
+          ) : undefined
+        }
+      />
 
       {/* Filters */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+          <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+            <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search
+                  className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden="true"
+                />
                 <Input
+                  type="search"
+                  aria-label="Search users"
                   placeholder="Search users..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-64"
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-64 pl-10"
                 />
               </div>
-              <Select value={roleFilter} onValueChange={setRoleFilter}>
-                <SelectTrigger className="w-36">
+              <Select
+                value={roleFilter}
+                onValueChange={(v) => {
+                  setRoleFilter(v);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger aria-label="Filter by role" className="w-36">
                   <SelectValue placeholder="Role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -163,8 +180,14 @@ export default function AdminUsersPage() {
                   ))}
                 </SelectContent>
               </Select>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-36">
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => {
+                  setStatusFilter(v);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger aria-label="Filter by status" className="w-36">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -180,16 +203,26 @@ export default function AdminUsersPage() {
         </CardContent>
       </Card>
 
-      {/* Users Table */}
+      {/* Users table */}
       <Card>
         <CardHeader>
           <CardTitle>All Users</CardTitle>
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-destructive py-4">
-              Failed to load users
-            </div>
+            <ErrorState
+              title="Failed to load users"
+              message="The user directory could not be reached. Check your connection and try again."
+              action={
+                <button
+                  type="button"
+                  onClick={() => refetch()}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  Retry
+                </button>
+              }
+            />
           )}
 
           {!error && (
@@ -210,32 +243,33 @@ export default function AdminUsersPage() {
                   <TableBody>
                     {isLoading ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8">
-                          <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
+                        <TableCell colSpan={7} className="py-8 text-center">
+                          <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                         </TableCell>
                       </TableRow>
-                    ) : !users?.data || users.data.length === 0 ? (
+                    ) : rows.length === 0 ? (
                       <TableRow>
-                        <TableCell
-                          colSpan={7}
-                          className="text-center py-8 text-muted-foreground"
-                        >
-                          No users found
+                        <TableCell colSpan={7} className="py-4">
+                          <EmptyState
+                            icon={<User className="h-5 w-5" />}
+                            title="No users found"
+                            description="Users matching your filters will appear here."
+                          />
                         </TableCell>
                       </TableRow>
                     ) : (
-                      users.data.map((u) => (
+                      rows.map((u) => (
                         <TableRow key={u.id} className="hover:bg-muted/50">
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                                 <span className="text-sm font-medium text-primary">
                                   {u.name?.charAt(0).toUpperCase()}
                                 </span>
                               </div>
                               <div>
                                 <p className="font-medium">{u.name}</p>
-                                <p className="text-xs text-muted-foreground font-mono">
+                                <p className="font-mono text-xs text-muted-foreground">
                                   #{u.id.slice(0, 8)}
                                 </p>
                               </div>
@@ -243,41 +277,110 @@ export default function AdminUsersPage() {
                           </TableCell>
                           <TableCell>{u.email}</TableCell>
                           <TableCell>
-                            <Badge variant={getRoleColor(u.role)}>
-                              {u.role}
-                            </Badge>
+                            <Select
+                              value={u.role}
+                              disabled={busy}
+                              onValueChange={(v) =>
+                                updateRole.mutate({
+                                  id: u.id,
+                                  payload: { role: v as Role },
+                                })
+                              }
+                            >
+                              <SelectTrigger
+                                aria-label={`Change role for ${u.name}`}
+                                className="h-8 w-40"
+                              >
+                                <Badge
+                                  variant={roleVariant(u.role)}
+                                  className="pointer-events-none"
+                                >
+                                  {u.role}
+                                </Badge>
+                              </SelectTrigger>
+                              <SelectContent>
+                                {assignableRoles.map((role) => (
+                                  <SelectItem key={role} value={role}>
+                                    {role}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </TableCell>
                           <TableCell>
-                            <Badge variant={getStatusColor(u.status)}>
+                            <Badge
+                              variant={
+                                u.status === "ACTIVE"
+                                  ? "success"
+                                  : "destructive"
+                              }
+                            >
                               {u.status}
                             </Badge>
                           </TableCell>
                           <TableCell>
                             {u.slaActive ? (
                               <Badge variant="success" className="gap-1">
-                                <Shield className="h-3 w-3" />
+                                <Shield
+                                  className="h-3 w-3"
+                                  aria-hidden="true"
+                                />
                                 Active
                               </Badge>
                             ) : (
                               <Badge variant="secondary">Inactive</Badge>
                             )}
                           </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
+                          <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
                             {new Date(u.createdAt).toLocaleDateString()}
                           </TableCell>
                           <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <Link href={`/admin/users/${u.id}/edit`}>
-                                <Button variant="ghost" size="sm">
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                              </Link>
+                            <div className="flex items-center justify-end gap-1">
                               <Button
+                                type="button"
                                 variant="ghost"
                                 size="sm"
-                                className="text-destructive hover:text-destructive"
+                                disabled={busy}
+                                title={
+                                  u.status === "ACTIVE"
+                                    ? `Block ${u.name}`
+                                    : `Unblock ${u.name}`
+                                }
+                                onClick={() =>
+                                  updateStatus.mutate({
+                                    id: u.id,
+                                    payload: {
+                                      status:
+                                        u.status === "ACTIVE"
+                                          ? "BLOCKED"
+                                          : "ACTIVE",
+                                    },
+                                  })
+                                }
                               >
-                                <Trash2 className="h-4 w-4" />
+                                {u.status === "ACTIVE" ? (
+                                  <Ban className="h-4 w-4" aria-hidden="true" />
+                                ) : (
+                                  <CheckCircle
+                                    className="h-4 w-4"
+                                    aria-hidden="true"
+                                  />
+                                )}
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                title={`Delete ${u.name}`}
+                                className="text-destructive hover:text-destructive"
+                                onClick={() =>
+                                  setDeleteTarget({ id: u.id, name: u.name })
+                                }
+                              >
+                                <Trash2
+                                  className="h-4 w-4"
+                                  aria-hidden="true"
+                                />
                               </Button>
                             </div>
                           </TableCell>
@@ -290,12 +393,35 @@ export default function AdminUsersPage() {
 
               {/* Pagination */}
               {users?.meta && users.meta.totalPages > 1 && (
-                <div className="flex items-center justify-between mt-6 pt-4 border-t">
-                  <p className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to{" "}
-                    {Math.min(page * limit, users.meta.total)} of{" "}
-                    {users.meta.total} users
-                  </p>
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t pt-4">
+                  <div className="flex items-center gap-3">
+                    <p className="text-sm text-muted-foreground">
+                      Showing {(page - 1) * limit + 1} to{" "}
+                      {Math.min(page * limit, users.meta.total)} of{" "}
+                      {users.meta.total} users
+                    </p>
+                    <Select
+                      value={String(limit)}
+                      onValueChange={(v) => {
+                        setLimit(Number(v));
+                        setPage(1);
+                      }}
+                    >
+                      <SelectTrigger
+                        aria-label="Rows per page"
+                        className="h-8 w-20"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[10, 20, 50].map((n) => (
+                          <SelectItem key={n} value={String(n)}>
+                            {n}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <Pagination
                     page={page}
                     totalPages={users.meta.totalPages}
@@ -310,6 +436,48 @@ export default function AdminUsersPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete confirmation */}
+      <Dialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete user?</DialogTitle>
+            <DialogDescription>
+              This permanently removes {deleteTarget?.name} and their access.
+              This action cannot be undone. Consider blocking the account
+              instead.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteTarget(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={deleteUser.isPending}
+              onClick={() => {
+                if (deleteTarget) {
+                  deleteUser.mutate(deleteTarget.id, {
+                    onSuccess: () => setDeleteTarget(null),
+                  });
+                }
+              }}
+            >
+              {deleteUser.isPending ? "Deleting…" : "Delete user"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
