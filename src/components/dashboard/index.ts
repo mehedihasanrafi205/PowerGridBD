@@ -1,4 +1,5 @@
 export { ApplicationReviewDialog } from "./ApplicationReviewDialog";
+export { AuditLogExplorer } from "./AuditLogExplorer";
 export { EmptyState } from "./EmptyState";
 export { ErrorState } from "./ErrorState";
 export { GridHierarchyExplorer } from "./GridHierarchyExplorer";
