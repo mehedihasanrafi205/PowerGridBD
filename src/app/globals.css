@@ -446,6 +446,26 @@
   animation-delay: 0.35s;
 }
 
+/* Logo pulse animation */
+.logo-pulse-ring {
+  animation: logoPulse 3s ease-out infinite;
+}
+
+@keyframes logoPulse {
+  0% {
+    r: 7.5;
+    stroke-opacity: 0.4;
+  }
+  50% {
+    r: 10;
+    stroke-opacity: 0.15;
+  }
+  100% {
+    r: 7.5;
+    stroke-opacity: 0.4;
+  }
+}
+
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -462,7 +482,9 @@
   .status-dot-pulse,
   .badge-ripple,
   .power-flow-pulse,
-  .fade-in-entry {
+  .pg-node-alert::after,
+  .fade-in-entry,
+  .logo-pulse-ring {
     animation: none !important;
   }
 

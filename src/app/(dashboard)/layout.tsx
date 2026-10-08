@@ -18,9 +18,11 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { UserMenu } from "@/components/layout/user-menu";
 import { ThemeToggle } from "@/components/theme";
 import { useAuth } from "@/hooks";
 import { cn } from "@/lib/utils";
+import { Logo, LogoMark } from "@/components/ui/Logo";
 
 interface NavItem {
   name: string;
@@ -316,16 +318,9 @@ export default function DashboardLayout({
               onClick={() => setMobileOpen(false)}
             >
               {expanded ? (
-                <span className="text-xl font-bold text-primary">
-                  PowerGridBD
-                </span>
+                <Logo variant="full" size="md" className="gap-2" />
               ) : (
-                <span
-                  className="hidden text-xl font-bold text-primary lg:block"
-                  aria-hidden="true"
-                >
-                  PG
-                </span>
+                <LogoMark size="md" className="text-primary" />
               )}
             </Link>
           </div>
@@ -477,16 +472,17 @@ export default function DashboardLayout({
 
                   <ThemeToggle />
 
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-sm font-medium text-primary">
-                        {user?.name?.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <span className="hidden md:block text-sm font-medium">
-                      {user?.name}
-                    </span>
-                  </div>
+                  {user && (
+                    <UserMenu
+                      user={{
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        profileImage: user.profileImage,
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>

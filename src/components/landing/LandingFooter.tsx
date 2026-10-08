@@ -2,9 +2,9 @@
 
 import { motion, type Variants } from "framer-motion";
 import { Activity, ArrowUpRight, GitBranch, Shield, Zap } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { easing } from "@/lib/animation";
+import { Logo } from "@/components/ui/Logo";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -42,22 +42,7 @@ export function LandingFooter() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10">
           {/* Brand Column */}
           <motion.div className="col-span-2" variants={columnVariants}>
-            <Link
-              href="/"
-              className="flex items-center gap-2 mb-4"
-              aria-label="PowerGridBD Home"
-            >
-              <Image
-                src="/logo.svg"
-                alt="PowerGridBD logo"
-                width={750}
-                height={750}
-                className="h-8 w-8"
-                loading="lazy"
-                decoding="async"
-              />
-              <span className="text-xl font-bold text-white">PowerGridBD</span>
-            </Link>
+            <Logo href="/" variant="full" size="md" className="mb-4" />
             <p className="text-sm text-zinc-400 leading-relaxed mb-6 max-w-xs">
               Load Shedding & Power Outage Management Platform for
               Bangladesh&apos;s power distribution ecosystem.

@@ -2,11 +2,11 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, Radio, X } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLenis } from "@/components/animation";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/Logo";
 
 const navLinks = [
   { href: "/#platform", label: "Platform" },
@@ -64,27 +64,16 @@ export function LandingNav() {
       <nav className="container mx-auto px-4" aria-label="Main navigation">
         <div className="flex h-16 items-center justify-between">
           {/* Brand */}
-          <Link
+          <Logo
             href="/"
-            className="flex items-center gap-2"
+            variant="full"
+            size="md"
             aria-label="PowerGridBD Home"
             onClick={(e) => {
               if (lenis) e.preventDefault();
               handleAnchorClick("/");
             }}
-          >
-            <Image
-              src="/logo.svg"
-              alt="PowerGridBD logo"
-              width={750}
-              height={750}
-              className="h-8 w-8"
-              priority
-            />
-            <span className="hidden text-xl font-bold text-white sm:block">
-              PowerGridBD
-            </span>
-          </Link>
+          />
 
           {/* Center cockpit navigation */}
           <div className="hidden items-center gap-8 lg:flex">
