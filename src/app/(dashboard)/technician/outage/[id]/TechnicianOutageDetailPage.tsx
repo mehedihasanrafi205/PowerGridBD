@@ -1,37 +1,34 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { useOutage, useUpdateOutageStatus } from "@/hooks";
-import { useSearchParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import {
-  AlertTriangle,
-  Clock,
-  MapPin,
-  User,
-  Shield,
-  Loader2,
   AlertCircle,
+  AlertTriangle,
   CheckCircle,
+  Clock,
   Info,
+  Loader2,
+  MapPin,
   PlayCircle,
-  Save,
-  Loader,
+  Shield,
+  User,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { OutageStatusTimeline } from "@/components/dashboard";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useAuth, useOutage, useUpdateOutageStatus } from "@/hooks";
+import { cn } from "@/lib/utils";
 
 export default function TechnicianOutageDetailPage() {
   const searchParams = useSearchParams();
   const outageId = searchParams.get("id") ?? "";
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const { data: outage, isLoading, error } = useOutage(outageId);
   const updateStatusMutation = useUpdateOutageStatus();
   const [notes, setNotes] = useState("");
@@ -102,7 +99,6 @@ export default function TechnicianOutageDetailPage() {
 
   const canStartWork = o.status === "ASSIGNED";
   const canContinueWork = o.status === "IN_PROGRESS";
-  const canResolve = o.status === "IN_PROGRESS";
 
   const handleStatusUpdate = async (
     newStatus:
@@ -115,7 +111,7 @@ export default function TechnicianOutageDetailPage() {
     try {
       await updateStatusMutation.mutateAsync({
         id: outageId,
-        payload: { status: newStatus as any, notes },
+        payload: { status: newStatus, notes },
       });
       toast.success(`Status updated to ${newStatus}`);
     } catch {
@@ -135,6 +131,9 @@ export default function TechnicianOutageDetailPage() {
             Reported on {new Date(o.reportedAt).toLocaleDateString()} at{" "}
             {new Date(o.reportedAt).toLocaleTimeString()}
           </p>
+          <div className="mt-5 max-w-2xl">
+            <OutageStatusTimeline currentStatus={o.status} />
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Badge
@@ -158,7 +157,9 @@ export default function TechnicianOutageDetailPage() {
         <div className="mb-6 p-4 bg-electric-blue/10 border border-electric-blue/30 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-electric-blue">Ready to start work?</p>
+              <p className="font-medium text-electric-blue">
+                Ready to start work?
+              </p>
               <p className="text-sm text-electric-blue">
                 Click below to begin working on this outage
               </p>
@@ -205,6 +206,7 @@ export default function TechnicianOutageDetailPage() {
             <CardTitle>Details</CardTitle>
             <div className="flex gap-2" role="tablist">
               <button
+                type="button"
                 role="tab"
                 aria-selected={activeTab === "details"}
                 onClick={() => setActiveTab("details")}
@@ -218,6 +220,7 @@ export default function TechnicianOutageDetailPage() {
                 Details
               </button>
               <button
+                type="button"
                 role="tab"
                 aria-selected={activeTab === "timeline"}
                 onClick={() => setActiveTab("timeline")}
@@ -231,6 +234,7 @@ export default function TechnicianOutageDetailPage() {
                 Timeline
               </button>
               <button
+                type="button"
                 role="tab"
                 aria-selected={activeTab === "resolve"}
                 onClick={() => setActiveTab("resolve")}
@@ -396,7 +400,9 @@ export default function TechnicianOutageDetailPage() {
                       {o.restoredAt ? "Power Restored" : "Issue Resolved"}
                     </p>
                     <p className="text-muted-foreground text-sm">
-                      {new Date(o.restoredAt || o.resolvedAt!).toLocaleString()}
+                      {new Date(
+                        o.restoredAt || o.resolvedAt || "",
+                      ).toLocaleString()}
                     </p>
                     {o.resolutionNotes && (
                       <p className="text-sm text-emerald mt-1">
@@ -474,6 +480,7 @@ export default function TechnicianOutageDetailPage() {
           className="text-primary hover:underline flex items-center gap-1"
         >
           <svg
+            aria-hidden="true"
             className="h-4 w-4"
             fill="none"
             stroke="currentColor"
