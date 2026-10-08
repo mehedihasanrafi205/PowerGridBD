@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff, Shield, Wrench, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,11 +9,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { getMe } from "@/api/auth.api";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { api } from "@/lib/apiClient";
+import { api, setAuthTokens } from "@/lib/apiClient";
 import { cn } from "@/lib/utils";
 
 const loginSchema = z.object({
@@ -64,17 +66,14 @@ interface AuthResponse {
   success: boolean;
   message: string;
   data?: {
-    user: {
-      id: string;
-      name: string;
-      email: string;
-      role: string;
-    };
+    accessToken?: string;
+    refreshToken?: string;
   };
 }
 
 export default function LoginPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [demoLoading, setDemoLoading] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -91,21 +90,66 @@ export default function LoginPage() {
     },
   });
 
+  /**
+   * Persist the session, then resolve the real user profile.
+   * The login response carries only tokens — the user object
+   * must come from getMe. Returns null when the profile cannot
+   * be loaded, in which case callers stay on the login page
+   * instead of navigating into a certain redirect bounce.
+   */
+  const establishSession = async (response: AuthResponse) => {
+    const accessToken = response.data?.accessToken;
+    if (accessToken) {
+      setAuthTokens(accessToken, response.data?.refreshToken);
+    }
+    try {
+      // A single attempt can hit a serverless cold start; the login
+      // already succeeded, so a brief retry is the honest path
+      // (wrong credentials fail fast at the login POST above).
+      let me: Awaited<ReturnType<typeof getMe>> | null = null;
+      for (let attempt = 0; attempt < 3 && !me?.success; attempt++) {
+        if (attempt > 0) {
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+        }
+        try {
+          const result = await getMe();
+          if (result?.success) me = result;
+        } catch {
+          /* retry below */
+        }
+      }
+      if (me?.success && me.data?.id && me.data?.role) {
+        // Seed ["user"] so the dashboard shell mounts
+        // authenticated instead of racing its own fetch.
+        queryClient.setQueryData(["user"], me);
+        return me.data;
+      }
+    } catch {
+      /* fall through to the invalidation below */
+    }
+    await queryClient.invalidateQueries({ queryKey: ["user"] });
+    return null;
+  };
+
+  const roleRoutes: Record<string, string> = {
+    CUSTOMER: "/customer",
+    TECHNICIAN: "/technician",
+    POWER_OPERATOR: "/operator",
+    ADMIN: "/admin",
+  };
+
   const handleLogin = async (data: LoginForm) => {
     setIsLoading(true);
     try {
       const response = await api.post<AuthResponse>("/auth/login", data);
       if (response.success) {
+        const user = await establishSession(response);
+        if (!user) {
+          toast.error("Signed in, but the profile lookup failed. Try again.");
+          return;
+        }
         toast.success("Login successful!");
-        const role = response.data?.user?.role;
-        const roleRoutes: Record<string, string> = {
-          CUSTOMER: "/customer",
-          TECHNICIAN: "/technician",
-          POWER_OPERATOR: "/operator",
-          ADMIN: "/admin",
-        };
-        router.push(role ? roleRoutes[role] : "/");
-        router.refresh();
+        router.push(roleRoutes[user.role] ?? "/");
       } else {
         toast.error(response.message || "Login failed");
       }
@@ -132,16 +176,13 @@ export default function LoginPage() {
         password,
       });
       if (response.success) {
-        toast.success(`Login as ${role} successful!`);
-        const userRole = response.data?.user?.role ?? role;
-        const roleRoutes: Record<string, string> = {
-          CUSTOMER: "/customer",
-          TECHNICIAN: "/technician",
-          POWER_OPERATOR: "/operator",
-          ADMIN: "/admin",
-        };
-        router.push(roleRoutes[userRole] ?? "/");
-        router.refresh();
+        const user = await establishSession(response);
+        if (!user) {
+          toast.error("Signed in, but the profile lookup failed. Try again.");
+          return;
+        }
+        toast.success(`Login as ${user.role} successful!`);
+        router.push(roleRoutes[user.role] ?? "/");
       } else {
         toast.error(response.message || "Tester login failed");
       }

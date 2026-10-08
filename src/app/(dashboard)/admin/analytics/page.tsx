@@ -31,6 +31,7 @@ import {
   usePerformanceAnalytics,
   useTrendsAnalytics,
 } from "@/hooks";
+import { asCount } from "@/lib/analytics";
 
 export default function AdminAnalyticsPage() {
   const { isLoading: authLoading } = useAuth();
@@ -315,13 +316,13 @@ export default function AdminAnalyticsPage() {
             <div>
               <TelemetryRow
                 label="Critical Feeders Down"
-                value={a?.criticalFeedersDown || 0}
+                value={asCount(a?.criticalFeedersDown)}
               />
               <div className="mt-1 h-3 overflow-hidden rounded-full bg-muted">
                 <div
                   className="h-full rounded-full bg-amber transition-all"
                   style={{
-                    width: `${Math.min(((a?.criticalFeedersDown || 0) / 10) * 100, 100)}%`,
+                    width: `${Math.min((asCount(a?.criticalFeedersDown) / 10) * 100, 100)}%`,
                   }}
                 />
               </div>

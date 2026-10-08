@@ -1,10 +1,12 @@
 export interface OperationalAnalytics {
   activeOutages: number;
   priorityOutages: number;
-  availableTechnicians: number;
+  // The backend returns these either as bare numbers or as
+  // `{ count, ... }` envelopes — always read via asCount().
+  availableTechnicians: number | { count: number; technicians: unknown[] };
   totalTechnicians: number;
   activeSchedules: number;
-  criticalFeedersDown: number;
+  criticalFeedersDown: number | { count: number; feeders: unknown[] };
   totalUsers?: number;
   criticalFeeders?: number;
   mttr?: number;

@@ -2,9 +2,10 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { getMe, userLogout } from "@/api/auth.api";
 import { useEffect, useState } from "react";
-import type { User, Role } from "@/types";
+import { getMe, userLogout } from "@/api/auth.api";
+import { clearAuthTokens } from "@/lib/apiClient";
+import type { Role, User } from "@/types";
 
 interface AuthState {
   user: User | null;
@@ -24,15 +25,22 @@ export function useAuth() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["user"],
     queryFn: getMe,
-    retry: false,
+    // Single attempt on 401 (invalid token never recovers), but
+    // tolerate serverless cold-start 5xx/network blips.
+    retry: (failureCount, err) => {
+      const status = (err as { response?: { status?: number } })?.response
+        ?.status;
+      if (status === 401) return false;
+      return failureCount < 2;
+    },
     staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
     if (!isLoading) {
-      if (data?.success && data.data?.user) {
+      if (data?.success && data.data?.id) {
         setAuthState({
-          user: data.data.user,
+          user: data.data,
           isLoading: false,
           isAuthenticated: true,
         });
@@ -59,10 +67,15 @@ export function useAuth() {
   const logout = async () => {
     try {
       await userLogout();
+    } catch (error) {
+      // Server logout is best-effort (e.g. already-expired token) —
+      // the local session must still be torn down below.
+      console.error("Logout failed:", error);
+    } finally {
+      clearAuthTokens();
+      setAuthState({ user: null, isLoading: false, isAuthenticated: false });
       queryClient.clear();
       router.push("/auth/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
     }
   };
 

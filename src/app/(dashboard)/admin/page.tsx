@@ -19,6 +19,7 @@ import {
   useOutages,
   useUsers,
 } from "@/hooks";
+import { asCount } from "@/lib/analytics";
 import { outageBadgeVariant } from "@/lib/status-variants";
 
 /** Map outage status to a semantic Badge variant. */
@@ -65,7 +66,7 @@ export default function AdminDashboard() {
   ];
 
   const activeOutages = analytics?.data?.activeOutages ?? 0;
-  const criticalFeedersDown = analytics?.data?.criticalFeedersDown ?? 0;
+  const criticalFeedersDown = asCount(analytics?.data?.criticalFeedersDown);
 
   // Honest platform-health state derived from real telemetry.
   const platformStatus =
@@ -337,7 +338,7 @@ export default function AdminDashboard() {
           />
           <TelemetryRow
             label="Available Technicians"
-            value={`${analytics?.data?.availableTechnicians ?? 0} / ${analytics?.data?.totalTechnicians ?? 0}`}
+            value={`${asCount(analytics?.data?.availableTechnicians)} / ${analytics?.data?.totalTechnicians ?? 0}`}
           />
           <TelemetryRow
             label="Active Schedules"

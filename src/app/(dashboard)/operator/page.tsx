@@ -25,6 +25,7 @@ import {
   useOutages,
   useSchedules,
 } from "@/hooks";
+import { asCount } from "@/lib/analytics";
 import {
   outageBadgeVariant,
   scheduleBadgeVariant,
@@ -39,7 +40,7 @@ export default function OperatorDashboard() {
   const { data: activity } = useAuditLogs({ limit: 6 });
 
   const activeOutages = analytics?.data?.activeOutages ?? 0;
-  const criticalFeedersDown = analytics?.data?.criticalFeedersDown ?? 0;
+  const criticalFeedersDown = asCount(analytics?.data?.criticalFeedersDown);
 
   // Derive an honest grid-health state from real telemetry.
   const gridStatus =
@@ -105,7 +106,7 @@ export default function OperatorDashboard() {
         />
         <OperationalMetric
           label="Available Technicians"
-          value={`${analytics?.data?.availableTechnicians ?? 0} / ${analytics?.data?.totalTechnicians ?? 0}`}
+          value={`${asCount(analytics?.data?.availableTechnicians)} / ${analytics?.data?.totalTechnicians ?? 0}`}
           icon={<Users className="h-5 w-5" />}
         />
         <OperationalMetric

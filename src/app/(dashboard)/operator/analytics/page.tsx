@@ -28,6 +28,7 @@ import {
   usePerformanceAnalytics,
   useTrendsAnalytics,
 } from "@/hooks";
+import { asCount } from "@/lib/analytics";
 
 export default function OperatorAnalyticsPage() {
   const { isLoading: authLoading } = useAuth();
@@ -132,7 +133,7 @@ export default function OperatorAnalyticsPage() {
         />
         <OperationalMetric
           label="Available Techs"
-          value={`${a?.availableTechnicians || 0} / ${a?.totalTechnicians || 0}`}
+          value={`${asCount(a?.availableTechnicians)} / ${a?.totalTechnicians || 0}`}
           icon={<Users className="h-5 w-5" />}
         />
         <OperationalMetric
