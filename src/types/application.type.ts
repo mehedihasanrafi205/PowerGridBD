@@ -1,4 +1,8 @@
-export type ApplicationStatus = "PENDING" | "APPROVED" | "REJECTED";
+export type ApplicationStatus =
+  | "PENDING"
+  | "UNDER_REVIEW"
+  | "APPROVED"
+  | "REJECTED";
 
 export interface ApplicationPayload {
   name: string;
