@@ -1,46 +1,84 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Calendar,
+  GitBranch,
+  PlusCircle,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import {
-  PlusCircle,
-  AlertTriangle,
-  Users,
-  Calendar,
-  BarChart3,
-  GitBranch,
-  FileText,
-  TrendingUp,
-  AlertCircle,
-} from "lucide-react";
-import { useOperationalAnalytics } from "@/hooks";
-import { useOutages } from "@/hooks";
-import { useSchedules } from "@/hooks";
-import { cn } from "@/lib/utils";
+  GridStatusIndicator,
+  OperationalMetric,
+  TelemetryRow,
+} from "@/components/dashboard";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CardTitle } from "@/components/ui/card";
+import {
+  useAuth,
+  useOperationalAnalytics,
+  useOutages,
+  useSchedules,
+} from "@/hooks";
+import type { OutageStatus, ScheduleStatus } from "@/types";
+
+/** Map outage status to a semantic Badge variant. */
+const outageVariant: Record<
+  OutageStatus,
+  "default" | "secondary" | "destructive" | "success" | "warning" | "info"
+> = {
+  PENDING: "warning",
+  ASSIGNED: "info",
+  IN_PROGRESS: "default",
+  RESOLVED: "success",
+  RESTORED: "success",
+  CANCELLED: "secondary",
+  FAILED: "destructive",
+};
+
+/** Map schedule status to a semantic Badge variant. */
+const scheduleVariant: Record<
+  ScheduleStatus,
+  "default" | "secondary" | "destructive" | "success" | "warning" | "info"
+> = {
+  SCHEDULED: "info",
+  ONGOING: "warning",
+  COMPLETED: "success",
+  CANCELLED: "secondary",
+};
 
 export default function OperatorDashboard() {
-  const { user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
   const { data: analytics, isLoading: analyticsLoading } =
     useOperationalAnalytics();
-  const { data: outages, isLoading: outagesLoading } = useOutages({ limit: 5 });
-  const { data: schedules, isLoading: schedulesLoading } = useSchedules({
-    limit: 3,
-  });
+  const { data: outages } = useOutages({ limit: 5 });
+  const { data: schedules } = useSchedules({ limit: 5 });
 
-  if (isLoading) {
+  const activeOutages = analytics?.data?.activeOutages ?? 0;
+  const criticalFeedersDown = analytics?.data?.criticalFeedersDown ?? 0;
+
+  // Derive an honest grid-health state from real telemetry.
+  const gridStatus =
+    criticalFeedersDown > 0
+      ? "critical"
+      : activeOutages > 0
+        ? "warning"
+        : "operational";
+
+  if (isLoading || analyticsLoading) {
     return (
       <div className="container mx-auto py-8">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="bg-card border rounded-xl p-6 animate-pulse"
+              className="animate-pulse rounded-xl border bg-card p-6"
             >
-              <div className="h-4 w-1/4 bg-muted rounded mb-2" />
-              <div className="h-8 w-1/2 bg-muted rounded" />
+              <div className="mb-2 h-4 w-1/4 rounded bg-muted" />
+              <div className="h-8 w-1/2 rounded bg-muted" />
             </div>
           ))}
         </div>
@@ -48,81 +86,67 @@ export default function OperatorDashboard() {
     );
   }
 
-  const stats = [
-    {
-      title: "Active Outages",
-      value: analytics?.data?.activeOutages || 0,
-      icon: AlertTriangle,
-      color: "text-red-500",
-      bg: "bg-red-100",
-    },
-    {
-      title: "Priority Outages",
-      value: analytics?.data?.priorityOutages || 0,
-      icon: AlertTriangle,
-      color: "text-amber-500",
-      bg: "bg-amber-100",
-    },
-    {
-      title: "Available Technicians",
-      value: `${analytics?.data?.availableTechnicians || 0} / ${analytics?.data?.totalTechnicians || 0}`,
-      icon: Users,
-      color: "text-green-500",
-      bg: "bg-green-100",
-    },
-    {
-      title: "Active Schedules",
-      value: analytics?.data?.activeSchedules || 0,
-      icon: Calendar,
-      color: "text-blue-500",
-      bg: "bg-blue-100",
-    },
-  ];
-
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">
-          Operator Dashboard
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Operational overview of grid status, outages, and schedules.
-        </p>
+      {/* Page header + live grid-health indicator */}
+      <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">
+            Operator Dashboard
+          </h1>
+          <p className="mt-1 text-muted-foreground">
+            Operational overview of grid status, outages, and schedules.
+          </p>
+        </div>
+        <GridStatusIndicator
+          status={gridStatus}
+          label={
+            gridStatus === "critical"
+              ? "Critical feeders down"
+              : gridStatus === "warning"
+                ? "Active outages"
+                : "Grid operational"
+          }
+        />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        {stats.map((stat) => (
-          <div
-            key={stat.title}
-            className="bg-card border rounded-xl p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{stat.title}</p>
-                <p className="text-3xl font-bold text-foreground mt-1">
-                  {stat.value}
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-blue-100">
-                <stat.icon className="h-6 w-6 text-blue-600" />
-              </div>
-            </div>
-          </div>
-        ))}
+      {/* KPI metrics */}
+      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <OperationalMetric
+          label="Active Outages"
+          value={activeOutages}
+          icon={<AlertTriangle className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="Priority Outages"
+          value={analytics?.data?.priorityOutages ?? 0}
+          icon={<AlertTriangle className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="Available Technicians"
+          value={`${analytics?.data?.availableTechnicians ?? 0} / ${analytics?.data?.totalTechnicians ?? 0}`}
+          icon={<Users className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="Active Schedules"
+          value={analytics?.data?.activeSchedules ?? 0}
+          icon={<Calendar className="h-5 w-5" />}
+        />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-card border rounded-xl p-6">
-          <CardTitle className="text-xl mb-4">Quick Actions</CardTitle>
+      <div className="mb-8 grid gap-6 md:grid-cols-2">
+        {/* Quick actions */}
+        <div className="rounded-xl border bg-card p-6">
+          <CardTitle className="mb-4 text-xl">Quick Actions</CardTitle>
           <div className="grid gap-3 sm:grid-cols-2">
             <Link href="/operator/outages">
-              <Button className="w-full justify-start gap-3 h-14">
+              <Button className="h-14 w-full justify-start gap-3">
                 <AlertTriangle className="h-5 w-5" />
                 Manage Outages
               </Button>
             </Link>
             <Link href="/operator/schedules/create">
-              <Button className="w-full justify-start gap-3 h-14">
+              <Button className="h-14 w-full justify-start gap-3">
                 <PlusCircle className="h-5 w-5" />
                 Create Schedule
               </Button>
@@ -130,7 +154,7 @@ export default function OperatorDashboard() {
             <Link href="/operator/grid">
               <Button
                 variant="outline"
-                className="w-full justify-start gap-3 h-14"
+                className="h-14 w-full justify-start gap-3"
               >
                 <GitBranch className="h-5 w-5" />
                 Manage Grid
@@ -139,7 +163,7 @@ export default function OperatorDashboard() {
             <Link href="/operator/applications">
               <Button
                 variant="outline"
-                className="w-full justify-start gap-3 h-14"
+                className="h-14 w-full justify-start gap-3"
               >
                 <Users className="h-5 w-5" />
                 Review Applications
@@ -148,26 +172,39 @@ export default function OperatorDashboard() {
           </div>
         </div>
 
-        <div className="bg-card border rounded-xl p-6">
-          <CardTitle className="text-xl mb-4">Critical Feeders</CardTitle>
+        {/* Critical feeders */}
+        <div className="rounded-xl border bg-card p-6">
+          <CardTitle className="mb-4 text-xl">Critical Feeders</CardTitle>
           <div className="space-y-3">
-            {analytics?.data && analytics.data.criticalFeedersDown > 0 ? (
-              <div className="text-center py-4 text-muted-foreground">
-                {analytics.data.criticalFeedersDown} critical feeder(s) down.
-                Check grid details.
+            {criticalFeedersDown > 0 ? (
+              <div className="flex items-center justify-between rounded-lg border border-destructive/20 bg-destructive/5 p-4">
+                <GridStatusIndicator
+                  status="critical"
+                  label={`${criticalFeedersDown} critical feeder(s) down`}
+                />
+                <Link
+                  href="/operator/grid"
+                  className="flex items-center gap-1 text-sm text-primary hover:underline"
+                >
+                  Inspect <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
             ) : (
-              <div className="text-center py-4 text-muted-foreground">
-                No critical feeders at this time. All systems operational.
+              <div className="flex items-center gap-3 rounded-lg border border-emerald/20 bg-emerald/5 p-4">
+                <GridStatusIndicator
+                  status="operational"
+                  label="All feeders nominal"
+                />
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-card border rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
+      <div className="mb-8 grid gap-6 md:grid-cols-2">
+        {/* Recent outages */}
+        <div className="rounded-xl border bg-card p-6">
+          <div className="mb-4 flex items-center justify-between">
             <CardTitle className="text-xl">Recent Outages</CardTitle>
             <Link
               href="/operator/outages"
@@ -177,18 +214,20 @@ export default function OperatorDashboard() {
             </Link>
           </div>
           <div className="space-y-3">
-            {outages && outages.data && outages.data.length > 0 ? (
+            {outages?.data?.length ? (
               outages.data.slice(0, 5).map((outage) => (
                 <div
                   key={outage.id}
-                  className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
+                  className="flex items-center justify-between gap-3 rounded-lg p-3 transition-colors hover:bg-muted/50"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-600 font-medium">
+                    <Badge
+                      variant={outageVariant[outage.status] ?? "secondary"}
+                    >
                       {outage.status}
-                    </span>
+                    </Badge>
                     <div>
-                      <p className="font-medium text-sm">
+                      <p className="text-sm font-medium">
                         Outage #{outage.id.slice(0, 8)}
                       </p>
                       <p className="text-xs text-muted-foreground">
@@ -205,15 +244,16 @@ export default function OperatorDashboard() {
                 </div>
               ))
             ) : (
-              <p className="text-center text-muted-foreground py-4">
+              <p className="py-4 text-center text-muted-foreground">
                 No recent outages
               </p>
             )}
           </div>
         </div>
 
-        <div className="bg-card border rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
+        {/* Upcoming schedules */}
+        <div className="rounded-xl border bg-card p-6">
+          <div className="mb-4 flex items-center justify-between">
             <CardTitle className="text-xl">Upcoming Schedules</CardTitle>
             <Link
               href="/operator/schedules"
@@ -223,26 +263,28 @@ export default function OperatorDashboard() {
             </Link>
           </div>
           <div className="space-y-3">
-            {schedules && schedules.data && schedules.data.length > 0 ? (
+            {schedules?.data?.length ? (
               schedules.data.slice(0, 5).map((schedule) => (
                 <div
                   key={schedule.id}
-                  className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                  className="flex items-center justify-between gap-3 rounded-lg p-3 transition-colors hover:bg-muted/50"
                 >
                   <div>
-                    <p className="font-medium text-sm">{schedule.title}</p>
+                    <p className="text-sm font-medium">{schedule.title}</p>
                     <p className="text-xs text-muted-foreground">
                       {new Date(schedule.startTime).toLocaleDateString()} -{" "}
                       {new Date(schedule.endTime).toLocaleDateString()}
                     </p>
                   </div>
-                  <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-600">
+                  <Badge
+                    variant={scheduleVariant[schedule.status] ?? "secondary"}
+                  >
                     {schedule.status}
-                  </span>
+                  </Badge>
                 </div>
               ))
             ) : (
-              <p className="text-center text-muted-foreground py-4">
+              <p className="py-4 text-center text-muted-foreground">
                 No upcoming schedules
               </p>
             )}
@@ -250,33 +292,30 @@ export default function OperatorDashboard() {
         </div>
       </div>
 
-      <div className="bg-card border rounded-xl p-6">
-        <CardTitle className="text-xl mb-4">Operational Analytics</CardTitle>
-        <div className="grid md:grid-cols-4 gap-6">
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">MTTR</p>
-            <p className="text-2xl font-bold text-blue-600">
-              {analytics?.data?.mttr || 0}h
-            </p>
-          </div>
-          <div className="p-4 bg-green-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">Avg Assignment</p>
-            <p className="text-2xl font-bold text-green-600">
-              {analytics?.data?.avgAssignmentTime || 0}h
-            </p>
-          </div>
-          <div className="p-4 bg-purple-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">First-Time Fix</p>
-            <p className="text-2xl font-bold text-purple-600">
-              {analytics?.data?.firstTimeFixRate || 0}%
-            </p>
-          </div>
-          <div className="p-4 bg-amber-50 rounded-lg">
-            <p className="text-sm text-muted-foreground">Critical Feeders</p>
-            <p className="text-2xl font-bold text-amber-600">
-              {analytics?.data?.criticalFeedersDown || 0}
-            </p>
-          </div>
+      {/* Operational analytics — theme-adaptive telemetry rows */}
+      <div className="rounded-xl border bg-card p-6">
+        <CardTitle className="mb-4 text-xl">Operational Analytics</CardTitle>
+        <div className="grid gap-x-8 gap-y-1 md:grid-cols-2">
+          <TelemetryRow
+            label="MTTR"
+            value={analytics?.data?.mttr ?? 0}
+            unit="h"
+          />
+          <TelemetryRow
+            label="Avg Assignment"
+            value={analytics?.data?.avgAssignmentTime ?? 0}
+            unit="h"
+          />
+          <TelemetryRow
+            label="First-Time Fix"
+            value={analytics?.data?.firstTimeFixRate ?? 0}
+            unit="%"
+          />
+          <TelemetryRow
+            label="Critical Feeders"
+            value={criticalFeedersDown}
+            status={criticalFeedersDown > 0 ? "critical" : "operational"}
+          />
         </div>
       </div>
     </div>
