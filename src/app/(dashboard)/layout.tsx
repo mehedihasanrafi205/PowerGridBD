@@ -58,6 +58,12 @@ const navItems: NavItem[] = [
     roles: ["CUSTOMER"],
   },
   {
+    name: "Schedules",
+    href: "/customer/schedules",
+    icon: <Calendar className="h-5 w-5" />,
+    roles: ["CUSTOMER"],
+  },
+  {
     name: "SLA Subscription",
     href: "/customer/sla",
     icon: <Shield className="h-5 w-5" />,
