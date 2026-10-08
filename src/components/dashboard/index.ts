@@ -2,6 +2,7 @@ export { ApplicationReviewDialog } from "./ApplicationReviewDialog";
 export { AuditLogExplorer } from "./AuditLogExplorer";
 export { EmptyState } from "./EmptyState";
 export { ErrorState } from "./ErrorState";
+export { FilterTabs } from "./FilterTabs";
 export { GridHierarchyExplorer } from "./GridHierarchyExplorer";
 export {
   type GridStatus,

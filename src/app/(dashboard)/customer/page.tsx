@@ -2,7 +2,11 @@
 
 import { AlertTriangle, CreditCard, PlusCircle, Shield } from "lucide-react";
 import Link from "next/link";
-import { OperationalMetric } from "@/components/dashboard";
+import {
+  GridStatusIndicator,
+  OperationalMetric,
+  PageHeader,
+} from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
@@ -45,19 +49,36 @@ export default function CustomerDashboard() {
   }
 
   const slaActive = summary?.data?.slaActive ?? false;
+  const byStatus = summary?.data?.reportsByStatus ?? {};
+  const activeReports =
+    (byStatus.PENDING || 0) +
+    (byStatus.ASSIGNED || 0) +
+    (byStatus.IN_PROGRESS || 0);
 
   return (
     <div className="container mx-auto py-8">
-      {/* Welcome header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">
-          Welcome back, {user?.name?.split(" ")[0]}!
-        </h1>
-        <p className="mt-1 text-muted-foreground">
-          Here&apos;s an overview of your power outage reports and account
-          status.
-        </p>
-      </div>
+      <PageHeader
+        title={`Welcome back, ${user?.name?.split(" ")[0]}!`}
+        description="Here's an overview of your power outage reports and account status."
+        actions={
+          <Link href="/customer/outage/report">
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
+              Report New Outage
+            </Button>
+          </Link>
+        }
+        status={
+          <GridStatusIndicator
+            status={activeReports > 0 ? "warning" : "operational"}
+            label={
+              activeReports > 0
+                ? `${activeReports} active report${activeReports === 1 ? "" : "s"}`
+                : "No active outages"
+            }
+          />
+        }
+      />
 
       {/* KPI metrics */}
       <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -65,8 +86,6 @@ export default function CustomerDashboard() {
           label="Active Outages"
           value={summary?.data?.reportsByStatus?.PENDING || 0}
           icon={<AlertTriangle className="h-5 w-5" />}
-          delta="+2 this week"
-          deltaDirection="up"
         />
         <OperationalMetric
           label="Priority Restorations"

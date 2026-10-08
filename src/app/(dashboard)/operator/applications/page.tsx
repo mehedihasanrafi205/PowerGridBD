@@ -15,6 +15,7 @@ import {
   ApplicationReviewDialog,
   EmptyState,
   ErrorState,
+  FilterTabs,
   PageHeader,
 } from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
@@ -97,6 +98,17 @@ export default function OperatorApplicationsPage() {
 
   const review = useReviewApplication();
 
+  // Cross-page awaiting-review total (tiny limit-1 queries; only meta is read).
+  // NOTE: hooks stay above the authLoading early return (rules of hooks).
+  const { data: pendingQueue } = useApplications({
+    status: "PENDING",
+    limit: 1,
+  });
+  const { data: reviewQueue } = useApplications({
+    status: "UNDER_REVIEW",
+    limit: 1,
+  });
+
   if (authLoading) {
     return (
       <div className="container mx-auto py-8">
@@ -108,8 +120,11 @@ export default function OperatorApplicationsPage() {
     );
   }
 
+  // Cross-page awaiting-review total (tiny limit-1 queries; only meta is read).
+  const awaitingTotal =
+    (pendingQueue?.meta?.total || 0) + (reviewQueue?.meta?.total || 0);
+
   const rows = applications?.data ?? [];
-  const pendingCount = rows.filter((a) => isReviewable(a.status)).length;
 
   return (
     <div className="container mx-auto py-8">
@@ -120,7 +135,7 @@ export default function OperatorApplicationsPage() {
           <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
             <Shield className="h-4 w-4 text-primary" aria-hidden="true" />
             <span className="font-mono tabular-nums">
-              {pendingCount} awaiting review on this page
+              {awaitingTotal} awaiting review
             </span>
           </span>
         }
@@ -148,24 +163,15 @@ export default function OperatorApplicationsPage() {
                   className="w-64 pl-10"
                 />
               </div>
-              <Select
+              <FilterTabs
+                ariaLabel="Filter applications by status"
                 value={statusFilter}
-                onValueChange={(v) => {
+                onChange={(v) => {
                   setStatusFilter(v);
                   setPage(1);
                 }}
-              >
-                <SelectTrigger aria-label="Filter by status" className="w-40">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                options={statusOptions}
+              />
             </div>
           </div>
         </CardContent>
