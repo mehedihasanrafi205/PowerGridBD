@@ -1,11 +1,20 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { useOutages } from "@/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AlertTriangle,
+  Loader2,
+  MapPin,
+  Search,
+  Shield,
+  User,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { EmptyState, ErrorState, PageHeader } from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -15,29 +24,37 @@ import {
 } from "@/components/ui/select";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableRow,
-  TableHead,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { Pagination } from "@/components/ui/pagination";
-import {
-  Search,
-  Filter,
-  Download,
-  Loader2,
-  User,
-  AlertTriangle,
-  MapPin,
-  Shield,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import Link from "next/link";
+import { useAuth, useOutages } from "@/hooks";
+import type { OutageStatus } from "@/types";
+
+const statusOptions: Array<{ value: string; label: string }> = [
+  { value: "all", label: "All Status" },
+  { value: "PENDING", label: "Pending" },
+  { value: "ASSIGNED", label: "Assigned" },
+  { value: "IN_PROGRESS", label: "In Progress" },
+  { value: "RESOLVED", label: "Resolved" },
+  { value: "RESTORED", label: "Restored" },
+  { value: "CANCELLED", label: "Cancelled" },
+];
+
+/** Map outage status to a semantic Badge variant. */
+function outageVariant(status: string) {
+  if (status === "PENDING") return "warning" as const;
+  if (status === "ASSIGNED") return "info" as const;
+  if (status === "IN_PROGRESS") return "default" as const;
+  if (status === "RESOLVED" || status === "RESTORED") return "success" as const;
+  if (status === "FAILED") return "destructive" as const;
+  return "secondary" as const;
+}
 
 export default function OperatorOutagesPage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [page, setPage] = useState(1);
@@ -47,9 +64,10 @@ export default function OperatorOutagesPage() {
     data: outages,
     isLoading,
     error,
+    refetch,
   } = useOutages({
     searchTerm: searchTerm || undefined,
-    status: statusFilter !== "all" ? [statusFilter as any] : undefined,
+    status: statusFilter !== "all" ? [statusFilter as OutageStatus] : undefined,
     page,
     limit,
     sortBy: "reportedAt",
@@ -60,78 +78,67 @@ export default function OperatorOutagesPage() {
     return (
       <div className="container mx-auto py-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 w-1/4 bg-muted rounded" />
-          <div className="h-64 bg-muted rounded" />
+          <div className="h-8 w-1/4 rounded bg-muted" />
+          <div className="h-64 rounded bg-muted" />
         </div>
       </div>
     );
   }
 
-  const statusOptions = [
-    { value: "all", label: "All Status" },
-    { value: "PENDING", label: "Pending" },
-    { value: "ASSIGNED", label: "Assigned" },
-    { value: "IN_PROGRESS", label: "In Progress" },
-    { value: "RESOLVED", label: "Resolved" },
-    { value: "RESTORED", label: "Restored" },
-    { value: "CANCELLED", label: "Cancelled" },
-  ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "PENDING":
-        return "warning";
-      case "ASSIGNED":
-        return "info";
-      case "IN_PROGRESS":
-        return "default";
-      case "RESOLVED":
-        return "success";
-      case "RESTORED":
-        return "success";
-      case "CANCELLED":
-        return "secondary";
-      default:
-        return "secondary";
-    }
-  };
+  const rows = outages?.data ?? [];
 
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-            <AlertTriangle className="h-8 w-8 text-primary" />
-            Outage Management
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            View and manage all outage reports
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" disabled={isLoading}>
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Outage Management"
+        description="View and manage all outage reports."
+        status={
+          <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <AlertTriangle
+              className="h-4 w-4 text-primary"
+              aria-hidden="true"
+            />
+            {outages?.meta ? (
+              <span className="font-mono tabular-nums">
+                {outages.meta.total} total reports
+              </span>
+            ) : (
+              "Live outage feed"
+            )}
+          </span>
+        }
+      />
 
       {/* Filters */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+          <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+            <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search
+                  className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden="true"
+                />
                 <Input
+                  type="search"
+                  aria-label="Search outages"
                   placeholder="Search outages..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-64"
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-64 pl-10"
                 />
               </div>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-40">
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => {
+                  setStatusFilter(v);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger aria-label="Filter by status" className="w-40">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -147,16 +154,26 @@ export default function OperatorOutagesPage() {
         </CardContent>
       </Card>
 
-      {/* Outages Table */}
+      {/* Outages table */}
       <Card>
         <CardHeader>
           <CardTitle>All Outages</CardTitle>
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-destructive py-4">
-              Failed to load outages
-            </div>
+            <ErrorState
+              title="Failed to load outages"
+              message="The outage feed could not be reached. Check your connection and try again."
+              action={
+                <button
+                  type="button"
+                  onClick={() => refetch()}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  Retry
+                </button>
+              }
+            />
           )}
 
           {!error && (
@@ -179,43 +196,45 @@ export default function OperatorOutagesPage() {
                   <TableBody>
                     {isLoading ? (
                       <TableRow>
-                        <TableCell colSpan={9} className="text-center py-8">
-                          <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
+                        <TableCell colSpan={9} className="py-8 text-center">
+                          <Loader2 className="mx-auto h-6 w-6 animate-spin text-primary" />
                         </TableCell>
                       </TableRow>
-                    ) : outages?.data?.length === 0 ? (
+                    ) : rows.length === 0 ? (
                       <TableRow>
-                        <TableCell
-                          colSpan={9}
-                          className="text-center py-8 text-muted-foreground"
-                        >
-                          No outages found
-                        </TableCell>
-                      </TableRow>
-                    ) : !outages?.data || outages.data.length === 0 ? (
-                      <TableRow>
-                        <TableCell
-                          colSpan={9}
-                          className="text-center py-8 text-muted-foreground"
-                        >
-                          No outages found
+                        <TableCell colSpan={9} className="py-4">
+                          <EmptyState
+                            icon={<AlertTriangle className="h-5 w-5" />}
+                            title={
+                              searchTerm || statusFilter !== "all"
+                                ? "No outages match your filters"
+                                : "No outages found"
+                            }
+                            description="Outage reports will appear here."
+                          />
                         </TableCell>
                       </TableRow>
                     ) : (
-                      outages.data.map((outage) => (
+                      rows.map((outage) => (
                         <TableRow key={outage.id} className="hover:bg-muted/50">
                           <TableCell className="font-mono text-sm">
                             #{outage.id.slice(0, 8)}
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <User className="h-4 w-4 text-muted-foreground" />
+                              <User
+                                className="h-4 w-4 text-muted-foreground"
+                                aria-hidden="true"
+                              />
                               {outage.customer?.name || "Unknown"}
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <MapPin className="h-4 w-4 text-muted-foreground" />
+                              <MapPin
+                                className="h-4 w-4 text-muted-foreground"
+                                aria-hidden="true"
+                              />
                               {outage.area?.name || "Unknown"}
                             </div>
                           </TableCell>
@@ -224,7 +243,7 @@ export default function OperatorOutagesPage() {
                           </TableCell>
                           <TableCell>
                             <Badge
-                              variant={getStatusColor(outage.status)}
+                              variant={outageVariant(outage.status)}
                               className="gap-1"
                             >
                               {outage.status}
@@ -233,7 +252,10 @@ export default function OperatorOutagesPage() {
                           <TableCell>
                             {outage.isPriority && (
                               <Badge variant="warning" className="gap-1">
-                                <Shield className="h-3 w-3" />
+                                <Shield
+                                  className="h-3 w-3"
+                                  aria-hidden="true"
+                                />
                                 Priority
                               </Badge>
                             )}
@@ -241,7 +263,10 @@ export default function OperatorOutagesPage() {
                           <TableCell>
                             {outage.technician ? (
                               <div className="flex items-center gap-2">
-                                <User className="h-4 w-4 text-muted-foreground" />
+                                <User
+                                  className="h-4 w-4 text-muted-foreground"
+                                  aria-hidden="true"
+                                />
                                 {outage.technician.name}
                               </div>
                             ) : (
@@ -250,13 +275,13 @@ export default function OperatorOutagesPage() {
                               </span>
                             )}
                           </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
+                          <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
                             {new Date(outage.reportedAt).toLocaleDateString()}
                           </TableCell>
                           <TableCell className="text-right">
                             <Link
                               href={`/operator/outages/${outage.id}`}
-                              className="text-sm text-primary hover:underline font-medium"
+                              className="text-sm font-medium text-primary hover:underline"
                             >
                               Manage
                             </Link>
@@ -270,12 +295,35 @@ export default function OperatorOutagesPage() {
 
               {/* Pagination */}
               {outages?.meta && outages.meta.totalPages > 1 && (
-                <div className="flex items-center justify-between mt-6 pt-4 border-t">
-                  <p className="text-sm text-muted-foreground">
-                    Showing {(page - 1) * limit + 1} to{" "}
-                    {Math.min(page * limit, outages.meta.total)} of{" "}
-                    {outages.meta.total} outages
-                  </p>
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t pt-4">
+                  <div className="flex items-center gap-3">
+                    <p className="text-sm text-muted-foreground">
+                      Showing {(page - 1) * limit + 1} to{" "}
+                      {Math.min(page * limit, outages.meta.total)} of{" "}
+                      {outages.meta.total} outages
+                    </p>
+                    <Select
+                      value={String(limit)}
+                      onValueChange={(v) => {
+                        setLimit(Number(v));
+                        setPage(1);
+                      }}
+                    >
+                      <SelectTrigger
+                        aria-label="Rows per page"
+                        className="h-8 w-20"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[10, 20, 50].map((n) => (
+                          <SelectItem key={n} value={String(n)}>
+                            {n}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <Pagination
                     page={page}
                     totalPages={outages.meta.totalPages}
