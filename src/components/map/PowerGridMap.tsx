@@ -1,7 +1,7 @@
 "use client";
 
 import L from "leaflet";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   MapContainer,
   Marker,
@@ -61,6 +61,7 @@ function nodeIcon(node: GridMapNode, selected: boolean): L.DivIcon {
  */
 export function PowerGridMap({ data, className }: PowerGridMapProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
   const byId = new Map(data.nodes.map((n) => [n.id, n]));
 
   // Build link position pairs keyed by a unique string
@@ -82,80 +83,106 @@ export function PowerGridMap({ data, className }: PowerGridMapProps) {
     };
   });
 
+  // Force map to invalidate size on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (mapRef.current) {
+        const leafletContainer = mapRef.current.querySelector(".leaflet-container");
+        if (leafletContainer instanceof HTMLElement) {
+          leafletContainer.style.height = "100%";
+          leafletContainer.style.width = "100%";
+          leafletContainer.style.visibility = "visible";
+        }
+        // Also trigger map invalidation
+        const map = (leafletContainer as any)?._leaflet_map;
+        if (map && typeof map.invalidateSize === "function") {
+          map.invalidateSize();
+        }
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className={cn("pg-map relative h-full w-full isolate", className)}>
-      <MapContainer
-        center={[23.7, 90.35]}
-        zoom={7}
-        scrollWheelZoom={false}
-        zoomControl={false}
-        attributionControl
-        className="h-full w-full z-0"
-        style={{ background: "var(--color-deep-charcoal)" }}
-      >
-        {/* Stadia Maps Alidade Smooth Dark — free tier, no API key required for development */}
-        <TileLayer
-          url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-          maxZoom={20}
-          attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        />
-        <ZoomControl position="topright" />
-        {links.map((link) => (
-          <Polyline
-            key={`${link.fromId}-${link.toId}`}
-            positions={link.positions}
-            pathOptions={{
-              color: "#4d7dd1",
-              weight: 1.5,
-              opacity: 0.55,
-              dashArray: "5 5",
-            }}
+    <div
+      ref={mapRef}
+      className={cn("pg-map relative h-full w-full isolate overflow-hidden", className)}
+      style={{ minWidth: 0, height: "100%", width: "100%", minHeight: 300 }}
+    >
+      <div className="absolute inset-0 z-0 overflow-hidden" style={{ height: "100%", width: "100%" }}>
+        <MapContainer
+          center={[23.7, 90.35]}
+          zoom={7}
+          scrollWheelZoom={false}
+          zoomControl={false}
+          attributionControl
+          className="h-full w-full"
+          style={{ background: "var(--color-deep-charcoal)", height: "100%", width: "100%" }}
+        >
+          {/* Stadia Maps Alidade Smooth Dark — free tier, no API key required for development */}
+          <TileLayer
+            url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+            maxZoom={20}
+            attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           />
-        ))}
-        {data.nodes.map((node) => (
-          <Marker
-            key={node.id}
-            position={[node.lat, node.lng]}
-            icon={nodeIcon(node, selectedId === node.id)}
-            eventHandlers={{ click: () => setSelectedId(node.id) }}
-          >
-            <Tooltip
-              direction="top"
-              offset={[0, -10]}
-              opacity={1}
-              className="pg-tip"
+          <ZoomControl position="topright" />
+          {links.map((link) => (
+            <Polyline
+              key={`${link.fromId}-${link.toId}`}
+              positions={link.positions}
+              pathOptions={{
+                color: "#4d7dd1",
+                weight: 1.5,
+                opacity: 0.55,
+                dashArray: "5 5",
+              }}
+            />
+          ))}
+          {data.nodes.map((node) => (
+            <Marker
+              key={node.id}
+              position={[node.lat, node.lng]}
+              icon={nodeIcon(node, selectedId === node.id)}
+              eventHandlers={{ click: () => setSelectedId(node.id) }}
             >
-              {node.name}
-            </Tooltip>
-            <Popup>
-              <div className="min-w-[180px]">
-                <p className="text-sm font-semibold text-white">{node.name}</p>
-                <p className="mt-1 flex items-center gap-1.5 text-xs">
-                  <span
-                    className={cn(
-                      "inline-block h-2 w-2 rounded-full",
-                      STATUS_DOT[node.status],
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className="text-zinc-300">
-                    {STATUS_LABEL[node.status]} · {node.kind}
-                  </span>
-                </p>
-                {node.detail && (
-                  <p className="mt-1 text-xs text-zinc-400">{node.detail}</p>
-                )}
-                <p className="mt-1.5 font-mono text-[11px] tabular-nums text-zinc-500">
-                  {node.lat.toFixed(4)}, {node.lng.toFixed(4)}
-                </p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+              <Tooltip
+                direction="top"
+                offset={[0, -10]}
+                opacity={1}
+                className="pg-tip"
+              >
+                {node.name}
+              </Tooltip>
+              <Popup>
+                <div className="min-w-[180px]">
+                  <p className="text-sm font-semibold text-white">{node.name}</p>
+                  <p className="mt-1 flex items-center gap-1.5 text-xs">
+                    <span
+                      className={cn(
+                        "inline-block h-2 w-2 rounded-full",
+                        STATUS_DOT[node.status],
+                      )}
+                      aria-hidden="true"
+                    />
+                    <span className="text-zinc-300">
+                      {STATUS_LABEL[node.status]} · {node.kind}
+                    </span>
+                  </p>
+                  {node.detail && (
+                    <p className="mt-1 text-xs text-zinc-400">{node.detail}</p>
+                  )}
+                  <p className="mt-1.5 font-mono text-[11px] tabular-nums text-zinc-500">
+                    {node.lat.toFixed(4)}, {node.lng.toFixed(4)}
+                  </p>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
 
       {/* Overlay container — confined to map bounds */}
-      <div className="absolute inset-0 pointer-events-none z-10">
+      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
         {/* Provenance badge — top right, inside map */}
         {data.provenance === "demo" && (
           <div className="absolute right-3 top-3 z-20 rounded border border-white/15 bg-black/60 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300 backdrop-blur-sm">

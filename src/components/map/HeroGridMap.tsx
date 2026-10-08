@@ -52,6 +52,12 @@ interface HeroGridMapProps {
  * hero's right-column panel chrome. Same data interface as
  * every future map surface; today it renders the labeled
  * demonstration topology.
+ *
+ * Responsive heights:
+ * - Mobile: 320px (compact)
+ * - Tablet: 400px
+ * - Desktop: 500px
+ * - Large desktop: 560px
  */
 export function HeroGridMap({ className }: HeroGridMapProps) {
   return (
@@ -61,7 +67,7 @@ export function HeroGridMap({ className }: HeroGridMapProps) {
         className,
       )}
     >
-      <div className="h-[400px] sm:h-[440px] lg:h-[540px]">
+      <div className="w-full h-[320px] sm:h-[400px] lg:h-[500px] xl:h-[560px]">
         <PowerGridMap data={DEMO_TOPOLOGY} />
       </div>
     </div>

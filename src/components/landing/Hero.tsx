@@ -1,7 +1,7 @@
 "use client";
 
+import { HeroGridMap } from "@/components/map/HeroGridMap";
 import { cn } from "@/lib/utils";
-import { GridVisualization } from "./GridVisualization";
 import { HeroContent } from "./HeroContent";
 import { HeroHUD } from "./HeroHUD";
 
@@ -10,17 +10,15 @@ interface HeroProps {
 }
 
 /**
- * Hero — the cinematic, visibility-first centerpiece of the landing page.
+ * Hero — the cinematic centerpiece of the landing page.
  *
  * Two-column desktop composition: LEFT (eyebrow, headline, description, CTAs,
- * status indicators), RIGHT/CENTER (large Bangladesh grid visualization).
+ * status indicators), RIGHT/CENTER (interactive operations map).
  * An integrated HUD strip is anchored to the bottom edge of the hero.
  *
- * Visibility-first contract:
- * - Every element renders at full opacity on the first paint.
- * - No `opacity: 0`, no IntersectionObserver dependency, no transform that
- *   moves the map out of the viewport.
- * - GSAP/Framer Motion only *enhance* an already-complete static state.
+ * The map column is client-rendered (Leaflet cannot SSR) behind a
+ * static skeleton, so first paint is complete with zero layout
+ * shift; every other element renders at full opacity immediately.
  */
 export function Hero({ className = "" }: HeroProps) {
   return (
@@ -47,15 +45,15 @@ export function Hero({ className = "" }: HeroProps) {
       />
 
       {/* Two-column composition */}
-      <div className="relative mx-auto flex min-h-[82vh] w-full max-w-7xl flex-col gap-10 px-5 py-14 sm:px-8 lg:flex-row lg:items-center lg:gap-12 lg:py-10">
+      <div className="relative mx-auto flex min-h-[82vh] w-full max-w-7xl flex-col gap-10 px-5 py-14 sm:px-8 lg:flex-row lg:items-stretch lg:gap-12 lg:py-10">
         {/* LEFT: content — fully visible on first render */}
-        <div className="w-full lg:w-[46%] lg:flex-shrink-0">
+        <div className="w-full lg:w-[46%] lg:flex-shrink-0 flex flex-col justify-center">
           <HeroContent />
         </div>
 
-        {/* RIGHT/CENTER: grid visualization — fully visible on first render */}
-        <div className="w-full lg:min-w-0 lg:flex-1">
-          <GridVisualization />
+        {/* RIGHT/CENTER: interactive operations map */}
+        <div className="w-full lg:min-w-0 lg:flex-1 min-h-[320px] lg:min-h-[500px] xl:min-h-[560px]">
+          <HeroGridMap />
         </div>
       </div>
 
