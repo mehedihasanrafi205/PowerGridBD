@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme";
 import { useAuth } from "@/hooks";
 import { cn } from "@/lib/utils";
@@ -205,6 +205,17 @@ export default function DashboardLayout({
   const { user, isLoading, isAuthenticated } = useAuth();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Close the mobile drawer with Escape.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
 
   if (isLoading) {
     return (
@@ -245,13 +256,30 @@ export default function DashboardLayout({
     item.roles.includes(userRole),
   );
 
+  // Labels are visible in the mobile drawer and whenever the
+  // desktop sidebar is expanded.
+  const expanded = mobileOpen || !collapsed;
+
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Sidebar */}
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <button
+          type="button"
+          aria-label="Close navigation"
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+        />
+      )}
+
+      {/* Sidebar — overlay drawer on mobile, collapsible rail on desktop */}
       <aside
         className={cn(
           "fixed left-0 top-0 z-40 h-screen border-r bg-card transition-all duration-300",
-          collapsed ? "w-16" : "w-64",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          "lg:translate-x-0",
+          collapsed ? "lg:w-16" : "lg:w-64",
+          "w-64",
         )}
       >
         <div className="flex h-full flex-col">
@@ -259,18 +287,34 @@ export default function DashboardLayout({
           <div
             className={cn(
               "flex items-center justify-between border-b p-4",
-              collapsed && "justify-center",
+              !expanded && "lg:justify-center",
             )}
           >
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl font-bold text-primary">
-                PowerGridBD
-              </span>
+            <Link
+              href="/"
+              className="flex items-center gap-2"
+              onClick={() => setMobileOpen(false)}
+            >
+              {expanded ? (
+                <span className="text-xl font-bold text-primary">
+                  PowerGridBD
+                </span>
+              ) : (
+                <span
+                  className="hidden text-xl font-bold text-primary lg:block"
+                  aria-hidden="true"
+                >
+                  PG
+                </span>
+              )}
             </Link>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto p-2 space-y-1">
+          <nav
+            className="flex-1 overflow-y-auto p-2 space-y-1"
+            aria-label="Dashboard"
+          >
             {filteredNavItems.map((item) => {
               const isActive =
                 pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -278,15 +322,18 @@ export default function DashboardLayout({
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={() => setMobileOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
                     "hover:bg-accent hover:text-accent-foreground",
                     isActive && "bg-primary/10 text-primary",
-                    collapsed && "justify-center px-2",
+                    !expanded && "lg:justify-center lg:px-2",
                   )}
                 >
-                  <span className="shrink-0">{item.icon}</span>
-                  {!collapsed && (
+                  <span className="shrink-0" aria-hidden="true">
+                    {item.icon}
+                  </span>
+                  {expanded && (
                     <>
                       <span className="truncate font-medium">{item.name}</span>
                       {item.badge && (
@@ -314,8 +361,8 @@ export default function DashboardLayout({
             })}
           </nav>
 
-          {/* Collapse toggle */}
-          <div className="border-t p-2">
+          {/* Collapse toggle — desktop only */}
+          <div className="hidden border-t p-2 lg:block">
             <button
               type="button"
               aria-label="Toggle sidebar"
@@ -354,12 +401,34 @@ export default function DashboardLayout({
           collapsed ? "lg:ml-16" : "lg:ml-64",
         )}
       >
-        <div className={cn("flex-1", collapsed ? "lg:ml-16" : "lg:ml-64")}>
+        <div className="flex-1">
           {/* Header */}
           <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4">
               <div className="flex h-16 items-center justify-between">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  {/* Mobile nav trigger */}
+                  <button
+                    type="button"
+                    aria-label="Open navigation"
+                    onClick={() => setMobileOpen(true)}
+                    className="rounded-md p-2 hover:bg-accent lg:hidden"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      className="h-6 w-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 6h16M4 12h16M4 18h16"
+                      />
+                    </svg>
+                  </button>
                   <div className="flex items-center gap-4">
                     <span className="text-sm text-muted-foreground">
                       {user?.role}
