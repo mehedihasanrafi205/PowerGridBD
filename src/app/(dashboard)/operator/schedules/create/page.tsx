@@ -1,14 +1,17 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { useSchedules, useCreateSchedule } from "@/hooks";
-import { useAreas } from "@/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, Loader2, Save } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { PageHeader } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -16,14 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar, Loader2, Save, ArrowLeft, AlertCircle } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
+import { useAreas, useAuth, useCreateSchedule } from "@/hooks";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 const scheduleSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -40,7 +38,7 @@ const scheduleSchema = z.object({
 type ScheduleForm = z.infer<typeof scheduleSchema>;
 
 export default function CreateSchedulePage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const router = useRouter();
   const createMutation = useCreateSchedule();
   const { data: areas, isLoading: areasLoading } = useAreas({ limit: 100 });
@@ -109,23 +107,18 @@ export default function CreateSchedulePage() {
 
   return (
     <div className="container mx-auto py-8 max-w-3xl">
-      <div className="mb-8 flex items-center gap-4">
-        <Link href="/operator/schedules">
-          <Button variant="ghost" size="sm">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-            <Calendar className="h-8 w-8 text-primary" />
-            Create Schedule
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Create a new load-shedding schedule
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Create Schedule"
+        description="Create a new load-shedding schedule."
+        actions={
+          <Link href="/operator/schedules">
+            <Button variant="ghost" size="sm">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+          </Link>
+        }
+      />
 
       <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-6">
         <Card>
