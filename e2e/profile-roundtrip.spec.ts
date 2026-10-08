@@ -15,9 +15,7 @@ import { loginAsTechnician } from "./helpers";
 
 const PROBE_PHONE = "+880100000001";
 
-test("technician updates and restores own phone number", async ({
-  page,
-}) => {
+test("technician updates and restores own phone number", async ({ page }) => {
   await loginAsTechnician(page);
 
   await page.goto("/technician/profile");
@@ -29,9 +27,9 @@ test("technician updates and restores own phone number", async ({
   // --- update to probe value ---
   await phoneInput.fill(PROBE_PHONE);
   await page.getByRole("button", { name: /save changes/i }).click();
-  await expect(
-    page.getByText(/profile updated|success/i).first(),
-  ).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText(/profile updated|success/i).first()).toBeVisible({
+    timeout: 20000,
+  });
 
   // --- verify persistence across reload ---
   await page.reload();
@@ -42,9 +40,9 @@ test("technician updates and restores own phone number", async ({
   // --- restore original value ---
   await page.getByLabel(/phone number/i).fill(originalPhone);
   await page.getByRole("button", { name: /save changes/i }).click();
-  await expect(
-    page.getByText(/profile updated|success/i).first(),
-  ).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText(/profile updated|success/i).first()).toBeVisible({
+    timeout: 20000,
+  });
   await page.reload();
   await expect(page.getByLabel(/phone number/i)).toHaveValue(originalPhone, {
     timeout: 20000,

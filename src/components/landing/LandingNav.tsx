@@ -196,7 +196,7 @@ export function LandingNav() {
                   transition={{ delay: 0.1, staggerChildren: 0.05 }}
                 >
                   {navLinks.map((link) => (
-                    <motion.link
+                    <motion.a
                       key={link.href}
                       href={link.href}
                       className="rounded-lg px-3 py-2 text-base font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white"
@@ -209,7 +209,7 @@ export function LandingNav() {
                       }}
                     >
                       {link.label}
-                    </motion.link>
+                    </motion.a>
                   ))}
                   <motion.div
                     className="flex flex-col gap-2 border-t border-zinc-800 pt-4"
