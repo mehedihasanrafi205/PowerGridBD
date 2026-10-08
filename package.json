@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
+    "test": "bun test",
     "format": "biome format --write"
   },
   "dependencies": {
@@ -48,6 +49,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "bun-types": "^1.4.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

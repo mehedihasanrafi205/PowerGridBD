@@ -19,16 +19,9 @@ import {
   useOutages,
   useUsers,
 } from "@/hooks";
+import { outageBadgeVariant } from "@/lib/status-variants";
 
 /** Map outage status to a semantic Badge variant. */
-function outageVariant(status: string) {
-  if (status === "PENDING") return "warning" as const;
-  if (status === "ASSIGNED") return "info" as const;
-  if (status === "IN_PROGRESS") return "default" as const;
-  if (status === "RESOLVED" || status === "RESTORED") return "success" as const;
-  if (status === "FAILED") return "destructive" as const;
-  return "secondary" as const;
-}
 
 export default function AdminDashboard() {
   const { isLoading } = useAuth();
@@ -271,7 +264,7 @@ export default function AdminDashboard() {
                   className="flex items-center justify-between rounded-lg bg-muted/50 p-3 transition-colors hover:bg-muted"
                 >
                   <div className="flex items-center gap-3">
-                    <Badge variant={outageVariant(outage.status)}>
+                    <Badge variant={outageBadgeVariant(outage.status)}>
                       {outage.status}
                     </Badge>
                     <div>

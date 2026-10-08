@@ -15,6 +15,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useReviewApplication } from "@/hooks";
+import { applicationBadgeVariant } from "@/lib/status-variants";
 import type { Application } from "@/types";
 import { TechnicalDataPanel } from "./TechnicalDataPanel";
 
@@ -24,13 +25,6 @@ interface ApplicationReviewDialogProps {
 }
 
 /** Map application status to a semantic Badge variant. */
-function applicationVariant(status: string) {
-  if (status === "PENDING") return "warning" as const;
-  if (status === "UNDER_REVIEW") return "info" as const;
-  if (status === "APPROVED") return "success" as const;
-  if (status === "REJECTED") return "destructive" as const;
-  return "secondary" as const;
-}
 
 function isReviewable(status: string) {
   return status === "PENDING" || status === "UNDER_REVIEW";
@@ -102,7 +96,7 @@ export function ApplicationReviewDialog({
         {application && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Badge variant={applicationVariant(application.status)}>
+              <Badge variant={applicationBadgeVariant(application.status)}>
                 {application.status}
               </Badge>
               {application.reviewer && (

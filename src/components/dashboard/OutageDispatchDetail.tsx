@@ -39,6 +39,7 @@ import {
   useUpdateOutageStatus,
   useUsers,
 } from "@/hooks";
+import { outageBadgeVariant } from "@/lib/status-variants";
 import type { OutageStatus } from "@/types";
 import { ErrorState } from "./ErrorState";
 import { GridStatusIndicator } from "./GridStatusIndicator";
@@ -60,14 +61,6 @@ const lifecycleStatuses: OutageStatus[] = [
 ];
 
 /** Map outage status to a semantic Badge variant. */
-function outageVariant(status: string) {
-  if (status === "PENDING") return "warning" as const;
-  if (status === "ASSIGNED") return "info" as const;
-  if (status === "IN_PROGRESS") return "default" as const;
-  if (status === "RESOLVED" || status === "RESTORED") return "success" as const;
-  if (status === "FAILED") return "destructive" as const;
-  return "secondary" as const;
-}
 
 /**
  * OutageDispatchDetail — the shared operator/admin outage
@@ -163,7 +156,7 @@ export function OutageDispatchDetail({
           </div>
           <div className="flex items-center gap-2">
             <Badge
-              variant={outageVariant(o.status)}
+              variant={outageBadgeVariant(o.status)}
               className="gap-1 px-3 py-1"
             >
               {o.status}

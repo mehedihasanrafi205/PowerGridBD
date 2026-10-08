@@ -60,13 +60,13 @@ const hierarchy = [
     level: "L3",
     name: "Feeder",
     detail: "Distribution feeder line",
-    color: "text-amber-400",
+    color: "text-amber",
   },
   {
     level: "L4",
     name: "Area",
     detail: "Customer service area",
-    color: "text-emerald-400",
+    color: "text-emerald",
   },
 ];
 

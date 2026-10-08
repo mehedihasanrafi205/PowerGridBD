@@ -30,6 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAuditLogs, useAuth } from "@/hooks";
+import { auditActionBadgeVariant } from "@/lib/status-variants";
 
 interface AuditLogExplorerProps {
   title: string;
@@ -63,14 +64,6 @@ const actionOptions: Array<{ value: string; label: string }> = [
 ];
 
 /** Map audit action to a semantic Badge variant. */
-function actionVariant(action: string) {
-  if (action === "CREATE" || action === "APPROVE") return "success" as const;
-  if (action === "UPDATE") return "info" as const;
-  if (action === "DELETE" || action === "REJECT") return "destructive" as const;
-  if (action === "ASSIGN") return "warning" as const;
-  if (action === "STATUS_CHANGE") return "default" as const;
-  return "secondary" as const;
-}
 
 /** Action icon shown inside the badge (never color alone). */
 function ActionIcon({ action }: { action: string }) {
@@ -282,7 +275,7 @@ export function AuditLogExplorer({
                           </TableCell>
                           <TableCell>
                             <Badge
-                              variant={actionVariant(log.action)}
+                              variant={auditActionBadgeVariant(log.action)}
                               className="gap-1"
                             >
                               <ActionIcon action={log.action} />

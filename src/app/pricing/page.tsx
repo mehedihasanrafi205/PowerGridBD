@@ -24,7 +24,7 @@ const products = [
     price: "BDT 500",
     period: "per outage",
     icon: <Zap className="h-6 w-6" />,
-    accent: "text-amber-400",
+    accent: "text-amber",
     description:
       "Move a single outage report to the top of every staff work queue, verified end-to-end by SSLCommerz.",
     features: [

@@ -25,32 +25,10 @@ import {
   useOutages,
   useSchedules,
 } from "@/hooks";
-import type { OutageStatus, ScheduleStatus } from "@/types";
-
-/** Map outage status to a semantic Badge variant. */
-const outageVariant: Record<
-  OutageStatus,
-  "default" | "secondary" | "destructive" | "success" | "warning" | "info"
-> = {
-  PENDING: "warning",
-  ASSIGNED: "info",
-  IN_PROGRESS: "default",
-  RESOLVED: "success",
-  RESTORED: "success",
-  CANCELLED: "secondary",
-  FAILED: "destructive",
-};
-
-/** Map schedule status to a semantic Badge variant. */
-const scheduleVariant: Record<
-  ScheduleStatus,
-  "default" | "secondary" | "destructive" | "success" | "warning" | "info"
-> = {
-  SCHEDULED: "info",
-  ONGOING: "warning",
-  COMPLETED: "success",
-  CANCELLED: "secondary",
-};
+import {
+  outageBadgeVariant,
+  scheduleBadgeVariant,
+} from "@/lib/status-variants";
 
 export default function OperatorDashboard() {
   const { isLoading } = useAuth();
@@ -224,9 +202,7 @@ export default function OperatorDashboard() {
                   className="flex items-center justify-between gap-3 rounded-lg p-3 transition-colors hover:bg-muted/50"
                 >
                   <div className="flex items-center gap-3">
-                    <Badge
-                      variant={outageVariant[outage.status] ?? "secondary"}
-                    >
+                    <Badge variant={outageBadgeVariant(outage.status)}>
                       {outage.status}
                     </Badge>
                     <div>
@@ -279,9 +255,7 @@ export default function OperatorDashboard() {
                       {new Date(schedule.endTime).toLocaleDateString()}
                     </p>
                   </div>
-                  <Badge
-                    variant={scheduleVariant[schedule.status] ?? "secondary"}
-                  >
+                  <Badge variant={scheduleBadgeVariant(schedule.status)}>
                     {schedule.status}
                   </Badge>
                 </div>

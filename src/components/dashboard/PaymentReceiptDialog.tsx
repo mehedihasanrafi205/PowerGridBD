@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { paymentBadgeVariant } from "@/lib/status-variants";
 import type { Payment } from "@/types";
 import { TechnicalDataPanel } from "./TechnicalDataPanel";
 
@@ -21,12 +22,6 @@ interface PaymentReceiptDialogProps {
 }
 
 /** Map payment status to a semantic Badge variant. */
-function paymentVariant(status: string) {
-  if (status === "SUCCESS") return "success" as const;
-  if (status === "PENDING") return "warning" as const;
-  if (status === "FAILED") return "destructive" as const;
-  return "secondary" as const;
-}
 
 /**
  * PaymentReceiptDialog — the shared payment receipt viewer.
@@ -66,7 +61,7 @@ export function PaymentReceiptDialog({
         {payment && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Badge variant={paymentVariant(payment.status)}>
+              <Badge variant={paymentBadgeVariant(payment.status)}>
                 {payment.status}
               </Badge>
               <Badge variant="secondary">{payment.type}</Badge>

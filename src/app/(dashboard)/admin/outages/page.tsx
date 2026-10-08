@@ -31,6 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAuth, useOutages } from "@/hooks";
+import { outageBadgeVariant } from "@/lib/status-variants";
 import type { OutageStatus } from "@/types";
 
 export default function AdminOutagesPage() {
@@ -73,25 +74,6 @@ export default function AdminOutagesPage() {
     { value: "RESTORED", label: "Restored" },
     { value: "CANCELLED", label: "Cancelled" },
   ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "PENDING":
-        return "warning";
-      case "ASSIGNED":
-        return "info";
-      case "IN_PROGRESS":
-        return "default";
-      case "RESOLVED":
-        return "success";
-      case "RESTORED":
-        return "success";
-      case "CANCELLED":
-        return "secondary";
-      default:
-        return "secondary";
-    }
-  };
 
   return (
     <div className="container mx-auto py-8">
@@ -205,7 +187,7 @@ export default function AdminOutagesPage() {
                             {outage.description}
                           </TableCell>
                           <TableCell>
-                            <Badge variant={getStatusColor(outage.status)}>
+                            <Badge variant={outageBadgeVariant(outage.status)}>
                               {outage.status}
                             </Badge>
                           </TableCell>

@@ -18,13 +18,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
 import { useAuth, useOutages, useTechnicianSummary } from "@/hooks";
+import { outageBadgeVariant } from "@/lib/status-variants";
 
 /** Map outage status to a semantic Badge variant. */
-function outageVariant(status: string) {
-  if (status === "ASSIGNED") return "info" as const;
-  if (status === "IN_PROGRESS") return "default" as const;
-  return "success" as const;
-}
 
 export default function TechnicianDashboard() {
   const { user, isLoading } = useAuth();
@@ -132,7 +128,7 @@ export default function TechnicianDashboard() {
                 className="flex items-center justify-between rounded-lg bg-muted/50 p-4 transition-colors hover:bg-muted"
               >
                 <div className="flex items-center gap-4">
-                  <Badge variant={outageVariant(outage.status)}>
+                  <Badge variant={outageBadgeVariant(outage.status)}>
                     {outage.status}
                   </Badge>
                   <div>

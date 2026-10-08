@@ -39,6 +39,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useApplications, useAuth } from "@/hooks";
+import { applicationBadgeVariant } from "@/lib/status-variants";
 import type { Application, ApplicationStatus } from "@/types";
 
 const statusOptions: Array<{ value: string; label: string }> = [
@@ -50,13 +51,6 @@ const statusOptions: Array<{ value: string; label: string }> = [
 ];
 
 /** Map application status to a semantic Badge variant. */
-function applicationVariant(status: string) {
-  if (status === "PENDING") return "warning" as const;
-  if (status === "UNDER_REVIEW") return "info" as const;
-  if (status === "APPROVED") return "success" as const;
-  if (status === "REJECTED") return "destructive" as const;
-  return "secondary" as const;
-}
 
 /** Status icon shown inside the badge (never color alone). */
 function StatusIcon({ status }: { status: string }) {
@@ -245,7 +239,7 @@ export default function AdminApplicationsPage() {
                           </TableCell>
                           <TableCell>
                             <Badge
-                              variant={applicationVariant(app.status)}
+                              variant={applicationBadgeVariant(app.status)}
                               className="gap-1"
                             >
                               <StatusIcon status={app.status} />

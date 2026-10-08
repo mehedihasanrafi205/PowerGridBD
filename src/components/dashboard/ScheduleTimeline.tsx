@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, CheckCircle } from "lucide-react";
+import { detectIntervalConflicts } from "@/lib/schedule-conflicts";
 import { cn } from "@/lib/utils";
 import type { Schedule, ScheduleStatus } from "@/types";
 
@@ -21,7 +22,7 @@ interface TimelineGroup {
   blocks: PlacedBlock[];
 }
 
-interface ConflictPair {
+interface ConflictDisplay {
   a: Schedule;
   b: Schedule;
   groupLabel: string;
@@ -37,14 +38,9 @@ function toMs(iso: string): number | null {
   return Number.isNaN(ms) ? null : ms;
 }
 
-/** Half-open interval overlap: [aStart, aEnd) ∩ [bStart, bEnd) ≠ ∅. */
-function overlaps(
-  aStart: number,
-  aEnd: number,
-  bStart: number,
-  bEnd: number,
-): boolean {
-  return aStart < bEnd && bStart < aEnd;
+/** Grouping key: feeder first, falling back to area. */
+function groupKeyOf(schedule: Schedule): string {
+  return schedule.feeder?.id ?? `area-${schedule.area?.id ?? "general"}`;
 }
 
 function statusBlockStyle(status: string): string {
@@ -88,8 +84,7 @@ export function ScheduleTimeline({
   // Group by feeder, falling back to area.
   const groups = new Map<string, TimelineGroup>();
   for (const p of parsed) {
-    const key =
-      p.schedule.feeder?.id ?? `area-${p.schedule.area?.id ?? "general"}`;
+    const key = groupKeyOf(p.schedule);
     const label = p.schedule.feeder?.name ?? p.schedule.area?.name ?? "General";
     const sublabel =
       p.schedule.feeder?.substation?.name ?? p.schedule.area?.feeder?.name;
@@ -106,42 +101,35 @@ export function ScheduleTimeline({
     });
   }
 
-  // Detect collisions within each group (active schedules only).
-  const conflicts: ConflictPair[] = [];
-  for (const group of groups.values()) {
-    const active = parsed.filter(
-      (p) =>
-        (p.schedule.feeder?.id ??
-          `area-${p.schedule.area?.id ?? "general"}`) === group.key &&
-        ACTIVE_STATUSES.includes(p.schedule.status),
-    );
-    for (let i = 0; i < active.length; i++) {
-      for (let j = i + 1; j < active.length; j++) {
-        if (
-          overlaps(
-            active[i].start,
-            active[i].end,
-            active[j].start,
-            active[j].end,
-          )
-        ) {
-          conflicts.push({
-            a: active[i].schedule,
-            b: active[j].schedule,
-            groupLabel: group.label,
-          });
-          for (const block of group.blocks) {
-            if (
-              block.schedule.id === active[i].schedule.id ||
-              block.schedule.id === active[j].schedule.id
-            ) {
-              block.conflicts = true;
-            }
-          }
-        }
-      }
+  // Detect collisions via the shared pure engine, then mark
+  // blocks and resolve banner display rows.
+  const byId = new Map(parsed.map((p) => [p.schedule.id, p.schedule]));
+  const detection = detectIntervalConflicts(
+    parsed.map((p) => ({
+      id: p.schedule.id,
+      groupKey: groupKeyOf(p.schedule),
+      startMs: p.start,
+      endMs: p.end,
+      active: ACTIVE_STATUSES.includes(p.schedule.status),
+    })),
+  );
+  for (const block of [...groups.values()].flatMap((g) => g.blocks)) {
+    if (detection.conflictIds.has(block.schedule.id)) {
+      block.conflicts = true;
     }
   }
+  const conflicts: ConflictDisplay[] = detection.pairs.flatMap((pair) => {
+    const a = byId.get(pair.aId);
+    const b = byId.get(pair.bId);
+    if (!a || !b) return [];
+    return [
+      {
+        a,
+        b,
+        groupLabel: groups.get(pair.groupKey)?.label ?? "Grid",
+      },
+    ];
+  });
 
   const orderedGroups = [...groups.values()].sort((a, b) =>
     a.label.localeCompare(b.label),

@@ -29,6 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAreas, useAuth, useSchedules } from "@/hooks";
+import { scheduleBadgeVariant } from "@/lib/status-variants";
 import type { ScheduleStatus } from "@/types";
 
 const statusOptions: Array<{ value: string; label: string }> = [
@@ -40,12 +41,6 @@ const statusOptions: Array<{ value: string; label: string }> = [
 ];
 
 /** Map schedule status to a semantic Badge variant. */
-function scheduleVariant(status: string) {
-  if (status === "SCHEDULED") return "info" as const;
-  if (status === "ONGOING") return "warning" as const;
-  if (status === "COMPLETED") return "success" as const;
-  return "secondary" as const;
-}
 
 /**
  * Customer load-shedding schedules — read-only visibility into
@@ -291,7 +286,9 @@ export default function CustomerSchedulesPage() {
                             {new Date(schedule.endTime).toLocaleString()}
                           </TableCell>
                           <TableCell>
-                            <Badge variant={scheduleVariant(schedule.status)}>
+                            <Badge
+                              variant={scheduleBadgeVariant(schedule.status)}
+                            >
                               {schedule.status}
                             </Badge>
                           </TableCell>

@@ -31,6 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAuth, useOutages } from "@/hooks";
+import { outageBadgeVariant } from "@/lib/status-variants";
 import type { OutageStatus } from "@/types";
 
 const statusOptions: Array<{ value: string; label: string }> = [
@@ -44,14 +45,6 @@ const statusOptions: Array<{ value: string; label: string }> = [
 ];
 
 /** Map outage status to a semantic Badge variant. */
-function outageVariant(status: string) {
-  if (status === "PENDING") return "warning" as const;
-  if (status === "ASSIGNED") return "info" as const;
-  if (status === "IN_PROGRESS") return "default" as const;
-  if (status === "RESOLVED" || status === "RESTORED") return "success" as const;
-  if (status === "FAILED") return "destructive" as const;
-  return "secondary" as const;
-}
 
 export default function OperatorOutagesPage() {
   const { isLoading: authLoading } = useAuth();
@@ -243,7 +236,7 @@ export default function OperatorOutagesPage() {
                           </TableCell>
                           <TableCell>
                             <Badge
-                              variant={outageVariant(outage.status)}
+                              variant={outageBadgeVariant(outage.status)}
                               className="gap-1"
                             >
                               {outage.status}

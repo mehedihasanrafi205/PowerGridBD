@@ -63,7 +63,7 @@ export default function ContactPage() {
 
               <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-amber-400">
+                  <div className="p-2.5 rounded-lg bg-zinc-900 border border-zinc-800 text-amber">
                     <MessageSquare className="h-5 w-5" />
                   </div>
                   <h3 className="font-semibold text-white">In-Platform</h3>

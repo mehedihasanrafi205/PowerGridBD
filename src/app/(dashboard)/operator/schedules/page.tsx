@@ -51,6 +51,7 @@ import {
   useSchedules,
   useUpdateScheduleStatus,
 } from "@/hooks";
+import { scheduleBadgeVariant } from "@/lib/status-variants";
 import type { ScheduleStatus } from "@/types";
 
 const statusOptions: Array<{ value: string; label: string }> = [
@@ -69,12 +70,6 @@ const assignableStatuses: ScheduleStatus[] = [
 ];
 
 /** Map schedule status to a semantic Badge variant. */
-function scheduleVariant(status: string) {
-  if (status === "SCHEDULED") return "info" as const;
-  if (status === "ONGOING") return "warning" as const;
-  if (status === "COMPLETED") return "success" as const;
-  return "secondary" as const;
-}
 
 export default function OperatorSchedulesPage() {
   const { isLoading: authLoading } = useAuth();
@@ -300,7 +295,9 @@ export default function OperatorSchedulesPage() {
                                 className="h-8 w-36"
                               >
                                 <Badge
-                                  variant={scheduleVariant(schedule.status)}
+                                  variant={scheduleBadgeVariant(
+                                    schedule.status,
+                                  )}
                                   className="pointer-events-none"
                                 >
                                   {schedule.status}

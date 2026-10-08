@@ -46,6 +46,7 @@ import {
   useUpdateUserStatus,
   useUsers,
 } from "@/hooks";
+import { roleBadgeVariant } from "@/lib/status-variants";
 import type { Role, UserStatus } from "@/types";
 
 const roleOptions: Array<{ value: string; label: string }> = [
@@ -70,13 +71,6 @@ const assignableRoles: Role[] = [
 ];
 
 /** Map user role to a semantic Badge variant. */
-function roleVariant(role: string) {
-  if (role === "ADMIN") return "destructive" as const;
-  if (role === "POWER_OPERATOR") return "warning" as const;
-  if (role === "TECHNICIAN") return "success" as const;
-  if (role === "CUSTOMER") return "info" as const;
-  return "secondary" as const;
-}
 
 export default function AdminUsersPage() {
   const { isLoading: authLoading } = useAuth();
@@ -292,7 +286,7 @@ export default function AdminUsersPage() {
                                 className="h-8 w-40"
                               >
                                 <Badge
-                                  variant={roleVariant(u.role)}
+                                  variant={roleBadgeVariant(u.role)}
                                   className="pointer-events-none"
                                 >
                                   {u.role}

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 const services = [
   {
     icon: <AlertTriangle className="h-6 w-6" />,
-    accent: "text-amber-400",
+    accent: "text-amber",
     title: "Outage Lifecycle Management",
     summary:
       "Customer reports flow into a five-stage pipeline — PENDING, ASSIGNED, IN_PROGRESS, RESOLVED, RESTORED — with timestamps at every transition.",
@@ -70,7 +70,7 @@ const services = [
   },
   {
     icon: <CreditCard className="h-6 w-6" />,
-    accent: "text-emerald-400",
+    accent: "text-emerald",
     title: "SLA & Priority Restoration",
     summary:
       "Two SSLCommerz-verified products: a BDT 500 per-outage Priority Restoration Pass and a BDT 2,000 30-day SLA subscription.",
@@ -98,7 +98,7 @@ const services = [
   },
   {
     icon: <FileSearch className="h-6 w-6" />,
-    accent: "text-amber-400",
+    accent: "text-amber",
     title: "Audit Logging & Analytics",
     summary:
       "Every authenticated action is recorded with entity, action, actor, and metadata — filterable, exportable, and paired with five analytics views.",

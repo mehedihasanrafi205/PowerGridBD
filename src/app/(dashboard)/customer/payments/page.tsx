@@ -28,6 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAuth, useMyPayments } from "@/hooks";
+import { paymentBadgeVariant, paymentTypeLabel } from "@/lib/status-variants";
 import type { Payment, PaymentStatus } from "@/types";
 
 const statusOptions: Array<{ value: string; label: string }> = [
@@ -39,18 +40,6 @@ const statusOptions: Array<{ value: string; label: string }> = [
 ];
 
 /** Map payment status to a semantic Badge variant. */
-function paymentVariant(status: string) {
-  if (status === "SUCCESS") return "success" as const;
-  if (status === "FAILED") return "destructive" as const;
-  if (status === "PENDING") return "warning" as const;
-  return "secondary" as const;
-}
-
-function typeLabel(type: string) {
-  if (type === "PRIORITY_RESTORATION") return "Priority Restoration";
-  if (type === "SLA_SUBSCRIPTION") return "SLA Subscription";
-  return type;
-}
 
 export default function CustomerPaymentsPage() {
   const { isLoading: authLoading } = useAuth();
@@ -214,14 +203,16 @@ export default function CustomerPaymentsPage() {
                           </TableCell>
                           <TableCell>
                             <Badge variant="secondary">
-                              {typeLabel(payment.type)}
+                              {paymentTypeLabel(payment.type)}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-right font-mono font-medium tabular-nums">
                             BDT {payment.amount.toLocaleString()}
                           </TableCell>
                           <TableCell>
-                            <Badge variant={paymentVariant(payment.status)}>
+                            <Badge
+                              variant={paymentBadgeVariant(payment.status)}
+                            >
                               {payment.status}
                             </Badge>
                           </TableCell>

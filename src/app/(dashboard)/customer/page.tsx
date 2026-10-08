@@ -11,16 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
 import { useAuth, useMySummary, useOutages } from "@/hooks";
+import { outageBadgeVariant } from "@/lib/status-variants";
 import { cn } from "@/lib/utils";
 
 /** Map outage status to a semantic Badge variant. */
-function outageVariant(status: string) {
-  if (status === "PENDING") return "warning" as const;
-  if (status === "ASSIGNED") return "info" as const;
-  if (status === "IN_PROGRESS") return "default" as const;
-  if (status === "RESOLVED") return "success" as const;
-  return "secondary" as const;
-}
 
 export default function CustomerDashboard() {
   const { user, isLoading } = useAuth();
@@ -154,7 +148,7 @@ export default function CustomerDashboard() {
                   className="flex items-center justify-between rounded-lg bg-muted/50 p-4 transition-colors hover:bg-muted"
                 >
                   <div className="flex items-center gap-4">
-                    <Badge variant={outageVariant(outage.status)}>
+                    <Badge variant={outageBadgeVariant(outage.status)}>
                       {outage.status}
                     </Badge>
                     <div>

@@ -1,6 +1,7 @@
 import { Activity } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { auditActionBadgeVariant } from "@/lib/status-variants";
 import { cn } from "@/lib/utils";
 
 export interface FeedEvent {
@@ -20,14 +21,6 @@ interface SystemEventFeedProps {
 }
 
 /** Map audit action to a semantic Badge variant. */
-function actionVariant(action: string) {
-  if (action === "CREATE" || action === "APPROVE") return "success" as const;
-  if (action === "UPDATE") return "info" as const;
-  if (action === "DELETE" || action === "REJECT") return "destructive" as const;
-  if (action === "ASSIGN") return "warning" as const;
-  if (action === "STATUS_CHANGE") return "default" as const;
-  return "secondary" as const;
-}
 
 /**
  * SystemEventFeed — compact live event log (Design.md §7).
@@ -67,7 +60,10 @@ export function SystemEventFeed({
             key={event.id}
             className="flex items-center gap-3 py-2.5 transition-colors hover:bg-muted/50"
           >
-            <Badge variant={actionVariant(event.action)} className="shrink-0">
+            <Badge
+              variant={auditActionBadgeVariant(event.action)}
+              className="shrink-0"
+            >
               {event.action}
             </Badge>
             <div className="min-w-0 flex-1">

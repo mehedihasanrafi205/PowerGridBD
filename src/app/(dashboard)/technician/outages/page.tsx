@@ -41,6 +41,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAuth, useOutages } from "@/hooks";
+import { outageBadgeVariant } from "@/lib/status-variants";
 import type { OutageStatus } from "@/types";
 
 const statusOptions: Array<{ value: string; label: string }> = [
@@ -52,13 +53,6 @@ const statusOptions: Array<{ value: string; label: string }> = [
 ];
 
 /** Map outage status to a semantic Badge variant. */
-function outageVariant(status: string) {
-  if (status === "ASSIGNED") return "info" as const;
-  if (status === "IN_PROGRESS") return "default" as const;
-  if (status === "RESOLVED" || status === "RESTORED") return "success" as const;
-  if (status === "PENDING") return "warning" as const;
-  return "secondary" as const;
-}
 
 /** Status icon shown inside the badge (never color alone). */
 function StatusIcon({ status }: { status: string }) {
@@ -297,7 +291,7 @@ export default function TechnicianOutagesPage() {
                             </TableCell>
                             <TableCell>
                               <Badge
-                                variant={outageVariant(outage.status)}
+                                variant={outageBadgeVariant(outage.status)}
                                 className="gap-1"
                               >
                                 <StatusIcon status={outage.status} />
