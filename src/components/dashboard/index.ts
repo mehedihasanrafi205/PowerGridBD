@@ -12,4 +12,5 @@ export { OutageDispatchDetail } from "./OutageDispatchDetail";
 export { OutageStatusTimeline } from "./OutageStatusTimeline";
 export { PageHeader } from "./PageHeader";
 export { PaymentReceiptDialog } from "./PaymentReceiptDialog";
+export { ScheduleTimeline } from "./ScheduleTimeline";
 export { TelemetryRow } from "./TelemetryRow";

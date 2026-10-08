@@ -2,6 +2,7 @@
 
 import {
   Calendar,
+  CalendarClock,
   Clock,
   Loader2,
   PlusCircle,
@@ -10,7 +11,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { EmptyState, ErrorState, PageHeader } from "@/components/dashboard";
+import {
+  EmptyState,
+  ErrorState,
+  PageHeader,
+  ScheduleTimeline,
+} from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -182,6 +188,21 @@ export default function OperatorSchedulesPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Interval timeline with overlap detection */}
+      {!error && !isLoading && rows.length > 0 && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CalendarClock className="h-5 w-5" aria-hidden="true" />
+              Interval Timeline
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScheduleTimeline schedules={rows} />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Schedules table */}
       <Card>
