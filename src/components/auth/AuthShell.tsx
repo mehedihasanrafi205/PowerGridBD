@@ -4,6 +4,7 @@ import { Activity, CalendarClock, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ThemeToggle } from "@/components/theme";
+import { Logo } from "@/components/ui/Logo";
 
 const capabilities = [
   {
@@ -68,19 +69,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
 
         {/* Brand row */}
         <div className="relative z-10">
-          <Link href="/" className="inline-flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-electric-blue font-mono text-lg font-bold text-white">
-              P
-            </span>
-            <span>
-              <span className="block text-lg font-bold tracking-tight text-white">
-                PowerGridBD
-              </span>
-              <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-400">
-                Grid Operations Platform
-              </span>
-            </span>
-          </Link>
+          <Logo href="/" variant="full" size="md" className="gap-2" />
         </div>
 
         {/* Mission statement */}
