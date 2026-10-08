@@ -1,5 +1,6 @@
 export { EmptyState } from "./EmptyState";
 export { ErrorState } from "./ErrorState";
+export { GridHierarchyExplorer } from "./GridHierarchyExplorer";
 export {
   type GridStatus,
   GridStatusIndicator,
