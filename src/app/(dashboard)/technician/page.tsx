@@ -1,22 +1,30 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import {
-  PlusCircle,
   AlertTriangle,
-  Clock,
-  CheckCircle,
   BarChart3,
-  TrendingUp,
+  CheckCircle,
+  Clock,
   User,
 } from "lucide-react";
-import { useTechnicianSummary } from "@/hooks";
-import { useOutages } from "@/hooks";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
+import {
+  EmptyState,
+  OperationalMetric,
+  PageHeader,
+  TelemetryRow,
+} from "@/components/dashboard";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CardTitle } from "@/components/ui/card";
+import { useAuth, useOutages, useTechnicianSummary } from "@/hooks";
+
+/** Map outage status to a semantic Badge variant. */
+function outageVariant(status: string) {
+  if (status === "ASSIGNED") return "info" as const;
+  if (status === "IN_PROGRESS") return "default" as const;
+  return "success" as const;
+}
 
 export default function TechnicianDashboard() {
   const { user, isLoading } = useAuth();
@@ -26,17 +34,17 @@ export default function TechnicianDashboard() {
     limit: 5,
   });
 
-  if (isLoading) {
+  if (isLoading || summaryLoading) {
     return (
       <div className="container mx-auto py-8">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="bg-card border rounded-xl p-6 animate-pulse"
+              className="animate-pulse rounded-xl border bg-card p-6"
             >
-              <div className="h-4 w-1/4 bg-muted rounded mb-2" />
-              <div className="h-8 w-1/2 bg-muted rounded" />
+              <div className="mb-2 h-4 w-1/4 rounded bg-muted" />
+              <div className="h-8 w-1/2 rounded bg-muted" />
             </div>
           ))}
         </div>
@@ -44,71 +52,49 @@ export default function TechnicianDashboard() {
     );
   }
 
-  const stats = [
-    {
-      title: "Assigned Tasks",
-      value: summary?.data?.assignedCount || 0,
-      icon: AlertTriangle,
-      color: "text-electric-blue",
-      bg: "bg-electric-blue/15",
-    },
-    {
-      title: "In Progress",
-      value: summary?.data?.ongoingCount || 0,
-      icon: Clock,
-      color: "text-amber-500",
-      bg: "bg-amber-100",
-    },
-    {
-      title: "Resolved This Month",
-      value: summary?.data?.resolvedCount || 0,
-      icon: CheckCircle,
-      color: "text-emerald",
-      bg: "bg-emerald/15",
-    },
-    {
-      title: "Avg Resolution Time",
-      value: `${summary?.data?.avgResolutionTime || 0}h`,
-      icon: Clock,
-      color: "text-primary",
-      bg: "bg-primary/15",
-    },
-  ];
+  const fixRate = summary?.data?.firstTimeFixRate || 0;
+  const avgResolution = summary?.data?.avgResolutionTime || 0;
 
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">
-          Welcome back, {user?.name?.split(" ")[0]}!
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Here's your task overview and performance summary.
-        </p>
+      <PageHeader
+        title={`Welcome back, ${user?.name?.split(" ")[0]}!`}
+        description="Here's your task overview and performance summary."
+        actions={
+          <Link href="/technician/outages">
+            <Button>View All Assigned</Button>
+          </Link>
+        }
+      />
+
+      {/* KPI metrics */}
+      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <OperationalMetric
+          label="Assigned Tasks"
+          value={summary?.data?.assignedCount || 0}
+          icon={<AlertTriangle className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="In Progress"
+          value={summary?.data?.ongoingCount || 0}
+          icon={<Clock className="h-5 w-5" />}
+        />
+        <OperationalMetric
+          label="Resolved This Month"
+          value={summary?.data?.resolvedCount || 0}
+          icon={<CheckCircle className="h-5 w-5" />}
+          delta="Completed"
+        />
+        <OperationalMetric
+          label="Avg Resolution Time"
+          value={`${avgResolution}h`}
+          icon={<Clock className="h-5 w-5" />}
+        />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        {stats.map((stat) => (
-          <div
-            key={stat.title}
-            className="bg-card border rounded-xl p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{stat.title}</p>
-                <p className="text-3xl font-bold text-foreground mt-1">
-                  {stat.value}
-                </p>
-              </div>
-              <div className={cn(stat.bg, "p-3 rounded-xl")}>
-                <stat.icon className={cn(stat.color, "h-6 w-6")} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="bg-card border rounded-xl p-6 mb-8">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+      {/* Assigned outages */}
+      <div className="mb-8 rounded-xl border bg-card p-6">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
           <CardTitle className="text-xl">Assigned Outages</CardTitle>
           <Link href="/technician/outages">
             <Button>View All Assigned</Button>
@@ -116,22 +102,18 @@ export default function TechnicianDashboard() {
         </div>
 
         <div className="space-y-3">
-          {outages && outages.data && outages.data.length > 0 ? (
+          {outagesLoading ? (
+            [1, 2, 3].map((i) => (
+              <div key={i} className="h-16 animate-pulse rounded-lg bg-muted" />
+            ))
+          ) : outages?.data && outages.data.length > 0 ? (
             outages.data.slice(0, 5).map((outage) => (
               <div
                 key={outage.id}
-                className="flex items-center justify-between p-4 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
+                className="flex items-center justify-between rounded-lg bg-muted/50 p-4 transition-colors hover:bg-muted"
               >
                 <div className="flex items-center gap-4">
-                  <Badge
-                    variant={
-                      outage.status === "ASSIGNED"
-                        ? "info"
-                        : outage.status === "IN_PROGRESS"
-                          ? "default"
-                          : "success"
-                    }
-                  >
+                  <Badge variant={outageVariant(outage.status)}>
                     {outage.status}
                   </Badge>
                   <div>
@@ -147,7 +129,7 @@ export default function TechnicianDashboard() {
                 <div className="flex items-center gap-2">
                   {outage.isPriority && (
                     <Badge variant="warning" className="gap-1">
-                      <span className="h-2 w-2 rounded-full bg-current animate-pulse" />
+                      <span className="h-2 w-2 animate-pulse rounded-full bg-current" />
                       Priority
                     </Badge>
                   )}
@@ -161,49 +143,39 @@ export default function TechnicianDashboard() {
               </div>
             ))
           ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <CheckCircle className="h-12 w-12 mx-auto text-emerald mb-3" />
-              <p className="text-lg">All tasks completed!</p>
-              <p>Great work! No outages assigned at this time.</p>
-            </div>
+            <EmptyState
+              icon={<CheckCircle className="h-5 w-5 text-emerald" />}
+              title="All tasks completed!"
+              description="Great work! No outages assigned at this time."
+            />
           )}
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 mt-8">
-        <div className="bg-card border rounded-xl p-6">
-          <CardTitle className="text-xl mb-4">Performance Overview</CardTitle>
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
+        {/* Performance overview */}
+        <div className="rounded-xl border bg-card p-6">
+          <CardTitle className="mb-4 text-xl">Performance Overview</CardTitle>
           <div className="space-y-4">
             <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-muted-foreground">
-                  First-Time Fix Rate
-                </span>
-                <span className="font-semibold">
-                  {summary?.data?.firstTimeFixRate || 0}%
-                </span>
-              </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
+              <TelemetryRow label="First-Time Fix Rate" value={`${fixRate}%`} />
+              <div className="mt-1 h-2 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full bg-emerald rounded-full transition-all"
-                  style={{ width: `${summary?.data?.firstTimeFixRate || 0}%` }}
+                  className="h-full rounded-full bg-emerald transition-all"
+                  style={{ width: `${fixRate}%` }}
                 />
               </div>
             </div>
             <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-muted-foreground">
-                  Avg Resolution Time
-                </span>
-                <span className="font-semibold">
-                  {summary?.data?.avgResolutionTime || 0}h
-                </span>
-              </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
+              <TelemetryRow
+                label="Avg Resolution Time"
+                value={`${avgResolution}h`}
+              />
+              <div className="mt-1 h-2 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full bg-electric-blue rounded-full transition-all"
+                  className="h-full rounded-full bg-electric-blue transition-all"
                   style={{
-                    width: `${Math.min(((summary?.data?.avgResolutionTime || 0) / 24) * 100, 100)}%`,
+                    width: `${Math.min((avgResolution / 24) * 100, 100)}%`,
                   }}
                 />
               </div>
@@ -211,8 +183,9 @@ export default function TechnicianDashboard() {
           </div>
         </div>
 
-        <div className="bg-card border rounded-xl p-6">
-          <CardTitle className="text-xl mb-4">Quick Actions</CardTitle>
+        {/* Quick actions */}
+        <div className="rounded-xl border bg-card p-6">
+          <CardTitle className="mb-4 text-xl">Quick Actions</CardTitle>
           <div className="space-y-3">
             <Link href="/technician/outages">
               <Button className="w-full justify-start gap-3">
