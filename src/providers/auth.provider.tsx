@@ -1,14 +1,14 @@
 "use client";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   createContext,
+  type ReactNode,
   useContext,
   useEffect,
-  ReactNode,
-  useState,
   useRef,
+  useState,
 } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getMe } from "@/api/auth.api";
 import type { User } from "@/types";
 
@@ -62,8 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const fetchUser = async () => {
       try {
         const response = await getMe();
-        if (mounted && response.success && response.data?.user) {
-          setUser(response.data.user);
+        if (mounted && response.success && response.data?.id) {
+          setUser(response.data);
         }
       } catch {
         // Ignore errors

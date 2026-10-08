@@ -52,7 +52,7 @@ export function Hero({ className = "" }: HeroProps) {
         </div>
 
         {/* RIGHT/CENTER: interactive operations map */}
-        <div className="w-full lg:min-w-0 lg:flex-1 min-h-[320px] lg:min-h-[500px] xl:min-h-[560px]">
+        <div className="w-full lg:min-w-0 lg:flex-1 min-h-[320px] lg:min-h-[500px]">
           <HeroGridMap />
         </div>
       </div>

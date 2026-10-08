@@ -70,7 +70,7 @@ export function SystemEventFeed({
               <p className="truncate text-sm font-medium text-foreground">
                 {event.entity}{" "}
                 <span className="font-mono text-xs font-normal text-muted-foreground">
-                  #{event.entityId.slice(0, 8)}
+                  #{event.entityId?.slice(0, 8) || "—"}
                 </span>
               </p>
               <p className="truncate text-xs text-muted-foreground">

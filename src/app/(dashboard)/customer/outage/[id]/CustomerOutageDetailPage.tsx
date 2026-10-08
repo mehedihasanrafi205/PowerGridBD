@@ -311,7 +311,9 @@ export default function CustomerOutageDetailPage() {
                       {o.restoredAt ? "Power Restored" : "Issue Resolved"}
                     </p>
                     <p className="text-muted-foreground text-sm">
-                      {new Date(o.restoredAt || o.resolvedAt || "").toLocaleString()}
+                      {new Date(
+                        o.restoredAt || o.resolvedAt || "",
+                      ).toLocaleString()}
                     </p>
                     {o.resolutionNotes && (
                       <p className="text-sm text-emerald/90 mt-1">

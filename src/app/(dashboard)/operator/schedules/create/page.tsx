@@ -73,8 +73,10 @@ export default function CreateSchedulePage() {
     try {
       await createMutation.mutateAsync(data);
       toast.success("Schedule created successfully!");
+      // NOTE: no router.refresh() here — it aborts the pending
+      // client navigation. The list refetches via query
+      // invalidation in the mutation itself.
       router.push("/operator/schedules");
-      router.refresh();
     } catch {
       toast.error("Failed to create schedule");
     }

@@ -24,9 +24,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme";
-import { useAuth } from "@/hooks";
-import { cn } from "@/lib/utils";
-import { Logo, LogoMark } from "@/components/ui/Logo";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,8 +33,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
+import { Logo, LogoMark } from "@/components/ui/Logo";
+import { useAuth } from "@/hooks";
 import { roleBadgeVariant } from "@/lib/status-variants";
+import { cn } from "@/lib/utils";
 
 interface NavItem {
   name: string;
@@ -354,11 +354,16 @@ export default function DashboardLayout({
           >
             {filteredNavItems.map((item) => {
               const isActive =
-                pathname === item.href || pathname.startsWith(`${item.href}/`);
+                pathname === item.href ||
+                (item.name !== "Dashboard" &&
+                  pathname.startsWith(`${item.href}/`));
               return (
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-label={item.name}
+                  aria-current={isActive ? "page" : undefined}
+                  title={!expanded ? item.name : undefined}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",

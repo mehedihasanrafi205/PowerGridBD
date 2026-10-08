@@ -53,11 +53,7 @@ interface HeroGridMapProps {
  * every future map surface; today it renders the labeled
  * demonstration topology.
  *
- * Responsive heights:
- * - Mobile (<640px): 320px (compact)
- * - Tablet (640px-1024px): 400px
- * - Desktop (1024px-1280px): 500px
- * - Large desktop (>1280px): 560px
+ * Map height scales from 320px on mobile to 500px on desktop.
  *
  * The map is fully contained within its card — no overlays
  * escape, no z-index conflicts with navbar or hero content.
@@ -66,13 +62,18 @@ export function HeroGridMap({ className }: HeroGridMapProps) {
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border border-white/10 bg-deep-charcoal shadow-2xl",
+        "relative isolate z-0 w-full min-w-0 overflow-hidden rounded-xl border border-white/10 bg-deep-charcoal shadow-2xl",
         className,
       )}
+      style={{
+        height: "clamp(320px, calc(25vw + 200px), 500px)",
+        position: "relative",
+        zIndex: 0,
+      }}
+      data-testid="hero-map-card"
     >
       <div
-        className="w-full h-[320px] sm:h-[400px] lg:h-[500px] xl:h-[560px]"
-        style={{ minWidth: 0 }}
+        className="h-full w-full min-h-0 min-w-0"
         data-testid="hero-map-container"
       >
         <PowerGridMap data={DEMO_TOPOLOGY} />

@@ -55,8 +55,9 @@ export default function VerifyEmailPage() {
       });
       if (response.success) {
         toast.success("Email verified successfully! Redirecting...");
+        // NOTE: no router.refresh() here — it aborts the pending
+        // client navigation.
         router.push("/");
-        router.refresh();
       } else {
         toast.error(response.message || "Verification failed");
       }

@@ -1,7 +1,7 @@
 "use client";
 
 import L from "leaflet";
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   MapContainer,
   Marker,
@@ -9,6 +9,7 @@ import {
   Popup,
   TileLayer,
   Tooltip,
+  useMap,
   ZoomControl,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -50,9 +51,24 @@ function nodeIcon(node: GridMapNode, selected: boolean): L.DivIcon {
   });
 }
 
+function MapSizeObserver() {
+  const map = useMap();
+
+  useEffect(() => {
+    const container = map.getContainer();
+    const observer = new ResizeObserver(() => {
+      map.invalidateSize({ pan: false });
+    });
+    observer.observe(container);
+
+    return () => observer.disconnect();
+  }, [map]);
+
+  return null;
+}
+
 export function PowerGridMap({ data, className }: PowerGridMapProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const mapContainerRef = useRef<HTMLDivElement>(null);
   const byId = new Map(data.nodes.map((n) => [n.id, n]));
 
   const links: Array<{
@@ -73,31 +89,12 @@ export function PowerGridMap({ data, className }: PowerGridMapProps) {
     };
   });
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (mapContainerRef.current) {
-        const leafletContainer =
-          mapContainerRef.current.querySelector(".leaflet-container");
-        if (leafletContainer instanceof HTMLElement) {
-          leafletContainer.style.height = "100%";
-          leafletContainer.style.width = "100%";
-          leafletContainer.style.visibility = "visible";
-          leafletContainer.style.display = "block";
-        }
-        const map = (leafletContainer as any)?._leaflet_map;
-        if (map && typeof map.invalidateSize === "function") {
-          map.invalidateSize();
-        }
-      }
-    }, 50);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div
-      ref={mapContainerRef}
-      className={cn("pg-map relative isolate overflow-hidden", className)}
-      style={{ width: "100%", height: "100%", minWidth: 0, minHeight: 300 }}
+      className={cn(
+        "pg-map relative isolate z-0 h-full w-full min-h-0 min-w-0 overflow-hidden",
+        className,
+      )}
     >
       <MapContainer
         center={[23.7, 90.35]}
@@ -106,13 +103,9 @@ export function PowerGridMap({ data, className }: PowerGridMapProps) {
         zoomControl={false}
         attributionControl
         className="h-full w-full"
-        style={{
-          background: "var(--color-deep-charcoal)",
-          height: "100%",
-          width: "100%",
-          minHeight: 320,
-        }}
+        style={{ background: "var(--color-deep-charcoal)" }}
       >
+        <MapSizeObserver />
         <TileLayer
           url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
           maxZoom={20}

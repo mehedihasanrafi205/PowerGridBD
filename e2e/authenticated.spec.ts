@@ -51,3 +51,24 @@ test("admin form login lands on the console", async ({ page }) => {
     page.getByRole("heading", { name: /admin console/i }).first(),
   ).toBeVisible({ timeout: 20000 });
 });
+
+test("admin dashboard home button returns to the console", async ({ page }) => {
+  await loginAsAdmin(page);
+  await page.goto("/admin/payments");
+
+  const dashboardNav = page.getByRole("navigation", { name: "Dashboard" });
+  const homeLink = dashboardNav.getByRole("link", { name: "Dashboard" });
+
+  await expect(page).toHaveURL(/\/admin\/payments$/);
+  await expect(homeLink).not.toHaveClass(/bg-primary\/10/);
+  await expect(homeLink).not.toHaveAttribute("aria-current", "page");
+
+  await homeLink.click();
+
+  await expect(page).toHaveURL(/\/admin$/);
+  await expect(
+    page.getByRole("heading", { name: /admin console/i }).first(),
+  ).toBeVisible({ timeout: 20000 });
+  await expect(homeLink).toHaveClass(/bg-primary\/10/);
+  await expect(homeLink).toHaveAttribute("aria-current", "page");
+});

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import {
+  type ConflictInterval,
   detectIntervalConflicts,
   intervalsOverlap,
-  type ConflictInterval,
 } from "./schedule-conflicts";
 
 function interval(
@@ -54,9 +54,7 @@ describe("detectIntervalConflicts", () => {
       interval("c", "f1", 30, 40),
     ]);
     expect(result.conflictIds).toEqual(new Set(["a", "b"]));
-    expect(result.pairs).toEqual([
-      { aId: "a", bId: "b", groupKey: "f1" },
-    ]);
+    expect(result.pairs).toEqual([{ aId: "a", bId: "b", groupKey: "f1" }]);
   });
 
   it("ignores overlaps across different groups", () => {

@@ -9,9 +9,19 @@
  */
 
 /* Container */
+.pg-map {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
 .pg-map .leaflet-container {
   background: var(--color-deep-charcoal);
   font-family: var(--font-sans);
+  height: 100%;
+  width: 100%;
+  min-height: 0;
   outline: none;
 }
 
