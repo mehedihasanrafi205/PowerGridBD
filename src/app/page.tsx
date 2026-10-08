@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { FeaturePanels } from "@/components/landing/FeaturePanels";
-import { HeroCockpit } from "@/components/landing/HeroCockpit";
+import { Hero } from "@/components/landing/Hero";
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { LandingNav } from "@/components/landing/LandingNav";
 import { LiveStatusStrip } from "@/components/landing/LiveStatusStrip";
@@ -37,7 +37,7 @@ export default function LandingPage() {
         <div className="pt-16">
           <LiveStatusStrip />
         </div>
-        <HeroCockpit />
+        <Hero />
         <FeaturePanels />
         <RoleShowcase />
         <OperationsTable />
