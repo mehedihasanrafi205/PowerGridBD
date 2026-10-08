@@ -203,7 +203,7 @@ export default function AdminAuditLogsPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">
+            <div className="text-center text-destructive py-4">
               Failed to load audit logs
             </div>
           )}

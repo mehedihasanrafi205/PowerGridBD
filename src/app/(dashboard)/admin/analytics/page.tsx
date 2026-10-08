@@ -152,8 +152,8 @@ export default function AdminAnalyticsPage() {
                   {a?.totalUsers || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-blue-100">
-                <Users className="h-6 w-6 text-blue-600" />
+              <div className="p-3 rounded-xl bg-electric-blue/15">
+                <Users className="h-6 w-6 text-electric-blue" />
               </div>
             </div>
           </CardContent>
@@ -168,8 +168,8 @@ export default function AdminAnalyticsPage() {
                   {a?.activeOutages || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-red-100">
-                <AlertTriangle className="h-6 w-6 text-red-600" />
+              <div className="p-3 rounded-xl bg-destructive/15">
+                <AlertTriangle className="h-6 w-6 text-destructive" />
               </div>
             </div>
           </CardContent>
@@ -184,8 +184,8 @@ export default function AdminAnalyticsPage() {
                   BDT {f?.totalRevenue || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-green-100">
-                <CreditCard className="h-6 w-6 text-green-600" />
+              <div className="p-3 rounded-xl bg-emerald/15">
+                <CreditCard className="h-6 w-6 text-emerald" />
               </div>
             </div>
           </CardContent>
@@ -202,8 +202,8 @@ export default function AdminAnalyticsPage() {
                   {f?.activeSlaSubscriptions || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-purple-100">
-                <Shield className="h-6 w-6 text-purple-600" />
+              <div className="p-3 rounded-xl bg-primary/15">
+                <Shield className="h-6 w-6 text-primary" />
               </div>
             </div>
           </CardContent>
@@ -221,25 +221,25 @@ export default function AdminAnalyticsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-green-50 rounded-lg">
+              <div className="p-4 bg-emerald/10 rounded-lg">
                 <p className="text-sm text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-emerald">
                   BDT {f?.totalRevenue || 0}
                 </p>
               </div>
-              <div className="p-4 bg-blue-50 rounded-lg">
+              <div className="p-4 bg-electric-blue/10 rounded-lg">
                 <p className="text-sm text-muted-foreground">Success Rate</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-electric-blue">
                   {f?.successRate || 0}%
                 </p>
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-purple-50 rounded-lg">
+              <div className="p-4 bg-primary/10 rounded-lg">
                 <p className="text-sm text-muted-foreground">
                   Active SLA Subscriptions
                 </p>
-                <p className="text-2xl font-bold text-purple-600">
+                <p className="text-2xl font-bold text-primary">
                   {f?.activeSlaSubscriptions || 0}
                 </p>
               </div>
@@ -252,11 +252,11 @@ export default function AdminAnalyticsPage() {
                 </p>
               </div>
             </div>
-            <div className="p-4 bg-blue-50 rounded-lg">
+            <div className="p-4 bg-electric-blue/10 rounded-lg">
               <p className="text-sm text-muted-foreground">
                 SLA Subscription Revenue
               </p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-electric-blue">
                 BDT {f?.revenueByType?.slaSubscription || 0}
               </p>
             </div>
@@ -317,13 +317,13 @@ export default function AdminAnalyticsPage() {
                 <span className="text-muted-foreground">
                   MTTR (Mean Time To Resolution)
                 </span>
-                <span className="font-semibold text-blue-600">
+                <span className="font-semibold text-electric-blue">
                   {p?.mttr || 0}h
                 </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-blue-500 rounded-full"
+                  className="h-full bg-electric-blue rounded-full"
                   style={{
                     width: `${Math.min(((p?.mttr || 0) / 48) * 100, 100)}%`,
                   }}
@@ -339,13 +339,13 @@ export default function AdminAnalyticsPage() {
                 <span className="text-muted-foreground">
                   Avg Assignment Time
                 </span>
-                <span className="font-semibold text-green-600">
+                <span className="font-semibold text-emerald">
                   {p?.avgAssignmentTime || 0}h
                 </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-green-500 rounded-full"
+                  className="h-full bg-emerald rounded-full"
                   style={{
                     width: `${Math.min(((p?.avgAssignmentTime || 0) / 24) * 100, 100)}%`,
                   }}
@@ -361,13 +361,13 @@ export default function AdminAnalyticsPage() {
                 <span className="text-muted-foreground">
                   First-Time Fix Rate
                 </span>
-                <span className="font-semibold text-purple-600">
+                <span className="font-semibold text-primary">
                   {p?.firstTimeFixRate || 0}%
                 </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-purple-500 rounded-full"
+                  className="h-full bg-primary rounded-full"
                   style={{ width: `${p?.firstTimeFixRate || 0}%` }}
                 />
               </div>
@@ -419,7 +419,7 @@ export default function AdminAnalyticsPage() {
               />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <MapPin className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <MapPin className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No geographical data available</p>
               </div>
             )}
@@ -444,7 +444,7 @@ export default function AdminAnalyticsPage() {
               />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <Target className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <Target className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No critical feeders identified</p>
               </div>
             )}
@@ -483,7 +483,7 @@ export default function AdminAnalyticsPage() {
               </>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <TrendingUp className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <TrendingUp className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No trend data available</p>
               </div>
             )}
@@ -508,7 +508,7 @@ export default function AdminAnalyticsPage() {
               />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <Clock className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No load-shedding data available</p>
               </div>
             )}

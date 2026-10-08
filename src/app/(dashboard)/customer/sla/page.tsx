@@ -66,23 +66,23 @@ export default function CustomerSlaPage() {
               className={cn(
                 "p-4 rounded-lg",
                 summary?.data?.slaActive
-                  ? "bg-green-50 border border-green-200"
-                  : "bg-gray-50 border border-gray-200",
+                  ? "bg-emerald/10 border border-emerald/30"
+                  : "bg-muted border border-border",
               )}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={cn(
                     "p-3 rounded-lg",
-                    summary?.data?.slaActive ? "bg-green-100" : "bg-gray-100",
+                    summary?.data?.slaActive ? "bg-emerald/15" : "bg-muted",
                   )}
                 >
                   <Shield
                     className={cn(
                       "h-6 w-6",
                       summary?.data?.slaActive
-                        ? "text-green-600"
-                        : "text-gray-400",
+                        ? "text-emerald"
+                        : "text-muted-foreground",
                     )}
                   />
                 </div>
@@ -98,19 +98,19 @@ export default function CustomerSlaPage() {
                 </div>
               </div>
             </div>
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="font-semibold text-blue-800 mb-2">
+            <div className="p-4 bg-electric-blue/10 border border-electric-blue/30 rounded-lg">
+              <p className="font-semibold text-electric-blue mb-2">
                 Priority Restorations Used
               </p>
-              <p className="text-2xl font-bold text-blue-800">
+              <p className="text-2xl font-bold text-electric-blue">
                 {summary?.data?.priorityCount || 0} / month
               </p>
             </div>
-            <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-              <p className="font-semibold text-purple-800 mb-2">
+            <div className="p-4 bg-primary/10 border border-primary/30 rounded-lg">
+              <p className="font-semibold text-primary mb-2">
                 Total Investment
               </p>
-              <p className="text-2xl font-bold text-purple-800">
+              <p className="text-2xl font-bold text-primary">
                 BDT {summary?.data?.totalPaid || 0}
               </p>
             </div>
@@ -129,7 +129,7 @@ export default function CustomerSlaPage() {
         <CardContent>
           {!plans?.data || plans.data.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <Info className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+              <Info className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
               <p>No SLA plans available at the moment.</p>
             </div>
           ) : (
@@ -159,7 +159,7 @@ export default function CustomerSlaPage() {
                         key={feature}
                         className="flex items-center gap-2 text-sm"
                       >
-                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <CheckCircle className="h-4 w-4 text-emerald" />
                         {feature}
                       </li>
                     ))}

@@ -91,8 +91,8 @@ export default function ReportOutagePage() {
           Back to Outages
         </Link>
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-red-100 rounded-lg">
-            <AlertTriangle className="h-6 w-6 text-red-600" />
+          <div className="p-3 bg-destructive/15 rounded-lg">
+            <AlertTriangle className="h-6 w-6 text-destructive" />
           </div>
           <div>
             <h1 className="text-3xl font-bold text-foreground">

@@ -63,7 +63,7 @@ export default function TechnicianOutageDetailPage() {
       <div className="container mx-auto py-8">
         <Card className="max-w-2xl mx-auto">
           <CardContent className="text-center py-8">
-            <AlertCircle className="h-12 w-12 mx-auto text-red-500 mb-4" />
+            <AlertCircle className="h-12 w-12 mx-auto text-destructive mb-4" />
             <h2 className="text-xl font-semibold mb-2">Outage Not Found</h2>
             <p className="text-muted-foreground mb-4">
               The outage report you're looking for doesn't exist or has been
@@ -155,11 +155,11 @@ export default function TechnicianOutageDetailPage() {
 
       {/* Action Buttons */}
       {canStartWork && (
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mb-6 p-4 bg-electric-blue/10 border border-electric-blue/30 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-blue-800">Ready to start work?</p>
-              <p className="text-sm text-blue-600">
+              <p className="font-medium text-electric-blue">Ready to start work?</p>
+              <p className="text-sm text-electric-blue">
                 Click below to begin working on this outage
               </p>
             </div>
@@ -353,12 +353,12 @@ export default function TechnicianOutageDetailPage() {
 
               {/* Resolution Notes */}
               {o.resolutionNotes && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <h3 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                <div className="bg-emerald/10 border border-emerald/30 rounded-lg p-4">
+                  <h3 className="font-semibold text-emerald mb-2 flex items-center gap-2">
                     <CheckCircle className="h-5 w-5" />
                     Resolution Notes
                   </h3>
-                  <p className="text-green-700">{o.resolutionNotes}</p>
+                  <p className="text-emerald">{o.resolutionNotes}</p>
                 </div>
               )}
             </div>
@@ -375,7 +375,7 @@ export default function TechnicianOutageDetailPage() {
                   </p>
                 </div>
                 {o.assignedAt && (
-                  <div className="relative pb-6 before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-blue-500">
+                  <div className="relative pb-6 before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-electric-blue">
                     <p className="text-sm font-medium">Assigned to You</p>
                     <p className="text-muted-foreground text-sm">
                       {new Date(o.assignedAt).toLocaleString()}
@@ -391,7 +391,7 @@ export default function TechnicianOutageDetailPage() {
                   </div>
                 )}
                 {(o.resolvedAt || o.restoredAt) && (
-                  <div className="relative before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-green-500">
+                  <div className="relative before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-emerald">
                     <p className="text-sm font-medium">
                       {o.restoredAt ? "Power Restored" : "Issue Resolved"}
                     </p>
@@ -399,7 +399,7 @@ export default function TechnicianOutageDetailPage() {
                       {new Date(o.restoredAt || o.resolvedAt!).toLocaleString()}
                     </p>
                     {o.resolutionNotes && (
-                      <p className="text-sm text-green-700 mt-1">
+                      <p className="text-sm text-emerald mt-1">
                         {o.resolutionNotes}
                       </p>
                     )}
@@ -459,7 +459,7 @@ export default function TechnicianOutageDetailPage() {
 
           {activeTab === "resolve" && !canContinueWork && (
             <div className="text-center py-8 text-muted-foreground">
-              <Info className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+              <Info className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
               <p>Outage must be "In Progress" to resolve.</p>
               <p className="text-sm mt-1">Current status: {o.status}</p>
             </div>

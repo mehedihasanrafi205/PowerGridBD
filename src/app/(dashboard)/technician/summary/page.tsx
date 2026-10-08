@@ -73,8 +73,8 @@ export default function TechnicianSummaryPage() {
                   {s?.assignedCount || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-blue-100">
-                <AlertTriangle className="h-6 w-6 text-blue-600" />
+              <div className="p-3 rounded-xl bg-electric-blue/15">
+                <AlertTriangle className="h-6 w-6 text-electric-blue" />
               </div>
             </div>
           </CardContent>
@@ -107,8 +107,8 @@ export default function TechnicianSummaryPage() {
                   {s?.resolvedCount || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-green-100">
-                <CheckCircle className="h-6 w-6 text-green-600" />
+              <div className="p-3 rounded-xl bg-emerald/15">
+                <CheckCircle className="h-6 w-6 text-emerald" />
               </div>
             </div>
           </CardContent>
@@ -125,8 +125,8 @@ export default function TechnicianSummaryPage() {
                   {s?.avgResolutionTime || 0}h
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-purple-100">
-                <Clock className="h-6 w-6 text-purple-600" />
+              <div className="p-3 rounded-xl bg-primary/15">
+                <Clock className="h-6 w-6 text-primary" />
               </div>
             </div>
           </CardContent>
@@ -148,13 +148,13 @@ export default function TechnicianSummaryPage() {
                 <span className="text-muted-foreground">
                   First-Time Fix Rate
                 </span>
-                <span className="font-semibold text-green-600">
+                <span className="font-semibold text-emerald">
                   {s?.firstTimeFixRate || 0}%
                 </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-green-500 rounded-full transition-all"
+                  className="h-full bg-emerald rounded-full transition-all"
                   style={{ width: `${s?.firstTimeFixRate || 0}%` }}
                 />
               </div>
@@ -168,13 +168,13 @@ export default function TechnicianSummaryPage() {
                 <span className="text-muted-foreground">
                   Avg Resolution Time
                 </span>
-                <span className="font-semibold text-blue-600">
+                <span className="font-semibold text-electric-blue">
                   {s?.avgResolutionTime || 0}h
                 </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-blue-500 rounded-full transition-all"
+                  className="h-full bg-electric-blue rounded-full transition-all"
                   style={{
                     width: `${Math.min(((s?.avgResolutionTime || 0) / 48) * 100, 100)}%`,
                   }}
@@ -190,7 +190,7 @@ export default function TechnicianSummaryPage() {
                 <span className="text-muted-foreground">
                   Tasks Completed On Time
                 </span>
-                <span className="font-semibold text-purple-600">
+                <span className="font-semibold text-primary">
                   {Math.round(
                     ((s?.resolvedCount || 0) /
                       Math.max(s?.assignedCount || 1, 1)) *
@@ -201,7 +201,7 @@ export default function TechnicianSummaryPage() {
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-purple-500 rounded-full transition-all"
+                  className="h-full bg-primary rounded-full transition-all"
                   style={{
                     width: `${Math.round(((s?.resolvedCount || 0) / Math.max(s?.assignedCount || 1, 1)) * 100)}%`,
                   }}
@@ -250,7 +250,7 @@ export default function TechnicianSummaryPage() {
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <BarChart3 className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No workload data available</p>
               </div>
             )}
@@ -291,7 +291,7 @@ export default function TechnicianSummaryPage() {
                       <td className="py-3 pr-4 text-right">
                         {tech.assignedCount}
                       </td>
-                      <td className="py-3 pr-4 text-right text-green-600">
+                      <td className="py-3 pr-4 text-right text-emerald">
                         {tech.resolvedCount}
                       </td>
                       <td className="py-3 pr-4 text-right">
@@ -313,7 +313,7 @@ export default function TechnicianSummaryPage() {
             </div>
           ) : (
             <div className="text-center py-8 text-muted-foreground">
-              <BarChart3 className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+              <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
               <p>No workload data available</p>
             </div>
           )}

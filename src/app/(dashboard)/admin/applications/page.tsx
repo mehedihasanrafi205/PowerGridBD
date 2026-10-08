@@ -158,7 +158,7 @@ export default function AdminApplicationsPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">
+            <div className="text-center text-destructive py-4">
               Failed to load applications
             </div>
           )}
@@ -247,7 +247,7 @@ export default function AdminApplicationsPage() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="text-green-600 hover:text-green-600"
+                                    className="text-emerald hover:text-emerald"
                                     onClick={() => {}}
                                   >
                                     <Check className="h-4 w-4" />
@@ -255,7 +255,7 @@ export default function AdminApplicationsPage() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="text-red-600 hover:text-red-600"
+                                    className="text-destructive hover:text-destructive"
                                     onClick={() => {}}
                                   >
                                     <X className="h-4 w-4" />

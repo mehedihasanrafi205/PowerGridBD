@@ -49,8 +49,8 @@ export default function TechnicianDashboard() {
       title: "Assigned Tasks",
       value: summary?.data?.assignedCount || 0,
       icon: AlertTriangle,
-      color: "text-blue-500",
-      bg: "bg-blue-100",
+      color: "text-electric-blue",
+      bg: "bg-electric-blue/15",
     },
     {
       title: "In Progress",
@@ -63,15 +63,15 @@ export default function TechnicianDashboard() {
       title: "Resolved This Month",
       value: summary?.data?.resolvedCount || 0,
       icon: CheckCircle,
-      color: "text-green-500",
-      bg: "bg-green-100",
+      color: "text-emerald",
+      bg: "bg-emerald/15",
     },
     {
       title: "Avg Resolution Time",
       value: `${summary?.data?.avgResolutionTime || 0}h`,
       icon: Clock,
-      color: "text-purple-500",
-      bg: "bg-purple-100",
+      color: "text-primary",
+      bg: "bg-primary/15",
     },
   ];
 
@@ -162,7 +162,7 @@ export default function TechnicianDashboard() {
             ))
           ) : (
             <div className="text-center py-8 text-muted-foreground">
-              <CheckCircle className="h-12 w-12 mx-auto text-green-500 mb-3" />
+              <CheckCircle className="h-12 w-12 mx-auto text-emerald mb-3" />
               <p className="text-lg">All tasks completed!</p>
               <p>Great work! No outages assigned at this time.</p>
             </div>
@@ -185,7 +185,7 @@ export default function TechnicianDashboard() {
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-green-500 rounded-full transition-all"
+                  className="h-full bg-emerald rounded-full transition-all"
                   style={{ width: `${summary?.data?.firstTimeFixRate || 0}%` }}
                 />
               </div>
@@ -201,7 +201,7 @@ export default function TechnicianDashboard() {
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-blue-500 rounded-full transition-all"
+                  className="h-full bg-electric-blue rounded-full transition-all"
                   style={{
                     width: `${Math.min(((summary?.data?.avgResolutionTime || 0) / 24) * 100, 100)}%`,
                   }}

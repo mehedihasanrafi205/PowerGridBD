@@ -84,7 +84,7 @@ export default function CustomerOutagesPage() {
     if (error) {
       return (
         <tr>
-          <td colSpan={7} className="px-4 py-8 text-center text-red-500">
+          <td colSpan={7} className="px-4 py-8 text-center text-destructive">
             Failed to load outages
           </td>
         </tr>
@@ -207,7 +207,7 @@ export default function CustomerOutagesPage() {
         </div>
 
         {error && (
-          <div className="p-4 text-center text-red-500">
+          <div className="p-4 text-center text-destructive">
             Failed to load outages. Please try again.
           </div>
         )}

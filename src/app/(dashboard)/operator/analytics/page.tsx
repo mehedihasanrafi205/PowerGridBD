@@ -117,8 +117,8 @@ export default function OperatorAnalyticsPage() {
                   {a?.activeOutages || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-red-100">
-                <AlertTriangle className="h-6 w-6 text-red-600" />
+              <div className="p-3 rounded-xl bg-destructive/15">
+                <AlertTriangle className="h-6 w-6 text-destructive" />
               </div>
             </div>
           </CardContent>
@@ -151,8 +151,8 @@ export default function OperatorAnalyticsPage() {
                   {a?.availableTechnicians || 0} / {a?.totalTechnicians || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-green-100">
-                <Users className="h-6 w-6 text-green-600" />
+              <div className="p-3 rounded-xl bg-emerald/15">
+                <Users className="h-6 w-6 text-emerald" />
               </div>
             </div>
           </CardContent>
@@ -169,8 +169,8 @@ export default function OperatorAnalyticsPage() {
                   {a?.activeSchedules || 0}
                 </p>
               </div>
-              <div className="p-3 rounded-xl bg-blue-100">
-                <Clock className="h-6 w-6 text-blue-600" />
+              <div className="p-3 rounded-xl bg-electric-blue/15">
+                <Clock className="h-6 w-6 text-electric-blue" />
               </div>
             </div>
           </CardContent>
@@ -192,13 +192,13 @@ export default function OperatorAnalyticsPage() {
                 <span className="text-muted-foreground">
                   MTTR (Mean Time To Resolution)
                 </span>
-                <span className="font-semibold text-blue-600">
+                <span className="font-semibold text-electric-blue">
                   {p?.mttr || 0}h
                 </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-blue-500 rounded-full transition-all"
+                  className="h-full bg-electric-blue rounded-full transition-all"
                   style={{
                     width: `${Math.min(((p?.mttr || 0) / 48) * 100, 100)}%`,
                   }}
@@ -214,13 +214,13 @@ export default function OperatorAnalyticsPage() {
                 <span className="text-muted-foreground">
                   Avg Assignment Time
                 </span>
-                <span className="font-semibold text-green-600">
+                <span className="font-semibold text-emerald">
                   {p?.avgAssignmentTime || 0}h
                 </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-green-500 rounded-full transition-all"
+                  className="h-full bg-emerald rounded-full transition-all"
                   style={{
                     width: `${Math.min(((p?.avgAssignmentTime || 0) / 24) * 100, 100)}%`,
                   }}
@@ -236,13 +236,13 @@ export default function OperatorAnalyticsPage() {
                 <span className="text-muted-foreground">
                   First-Time Fix Rate
                 </span>
-                <span className="font-semibold text-purple-600">
+                <span className="font-semibold text-primary">
                   {p?.firstTimeFixRate || 0}%
                 </span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-purple-500 rounded-full transition-all"
+                  className="h-full bg-primary rounded-full transition-all"
                   style={{ width: `${p?.firstTimeFixRate || 0}%` }}
                 />
               </div>
@@ -274,7 +274,7 @@ export default function OperatorAnalyticsPage() {
               />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <Users className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <Users className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No workload data available</p>
               </div>
             )}
@@ -302,7 +302,7 @@ export default function OperatorAnalyticsPage() {
               />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <MapPin className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <MapPin className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No geographical data available</p>
               </div>
             )}
@@ -327,7 +327,7 @@ export default function OperatorAnalyticsPage() {
               />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <Target className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <Target className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No critical feeders identified</p>
               </div>
             )}
@@ -366,7 +366,7 @@ export default function OperatorAnalyticsPage() {
               </>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <TrendingUp className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <TrendingUp className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No trend data available</p>
               </div>
             )}
@@ -391,7 +391,7 @@ export default function OperatorAnalyticsPage() {
               />
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                <Clock className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                 <p>No load-shedding data available</p>
               </div>
             )}

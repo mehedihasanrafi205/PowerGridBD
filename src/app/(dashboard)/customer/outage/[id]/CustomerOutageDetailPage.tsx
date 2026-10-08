@@ -268,12 +268,12 @@ export default function CustomerOutageDetailPage() {
 
               {/* Resolution Notes */}
               {o.resolutionNotes && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <h3 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                <div className="bg-emerald/10 border border-emerald/30 rounded-lg p-4">
+                  <h3 className="font-semibold text-emerald mb-2 flex items-center gap-2">
                     <CheckCircle className="h-5 w-5" />
                     Resolution Notes
                   </h3>
-                  <p className="text-green-700">{o.resolutionNotes}</p>
+                  <p className="text-emerald">{o.resolutionNotes}</p>
                 </div>
               )}
             </div>

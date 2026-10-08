@@ -177,7 +177,7 @@ export default function AdminPaymentsPage() {
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="text-center text-red-500 py-4">
+            <div className="text-center text-destructive py-4">
               Failed to load payments
             </div>
           )}

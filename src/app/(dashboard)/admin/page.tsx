@@ -51,29 +51,29 @@ export default function AdminDashboard() {
       title: "Total Users",
       value: analytics?.data?.totalUsers || 0,
       icon: Users,
-      color: "text-blue-500",
-      bg: "bg-blue-100",
+      color: "text-electric-blue",
+      bg: "bg-electric-blue/15",
     },
     {
       title: "Active Outages",
       value: analytics?.data?.activeOutages || 0,
       icon: AlertCircle,
-      color: "text-red-500",
-      bg: "bg-red-100",
+      color: "text-destructive",
+      bg: "bg-destructive/15",
     },
     {
       title: "Total Revenue",
       value: `BDT ${financial?.data?.totalRevenue || 0}`,
       icon: CreditCard,
-      color: "text-green-500",
-      bg: "bg-green-100",
+      color: "text-emerald",
+      bg: "bg-emerald/15",
     },
     {
       title: "SLA Subscriptions",
       value: financial?.data?.activeSlaSubscriptions || 0,
       icon: Shield,
-      color: "text-purple-500",
-      bg: "bg-purple-100",
+      color: "text-primary",
+      bg: "bg-primary/15",
     },
   ];
 
@@ -178,25 +178,25 @@ export default function AdminDashboard() {
           </div>
           <div className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-green-50 rounded-lg">
+              <div className="p-4 bg-emerald/10 rounded-lg">
                 <p className="text-sm text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-2xl font-bold text-emerald">
                   BDT {financial?.data?.totalRevenue || 0}
                 </p>
               </div>
-              <div className="p-4 bg-blue-50 rounded-lg">
+              <div className="p-4 bg-electric-blue/10 rounded-lg">
                 <p className="text-sm text-muted-foreground">Success Rate</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-electric-blue">
                   {financial?.data?.successRate || 0}%
                 </p>
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 bg-purple-50 rounded-lg">
+              <div className="p-4 bg-primary/10 rounded-lg">
                 <p className="text-sm text-muted-foreground">
                   Active SLA Subscriptions
                 </p>
-                <p className="text-2xl font-bold text-purple-600">
+                <p className="text-2xl font-bold text-primary">
                   {financial?.data?.activeSlaSubscriptions || 0}
                 </p>
               </div>
@@ -232,7 +232,7 @@ export default function AdminDashboard() {
                   className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-600 font-medium">
+                    <span className="px-2 py-1 text-xs rounded-full bg-destructive/15 text-destructive font-medium">
                       {outage.status}
                     </span>
                     <div>
@@ -263,20 +263,20 @@ export default function AdminDashboard() {
         <div className="bg-card border rounded-xl p-6">
           <CardTitle className="text-xl mb-4">Role Distribution</CardTitle>
           <div className="grid gap-4 md:grid-cols-4">
-            <div className="p-4 bg-blue-50 rounded-lg text-center">
-              <p className="text-3xl font-bold text-blue-600">0</p>
+            <div className="p-4 bg-electric-blue/10 rounded-lg text-center">
+              <p className="text-3xl font-bold text-electric-blue">0</p>
               <p className="text-sm text-muted-foreground">Customers</p>
             </div>
-            <div className="p-4 bg-green-50 rounded-lg text-center">
-              <p className="text-3xl font-bold text-green-600">0</p>
+            <div className="p-4 bg-emerald/10 rounded-lg text-center">
+              <p className="text-3xl font-bold text-emerald">0</p>
               <p className="text-sm text-muted-foreground">Technicians</p>
             </div>
             <div className="p-4 bg-amber-50 rounded-lg text-center">
               <p className="text-3xl font-bold text-amber-600">0</p>
               <p className="text-sm text-muted-foreground">Operators</p>
             </div>
-            <div className="p-4 bg-red-50 rounded-lg text-center">
-              <p className="text-3xl font-bold text-red-600">0</p>
+            <div className="p-4 bg-destructive/10 rounded-lg text-center">
+              <p className="text-3xl font-bold text-destructive">0</p>
               <p className="text-sm text-muted-foreground">Admins</p>
             </div>
           </div>
@@ -286,17 +286,17 @@ export default function AdminDashboard() {
       <div className="bg-card border rounded-xl p-6">
         <CardTitle className="text-xl mb-4">System Health</CardTitle>
         <div className="grid md:grid-cols-4 gap-6">
-          <div className="p-4 bg-green-50 rounded-lg">
+          <div className="p-4 bg-emerald/10 rounded-lg">
             <p className="text-sm text-muted-foreground">Grid Uptime</p>
-            <p className="text-2xl font-bold text-green-600">99.9%</p>
+            <p className="text-2xl font-bold text-emerald">99.9%</p>
           </div>
-          <div className="p-4 bg-blue-50 rounded-lg">
+          <div className="p-4 bg-electric-blue/10 rounded-lg">
             <p className="text-sm text-muted-foreground">API Response</p>
-            <p className="text-2xl font-bold text-blue-600">{"<"} 200ms</p>
+            <p className="text-2xl font-bold text-electric-blue">{"<"} 200ms</p>
           </div>
-          <div className="p-4 bg-purple-50 rounded-lg">
+          <div className="p-4 bg-primary/10 rounded-lg">
             <p className="text-sm text-muted-foreground">Error Rate</p>
-            <p className="text-2xl font-bold text-purple-600">{"<"} 0.1%</p>
+            <p className="text-2xl font-bold text-primary">{"<"} 0.1%</p>
           </div>
           <div className="p-4 bg-amber-50 rounded-lg">
             <p className="text-sm text-muted-foreground">Active Alerts</p>
