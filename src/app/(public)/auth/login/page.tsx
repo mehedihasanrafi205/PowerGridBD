@@ -21,34 +21,38 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 
+/**
+ * Tester accounts from `.env.local` (TESTER_*). One-click sign-in
+ * for evaluation; each entry carries its own password since the
+ * accounts do not share credentials.
+ */
 const demoAccounts = [
   {
     role: "ADMIN",
-    email: "admin@powergridbd.com",
+    name: "System Super Admin",
+    email: "superadmin@powergrid.bd",
+    password: "Admin@12345",
     label: "Admin",
     description: "Full system access",
     color: "bg-destructive/10 text-destructive border-destructive/20",
   },
   {
     role: "POWER_OPERATOR",
-    email: "operator@powergridbd.com",
+    name: "Grid Control Operator",
+    email: "operator@powergrid.bd",
+    password: "Operator@12345",
     label: "Power Operator",
     description: "Grid & outage management",
     color: "bg-amber/10 text-amber border-amber/20",
   },
   {
     role: "TECHNICIAN",
-    email: "technician@powergridbd.com",
+    name: "Senior Field Technician",
+    email: "technician@powergrid.bd",
+    password: "Tech@12345",
     label: "Technician",
     description: "Assigned outage resolution",
     color: "bg-emerald/10 text-emerald border-emerald/20",
-  },
-  {
-    role: "CUSTOMER",
-    email: "customer@powergridbd.com",
-    label: "Customer",
-    description: "Report & track outages",
-    color: "bg-primary/10 text-primary border-primary/20",
   },
 ];
 
@@ -111,15 +115,19 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoLogin = async (email: string, role: string) => {
+  const handleDemoLogin = async (
+    email: string,
+    password: string,
+    role: string,
+  ) => {
     setDemoLoading(role);
     try {
       const response = await api.post<AuthResponse>("/auth/login", {
         email,
-        password: "demo123",
+        password,
       });
       if (response.success) {
-        toast.success(`Demo login as ${role} successful!`);
+        toast.success(`Login as ${role} successful!`);
         const userRole = response.data?.user?.role ?? role;
         const roleRoutes: Record<string, string> = {
           CUSTOMER: "/customer",
@@ -130,13 +138,13 @@ export default function LoginPage() {
         router.push(roleRoutes[userRole] ?? "/");
         router.refresh();
       } else {
-        toast.error(response.message || "Demo login failed");
+        toast.error(response.message || "Tester login failed");
       }
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
-          : "Demo login failed. Please try again.";
+          : "Tester login failed. Please try again.";
       toast.error(message);
     } finally {
       setDemoLoading(null);
@@ -166,7 +174,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Demo Login Section */}
+        {/* Tester Login Section */}
         <div className="mb-8">
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
@@ -174,26 +182,29 @@ export default function LoginPage() {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="bg-background px-2 text-muted-foreground">
-                Or try Demo Login
+                Or continue with a tester account
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="grid grid-cols-1 gap-3 mb-6 sm:grid-cols-3">
             {demoAccounts.map((account) => (
               <button
                 type="button"
                 key={account.role}
-                onClick={() => handleDemoLogin(account.email, account.role)}
+                onClick={() =>
+                  handleDemoLogin(account.email, account.password, account.role)
+                }
                 disabled={demoLoading !== null}
                 className={cn(
-                  "p-4 rounded-lg border transition-all hover:shadow-md",
+                  "p-4 rounded-lg border transition-all hover:shadow-md text-left",
                   account.color,
                   demoLoading === account.role && "opacity-50 cursor-wait",
                 )}
               >
                 <div className="font-semibold">{account.label}</div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  {account.description}
+                <div className="text-xs font-medium mt-0.5">{account.name}</div>
+                <div className="text-xs text-muted-foreground mt-1 font-mono break-all">
+                  {account.email}
                 </div>
                 {demoLoading === account.role && (
                   <div className="text-xs text-primary mt-1">Logging in...</div>
