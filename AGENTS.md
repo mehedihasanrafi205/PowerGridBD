@@ -1,9 +1,5 @@
 <!-- BEGIN:nextjs-agent-rules -->
 
-## Project Backend 
-Backend Repository: https://github.com/mehedihasanrafi205/PowerGridBD-Backend
-Backend Live: https://powergridbd-backend.vercel.app
-
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
@@ -98,16 +94,16 @@ Key components: `button`, `input`, `textarea`, `select`, `dialog`, `dropdown-men
 - Priority restoration payments
 - Technician applications with OTP verification
 - Role-based dashboards with analytics
-- Audit logs (admin only)
+- Audit logs (operator + admin)
 
 ## Landing Page & Public Site
 - Public pages: `/` (landing), `/about`, `/services`, `/contact`, `/pricing` — Server Components with full metadata
-- Landing components in `src/components/landing/` (LandingNav, LiveStatusStrip, HeroCockpit, FeaturePanels, RoleShowcase, OperationsTable, PricingSection, LandingFooter, SectionHeading)
+- Landing components in `src/components/landing/` (LandingNav, LiveStatusStrip, Hero, GridVisualization, HeroContent, HeroHUD, FeaturePanels, RoleShowcase, OperationsTable, PricingSection, ContactForm, LandingFooter, SectionHeading)
 - Brand colors registered in `@theme inline` in globals.css — opacity modifiers (`bg-electric-blue/10`) work natively
 - `font-mono` utility resolves to JetBrains Mono (loaded in layout.tsx); Inter is `font-sans`
 - Landing pages are always dark (explicit zinc/white classes, not theme-dependent `text-foreground`)
 - LiveStatusStrip + OperationsTable fetch real data via TanStack Query only when authenticated; anonymous visitors see an honest sign-in prompt (no mock data)
-- Scroll animations: `useReveal` hook (IntersectionObserver) + CSS keyframes — no animation library
+- Scroll/animation architecture: `src/components/animation/` (LenisProvider + GSAPProvider + ReducedMotionProvider, composed in `AnimationProviders`); page-level `useReveal` (IntersectionObserver) + CSS keyframes for below-fold entrances; GSAP owns SVG/map motion, Framer Motion owns UI transitions, never both on one element; constants in `src/lib/animation.ts` (easing tuples, durations, staggers)
 - Contact form is Zod-validated and composes a `mailto:` link (no backend contact endpoint exists)
 
 ## Type Safety Notes
