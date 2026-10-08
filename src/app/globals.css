@@ -188,6 +188,34 @@
 
 /* PowerGridBD Utility Classes */
 @layer utilities {
+  /* Traveling pulse for energized transmission segments */
+  .power-flow-pulse {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30%;
+    border-radius: 9999px;
+    background: var(--color-electric-blue);
+    animation: powerFlowTravel 2.2s linear infinite;
+  }
+
+  @keyframes powerFlowTravel {
+    from {
+      left: -30%;
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    to {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+
   /* Conflict highlight for overlapping schedule intervals */
   .conflict-stripes {
     background: repeating-linear-gradient(
@@ -433,6 +461,7 @@
   .transmission-line-flow,
   .status-dot-pulse,
   .badge-ripple,
+  .power-flow-pulse,
   .fade-in-entry {
     animation: none !important;
   }

@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useReviewApplication } from "@/hooks";
 import type { Application } from "@/types";
+import { TechnicalDataPanel } from "./TechnicalDataPanel";
 
 interface ApplicationReviewDialogProps {
   application: Application | null;
@@ -114,19 +115,22 @@ export function ApplicationReviewDialog({
               )}
             </div>
 
-            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-              <dt className="text-muted-foreground">Email</dt>
-              <dd>{application.email}</dd>
-              <dt className="text-muted-foreground">Phone</dt>
-              <dd className="font-mono">{application.phone}</dd>
-              <dt className="text-muted-foreground">Experience</dt>
-              <dd className="font-mono tabular-nums">
-                {application.experienceYears ?? application.experience ?? 0}{" "}
-                years
-              </dd>
-              <dt className="text-muted-foreground">Skills</dt>
-              <dd>{application.skills || "—"}</dd>
-            </dl>
+            <TechnicalDataPanel
+              rows={[
+                { label: "Email", value: application.email },
+                {
+                  label: "Phone",
+                  value: application.phone,
+                  mono: true,
+                },
+                {
+                  label: "Experience",
+                  value: `${application.experienceYears ?? application.experience ?? 0} years`,
+                  mono: true,
+                },
+                { label: "Skills", value: application.skills || "—" },
+              ]}
+            />
 
             <div>
               <p className="mb-1 text-sm font-medium">Motivation</p>

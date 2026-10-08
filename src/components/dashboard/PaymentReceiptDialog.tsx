@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { Payment } from "@/types";
+import { TechnicalDataPanel } from "./TechnicalDataPanel";
 
 interface PaymentReceiptDialogProps {
   payment: Payment | null;
@@ -86,67 +87,87 @@ export function PaymentReceiptDialog({
               </p>
             </div>
 
-            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-              {showPayer && payer && (
-                <>
-                  <dt className="text-muted-foreground">Payer</dt>
-                  <dd>
-                    {payer.name}{" "}
-                    <span className="text-muted-foreground">
-                      ({payer.email})
-                    </span>
-                  </dd>
-                </>
-              )}
-              {payment.outage && (
-                <>
-                  <dt className="text-muted-foreground">Outage</dt>
-                  <dd className="font-mono">
-                    #{payment.outage.id.slice(0, 8)}
-                  </dd>
-                </>
-              )}
-              {validation?.card_type && (
-                <>
-                  <dt className="text-muted-foreground">Card</dt>
-                  <dd>
-                    {validation.card_type}{" "}
-                    <span className="font-mono">
-                      {validation.card_no || ""}
-                    </span>
-                  </dd>
-                </>
-              )}
-              {validation?.bank_tran_id && (
-                <>
-                  <dt className="text-muted-foreground">Bank Txn</dt>
-                  <dd className="font-mono">{validation.bank_tran_id}</dd>
-                </>
-              )}
-              {validation?.tran_date && (
-                <>
-                  <dt className="text-muted-foreground">Paid At</dt>
-                  <dd className="font-mono tabular-nums">
-                    {validation.tran_date}
-                  </dd>
-                </>
-              )}
-              {details?.failedreason && (
-                <>
-                  <dt className="text-muted-foreground">Failure</dt>
-                  <dd className="text-destructive">{details.failedreason}</dd>
-                </>
-              )}
-              {details?.refund && (
-                <>
-                  <dt className="text-muted-foreground">Refund</dt>
-                  <dd>
-                    {details.refund.status} — {details.refund.amount}
-                    {details.refund.reason ? ` (${details.refund.reason})` : ""}
-                  </dd>
-                </>
-              )}
-            </dl>
+            <TechnicalDataPanel
+              rows={[
+                ...(showPayer && payer
+                  ? [
+                      {
+                        label: "Payer",
+                        value: (
+                          <>
+                            {payer.name}{" "}
+                            <span className="text-muted-foreground">
+                              ({payer.email})
+                            </span>
+                          </>
+                        ),
+                      },
+                    ]
+                  : []),
+                ...(payment.outage
+                  ? [
+                      {
+                        label: "Outage",
+                        value: `#${payment.outage.id.slice(0, 8)}`,
+                        mono: true,
+                      },
+                    ]
+                  : []),
+                ...(validation?.card_type
+                  ? [
+                      {
+                        label: "Card",
+                        value: (
+                          <>
+                            {validation.card_type}{" "}
+                            <span className="font-mono">
+                              {validation.card_no || ""}
+                            </span>
+                          </>
+                        ),
+                      },
+                    ]
+                  : []),
+                ...(validation?.bank_tran_id
+                  ? [
+                      {
+                        label: "Bank Txn",
+                        value: validation.bank_tran_id,
+                        mono: true,
+                      },
+                    ]
+                  : []),
+                ...(validation?.tran_date
+                  ? [
+                      {
+                        label: "Paid At",
+                        value: validation.tran_date,
+                        mono: true,
+                      },
+                    ]
+                  : []),
+                ...(details?.failedreason
+                  ? [
+                      {
+                        label: "Failure",
+                        value: (
+                          <span className="text-destructive">
+                            {details.failedreason}
+                          </span>
+                        ),
+                      },
+                    ]
+                  : []),
+                ...(details?.refund
+                  ? [
+                      {
+                        label: "Refund",
+                        value: `${details.refund.status} — ${details.refund.amount}${details.refund.reason ? ` (${details.refund.reason})` : ""}`,
+                      },
+                    ]
+                  : []),
+              ]}
+            />
           </div>
         )}
 

@@ -12,12 +12,14 @@ import Link from "next/link";
 import {
   GridStatusIndicator,
   OperationalMetric,
+  SystemEventFeed,
   TelemetryRow,
 } from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
 import {
+  useAuditLogs,
   useAuth,
   useOperationalAnalytics,
   useOutages,
@@ -56,6 +58,7 @@ export default function OperatorDashboard() {
     useOperationalAnalytics();
   const { data: outages } = useOutages({ limit: 5 });
   const { data: schedules } = useSchedules({ limit: 5 });
+  const { data: activity } = useAuditLogs({ limit: 6 });
 
   const activeOutages = analytics?.data?.activeOutages ?? 0;
   const criticalFeedersDown = analytics?.data?.criticalFeedersDown ?? 0;
@@ -292,29 +295,46 @@ export default function OperatorDashboard() {
         </div>
       </div>
 
-      {/* Operational analytics — theme-adaptive telemetry rows */}
-      <div className="rounded-xl border bg-card p-6">
-        <CardTitle className="mb-4 text-xl">Operational Analytics</CardTitle>
-        <div className="grid gap-x-8 gap-y-1 md:grid-cols-2">
-          <TelemetryRow
-            label="MTTR"
-            value={analytics?.data?.mttr ?? 0}
-            unit="h"
-          />
-          <TelemetryRow
-            label="Avg Assignment"
-            value={analytics?.data?.avgAssignmentTime ?? 0}
-            unit="h"
-          />
-          <TelemetryRow
-            label="First-Time Fix"
-            value={analytics?.data?.firstTimeFixRate ?? 0}
-            unit="%"
-          />
-          <TelemetryRow
-            label="Critical Feeders"
-            value={criticalFeedersDown}
-            status={criticalFeedersDown > 0 ? "critical" : "operational"}
+      {/* Operational analytics + recent activity */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="rounded-xl border bg-card p-6">
+          <CardTitle className="mb-4 text-xl">Operational Analytics</CardTitle>
+          <div className="grid gap-x-8 gap-y-1 md:grid-cols-2">
+            <TelemetryRow
+              label="MTTR"
+              value={analytics?.data?.mttr ?? 0}
+              unit="h"
+            />
+            <TelemetryRow
+              label="Avg Assignment"
+              value={analytics?.data?.avgAssignmentTime ?? 0}
+              unit="h"
+            />
+            <TelemetryRow
+              label="First-Time Fix"
+              value={analytics?.data?.firstTimeFixRate ?? 0}
+              unit="%"
+            />
+            <TelemetryRow
+              label="Critical Feeders"
+              value={criticalFeedersDown}
+              status={criticalFeedersDown > 0 ? "critical" : "operational"}
+            />
+          </div>
+        </div>
+        <div className="rounded-xl border bg-card p-6">
+          <CardTitle className="mb-4 text-xl">Recent Activity</CardTitle>
+          <SystemEventFeed
+            events={(activity?.data ?? []).map((log) => ({
+              id: log.id,
+              action: log.action,
+              entity: log.entity,
+              entityId: log.entityId,
+              actorName: log.actor?.name,
+              createdAt: log.createdAt,
+            }))}
+            viewAllHref="/operator/audit-logs"
+            viewAllLabel="View audit trail"
           />
         </div>
       </div>

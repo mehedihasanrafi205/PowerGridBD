@@ -52,6 +52,9 @@ import {
 import { cn } from "@/lib/utils";
 import type { Area, Feeder, Substation, Zone } from "@/types";
 import { EmptyState } from "./EmptyState";
+import { GridHealthIndicator } from "./GridHealthIndicator";
+import { PowerFlowIndicator } from "./PowerFlowIndicator";
+import { TechnicalDataPanel } from "./TechnicalDataPanel";
 
 export type GridLevel = "zone" | "substation" | "feeder" | "area";
 
@@ -216,6 +219,14 @@ export function GridHierarchyExplorer({
     return 0;
   };
 
+  // Every tracked node, for the honest energized-share metric.
+  const allNodes = [
+    ...zones.map((z) => ({ active: z.isActive === true })),
+    ...substations.map((s) => ({ active: s.isActive === true })),
+    ...feeders.map((f) => ({ active: f.isActive === true })),
+    ...areas.map((a) => ({ active: a.isActive === true })),
+  ];
+
   const runDelete = async () => {
     if (!deleteTarget) return;
     try {
@@ -242,6 +253,17 @@ export function GridHierarchyExplorer({
 
   return (
     <div className="grid gap-6 lg:grid-cols-5">
+      {/* Grid health strip — real energized share across all levels */}
+      <Card className="lg:col-span-5">
+        <CardContent className="pt-6">
+          <GridHealthIndicator
+            label="Grid nodes energized"
+            active={allNodes.filter((n) => n.active).length}
+            total={allNodes.length}
+          />
+        </CardContent>
+      </Card>
+
       {/* Tree panel */}
       <Card className="lg:col-span-2">
         <CardHeader>
@@ -832,6 +854,13 @@ function NodeDetail({
         </Badge>
       </div>
 
+      {/* Energized path visual */}
+      <PowerFlowIndicator
+        from={parentChain.length > 0 ? parentChain[0].name : "National grid"}
+        to={node.name}
+        active={node.isActive}
+      />
+
       {/* Parent chain */}
       {parentChain.length > 0 && (
         <div>
@@ -860,18 +889,21 @@ function NodeDetail({
       )}
 
       {/* Specs */}
-      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-        <dt className="text-muted-foreground">Node ID</dt>
-        <dd className="font-mono">{node.id.slice(0, 8)}</dd>
-        <dt className="text-muted-foreground">Created</dt>
-        <dd className="font-mono tabular-nums">
-          {new Date(node.createdAt).toLocaleDateString()}
-        </dd>
-        <dt className="text-muted-foreground">Updated</dt>
-        <dd className="font-mono tabular-nums">
-          {new Date(node.updatedAt).toLocaleDateString()}
-        </dd>
-      </dl>
+      <TechnicalDataPanel
+        rows={[
+          { label: "Node ID", value: `#${node.id.slice(0, 8)}`, mono: true },
+          {
+            label: "Created",
+            value: new Date(node.createdAt).toLocaleDateString(),
+            mono: true,
+          },
+          {
+            label: "Updated",
+            value: new Date(node.updatedAt).toLocaleDateString(),
+            mono: true,
+          },
+        ]}
+      />
 
       {/* Children */}
       {childLevel && (
