@@ -50,21 +50,11 @@ function nodeIcon(node: GridMapNode, selected: boolean): L.DivIcon {
   });
 }
 
-/**
- * PowerGridMap — reusable Leaflet operations map.
- *
- * Dark Stadia tiles, DivIcon status markers, hub link lines,
- * legend + provenance overlays, and detail popups. Renders
- * purely from `GridMapData`, so API rows, demo topology, or
- * future live telemetry plug in without touching this file.
- * Wheel-zoom stays off so page scroll is never hijacked.
- */
 export function PowerGridMap({ data, className }: PowerGridMapProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
   const byId = new Map(data.nodes.map((n) => [n.id, n]));
 
-  // Build link position pairs keyed by a unique string
   const links: Array<{
     fromId: string;
     toId: string;
@@ -83,130 +73,129 @@ export function PowerGridMap({ data, className }: PowerGridMapProps) {
     };
   });
 
-  // Force map to invalidate size on mount
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (mapRef.current) {
-        const leafletContainer = mapRef.current.querySelector(".leaflet-container");
+      if (mapContainerRef.current) {
+        const leafletContainer =
+          mapContainerRef.current.querySelector(".leaflet-container");
         if (leafletContainer instanceof HTMLElement) {
           leafletContainer.style.height = "100%";
           leafletContainer.style.width = "100%";
           leafletContainer.style.visibility = "visible";
+          leafletContainer.style.display = "block";
         }
-        // Also trigger map invalidation
         const map = (leafletContainer as any)?._leaflet_map;
         if (map && typeof map.invalidateSize === "function") {
           map.invalidateSize();
         }
       }
-    }, 100);
+    }, 50);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <div
-      ref={mapRef}
-      className={cn("pg-map relative h-full w-full isolate overflow-hidden", className)}
-      style={{ minWidth: 0, height: "100%", width: "100%", minHeight: 300 }}
+      ref={mapContainerRef}
+      className={cn("pg-map relative isolate overflow-hidden", className)}
+      style={{ width: "100%", height: "100%", minWidth: 0, minHeight: 300 }}
     >
-      <div className="absolute inset-0 z-0 overflow-hidden" style={{ height: "100%", width: "100%" }}>
-        <MapContainer
-          center={[23.7, 90.35]}
-          zoom={7}
-          scrollWheelZoom={false}
-          zoomControl={false}
-          attributionControl
-          className="h-full w-full"
-          style={{ background: "var(--color-deep-charcoal)", height: "100%", width: "100%" }}
-        >
-          {/* Stadia Maps Alidade Smooth Dark — free tier, no API key required for development */}
-          <TileLayer
-            url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-            maxZoom={20}
-            attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      <MapContainer
+        center={[23.7, 90.35]}
+        zoom={7}
+        scrollWheelZoom={false}
+        zoomControl={false}
+        attributionControl
+        className="h-full w-full"
+        style={{
+          background: "var(--color-deep-charcoal)",
+          height: "100%",
+          width: "100%",
+          minHeight: 320,
+        }}
+      >
+        <TileLayer
+          url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+          maxZoom={20}
+          attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        />
+        <ZoomControl position="topright" />
+        {links.map((link) => (
+          <Polyline
+            key={`${link.fromId}-${link.toId}`}
+            positions={link.positions}
+            pathOptions={{
+              color: "#4d7dd1",
+              weight: 1.5,
+              opacity: 0.55,
+              dashArray: "5 5",
+            }}
           />
-          <ZoomControl position="topright" />
-          {links.map((link) => (
-            <Polyline
-              key={`${link.fromId}-${link.toId}`}
-              positions={link.positions}
-              pathOptions={{
-                color: "#4d7dd1",
-                weight: 1.5,
-                opacity: 0.55,
-                dashArray: "5 5",
-              }}
-            />
-          ))}
-          {data.nodes.map((node) => (
-            <Marker
-              key={node.id}
-              position={[node.lat, node.lng]}
-              icon={nodeIcon(node, selectedId === node.id)}
-              eventHandlers={{ click: () => setSelectedId(node.id) }}
+        ))}
+        {data.nodes.map((node) => (
+          <Marker
+            key={node.id}
+            position={[node.lat, node.lng]}
+            icon={nodeIcon(node, selectedId === node.id)}
+            eventHandlers={{ click: () => setSelectedId(node.id) }}
+          >
+            <Tooltip
+              direction="top"
+              offset={[0, -10]}
+              opacity={1}
+              className="pg-tip"
             >
-              <Tooltip
-                direction="top"
-                offset={[0, -10]}
-                opacity={1}
-                className="pg-tip"
-              >
-                {node.name}
-              </Tooltip>
-              <Popup>
-                <div className="min-w-[180px]">
-                  <p className="text-sm font-semibold text-white">{node.name}</p>
-                  <p className="mt-1 flex items-center gap-1.5 text-xs">
-                    <span
-                      className={cn(
-                        "inline-block h-2 w-2 rounded-full",
-                        STATUS_DOT[node.status],
-                      )}
-                      aria-hidden="true"
-                    />
-                    <span className="text-zinc-300">
-                      {STATUS_LABEL[node.status]} · {node.kind}
-                    </span>
-                  </p>
-                  {node.detail && (
-                    <p className="mt-1 text-xs text-zinc-400">{node.detail}</p>
-                  )}
-                  <p className="mt-1.5 font-mono text-[11px] tabular-nums text-zinc-500">
-                    {node.lat.toFixed(4)}, {node.lng.toFixed(4)}
-                  </p>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
+              {node.name}
+            </Tooltip>
+            <Popup>
+              <div className="min-w-[180px]">
+                <p className="text-sm font-semibold text-white">{node.name}</p>
+                <p className="mt-1 flex items-center gap-1.5 text-xs">
+                  <span
+                    className={cn(
+                      "inline-block h-2 w-2 rounded-full",
+                      STATUS_DOT[node.status],
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className="text-zinc-300">
+                    {STATUS_LABEL[node.status]} · {node.kind}
+                  </span>
+                </p>
+                {node.detail && (
+                  <p className="mt-1 text-xs text-zinc-400">{node.detail}</p>
+                )}
+                <p className="mt-1.5 font-mono text-[11px] tabular-nums text-zinc-500">
+                  {node.lat.toFixed(4)}, {node.lng.toFixed(4)}
+                </p>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
 
-      {/* Overlay container — confined to map bounds */}
       <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
-        {/* Provenance badge — top right, inside map */}
         {data.provenance === "demo" && (
-          <div className="absolute right-3 top-3 z-20 rounded border border-white/15 bg-black/60 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300 backdrop-blur-sm">
+          <div className="absolute right-4 top-4 z-20 rounded border border-white/15 bg-black/60 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300 backdrop-blur-sm whitespace-nowrap">
             Demonstration topology
           </div>
         )}
 
-        {/* Legend — bottom left, inside map with margin from edge */}
-        <div className="absolute bottom-4 left-4 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-2 backdrop-blur-sm">
+        <div className="absolute bottom-4 left-4 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-2 backdrop-blur-sm whitespace-nowrap">
           <ul className="space-y-1.5 font-mono text-[10px] uppercase tracking-wider text-zinc-300">
             <li className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-electric-blue" />
+              <span className="h-2.5 w-2.5 rounded-full bg-electric-blue flex-shrink-0" />
               <span>Hub</span>
             </li>
             <li className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald" />
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald flex-shrink-0" />
               <span>Energized</span>
             </li>
             <li className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-amber" />
+              <span className="h-2.5 w-2.5 rounded-full bg-amber flex-shrink-0" />
               <span>Maintenance</span>
             </li>
             <li className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-destructive" />
+              <span className="h-2.5 w-2.5 rounded-full bg-destructive flex-shrink-0" />
               <span>Fault</span>
             </li>
           </ul>
