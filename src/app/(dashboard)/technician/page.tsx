@@ -65,6 +65,25 @@ export default function TechnicianDashboard() {
             <Button>View All Assigned</Button>
           </Link>
         }
+        status={
+          <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+            <span className="font-mono tabular-nums">
+              {new Date().toLocaleDateString(undefined, {
+                weekday: "long",
+                month: "short",
+                day: "numeric",
+              })}
+            </span>
+            <span aria-hidden="true">•</span>
+            <span className="font-mono tabular-nums">
+              {summary?.data?.assignedCount || 0} assigned
+            </span>
+            <span aria-hidden="true">•</span>
+            <span className="font-mono tabular-nums">
+              {summary?.data?.ongoingCount || 0} in progress
+            </span>
+          </span>
+        }
       />
 
       {/* KPI metrics */}

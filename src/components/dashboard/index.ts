@@ -9,6 +9,7 @@ export {
 } from "./GridStatusIndicator";
 export { OperationalMetric } from "./OperationalMetric";
 export { OutageDispatchDetail } from "./OutageDispatchDetail";
+export { OutageStatusDialog } from "./OutageStatusDialog";
 export { OutageStatusTimeline } from "./OutageStatusTimeline";
 export { PageHeader } from "./PageHeader";
 export { PaymentReceiptDialog } from "./PaymentReceiptDialog";
