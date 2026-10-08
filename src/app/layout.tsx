@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { themeInitScript } from "@/components/theme/theme-init";
 import { cn } from "@/lib/utils";
 import Providers from "@/providers";
 
@@ -52,9 +53,12 @@ export default function RootLayout({
         "scroll-smooth",
       )}
     >
-      <Providers>
-        <body className="min-h-full flex flex-col">{children}</body>
-      </Providers>
+      <body className="min-h-full flex flex-col">
+        {/* Apply persisted theme before hydration (prevents flash) */}
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: trusted static theme-init script; contains no user input */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

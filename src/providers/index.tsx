@@ -1,18 +1,21 @@
 "use client";
 
-import { ReactNode } from "react";
-import { AuthProvider } from "./auth.provider";
-import { Toaster } from "@/components/ui/toast";
+import type { ReactNode } from "react";
 import { AnimationProviders } from "@/components/animation";
+import { ThemeProvider } from "@/components/theme";
+import { Toaster } from "@/components/ui/toast";
+import { AuthProvider } from "./auth.provider";
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (
-    <AuthProvider>
-      <AnimationProviders>
-        <Toaster />
-        {children}
-      </AnimationProviders>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AnimationProviders>
+          <Toaster />
+          {children}
+        </AnimationProviders>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

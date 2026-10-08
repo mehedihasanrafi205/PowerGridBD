@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/theme";
 import { useAuth } from "@/hooks";
 import { cn } from "@/lib/utils";
 
@@ -384,6 +385,8 @@ export default function DashboardLayout({
                       {user?.role}
                     </span>
                   </div>
+
+                  <ThemeToggle />
 
                   <div className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
