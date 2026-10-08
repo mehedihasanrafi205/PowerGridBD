@@ -1,0 +1,183 @@
+/**
+ * PowerGridBD Leaflet overrides.
+ *
+ * Restyles stock Leaflet chrome (container, zoom control,
+ * attribution, popups, tooltips) into the ops-center language:
+ * deep-charcoal surfaces, hairline borders, Inter UI text and
+ * JetBrains Mono telemetry. Node markers are rendered by
+ * DivIcon HTML below.
+ */
+
+/* Container */
+.pg-map .leaflet-container {
+  background: var(--color-deep-charcoal);
+  font-family: var(--font-sans);
+  outline: none;
+}
+
+/* Zoom control — compact, dark */
+.pg-map .leaflet-bar {
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.pg-map .leaflet-bar a {
+  background: rgb(9 12 20 / 0.9);
+  color: #e2e8f0;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.pg-map .leaflet-bar a:hover {
+  background: rgb(30 41 59 / 0.95);
+  color: #fff;
+}
+
+/* Attribution — tiny mono, tucked away */
+.pg-map .leaflet-control-attribution {
+  background: rgb(9 12 20 / 0.75);
+  color: #64748b;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+.pg-map .leaflet-control-attribution a {
+  color: #7d8aa0;
+}
+
+/* Popup — ops panel */
+.pg-map .leaflet-popup-content-wrapper {
+  background: rgb(13 18 30 / 0.97);
+  color: #e2e8f0;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.45);
+}
+
+.pg-map .leaflet-popup-content {
+  margin: 12px 14px;
+  font-family: var(--font-sans);
+  line-height: 1.45;
+}
+
+.pg-map .leaflet-popup-tip {
+  background: rgb(13 18 30 / 0.97);
+  border: 1px solid rgb(255 255 255 / 0.12);
+}
+
+.pg-map .leaflet-popup-close-button {
+  color: #94a3b8;
+  top: 6px !important;
+  right: 8px !important;
+}
+
+/* Tooltip — technical label chip */
+.pg-map .leaflet-tooltip.pg-tip {
+  background: rgb(13 18 30 / 0.95);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.4);
+}
+
+.pg-map .leaflet-tooltip.pg-tip::before {
+  display: none;
+}
+
+/* ---- Node markers (DivIcon HTML) ---- */
+.pg-node {
+  background: transparent;
+  border: none;
+}
+
+.pg-node-dot {
+  display: block;
+  border-radius: 9999px;
+  border: 2px solid rgb(9 12 20 / 0.9);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.15);
+}
+
+.pg-node-hub .pg-node-dot {
+  width: 16px;
+  height: 16px;
+  background: var(--color-electric-blue);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.2),
+    0 0 14px var(--color-electric-blue);
+}
+
+.pg-node-energized .pg-node-dot {
+  width: 11px;
+  height: 11px;
+  background: var(--color-emerald);
+}
+
+.pg-node-warning .pg-node-dot {
+  width: 11px;
+  height: 11px;
+  background: var(--color-amber);
+}
+
+.pg-node-outage .pg-node-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--color-destructive);
+}
+
+.pg-node-inactive .pg-node-dot {
+  width: 10px;
+  height: 10px;
+  background: #475569;
+}
+
+/* Alert pulse ring (CSS only; disabled under reduced motion) */
+.pg-node-alert {
+  position: relative;
+}
+
+.pg-node-alert::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+  opacity: 0;
+  animation: pgAlertRing 2.2s ease-out infinite;
+}
+
+.pg-node-warning::after {
+  color: var(--color-amber);
+}
+
+.pg-node-outage::after {
+  color: var(--color-destructive);
+}
+
+@keyframes pgAlertRing {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* Selected marker ring */
+.pg-node-selected .pg-node-dot {
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 16px var(--color-electric-blue);
+}
