@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { ThemeToggle } from "@/components/theme";
 import { Button } from "@/components/ui/button";
 import { InputOTP } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
@@ -96,6 +97,11 @@ export default function VerifyEmailPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted px-4 py-12">
+      {/* Theme control — accessible before sign-in */}
+      <div className="fixed right-4 top-4">
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
