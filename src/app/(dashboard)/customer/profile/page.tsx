@@ -1,7 +1,7 @@
 "use client";
 
 import { Camera, Loader2, Save, User } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/dashboard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,6 +18,17 @@ export default function CustomerProfilePage() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  // Seed the form from the loaded profile. Functional updates only
+  // fill untouched fields, so in-progress typing is never clobbered.
+  // Without this the submit sends empty strings for every field the
+  // user didn't retype, and the backend rejects the update.
+  useEffect(() => {
+    if (!user) return;
+    setName((v) => v || user.name || "");
+    setPhone((v) => v || user.phone || "");
+    setAddress((v) => v || user.address || "");
+  }, [user]);
 
   const updateProfileMutation = useUpdateProfile();
   const updateImageMutation = useUpdateProfileImage();

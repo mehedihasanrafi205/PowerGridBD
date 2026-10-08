@@ -14,7 +14,9 @@ test("landing renders the hero cockpit", async ({ page }) => {
       name: /national grid visibility/i,
     }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: /powergridbd/i }).first()).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /powergridbd/i }).first(),
+  ).toBeVisible();
 });
 
 test("login renders the form and tester accounts", async ({ page }) => {
@@ -74,7 +76,5 @@ test("unknown routes render the branded 404", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: /page not found/i }),
   ).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: /back to home/i }),
-  ).toBeVisible();
+  await expect(page.getByRole("link", { name: /back to home/i })).toBeVisible();
 });
