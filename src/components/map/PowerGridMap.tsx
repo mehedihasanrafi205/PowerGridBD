@@ -83,14 +83,14 @@ export function PowerGridMap({ data, className }: PowerGridMapProps) {
   });
 
   return (
-    <div className={cn("pg-map relative h-full w-full", className)}>
+    <div className={cn("pg-map relative h-full w-full isolate", className)}>
       <MapContainer
         center={[23.7, 90.35]}
         zoom={7}
         scrollWheelZoom={false}
         zoomControl={false}
         attributionControl
-        className="h-full w-full"
+        className="h-full w-full z-0"
         style={{ background: "var(--color-deep-charcoal)" }}
       >
         {/* Stadia Maps Alidade Smooth Dark — free tier, no API key required for development */}
@@ -156,13 +156,13 @@ export function PowerGridMap({ data, className }: PowerGridMapProps) {
 
       {/* Provenance badge */}
       {data.provenance === "demo" && (
-        <div className="pointer-events-none absolute right-3 top-3 z-[500] rounded border border-white/15 bg-black/60 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300 backdrop-blur-sm">
+        <div className="pointer-events-none absolute right-3 top-3 z-50 rounded border border-white/15 bg-black/60 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300 backdrop-blur-sm">
           Demonstration topology
         </div>
       )}
 
       {/* Legend */}
-      <div className="pointer-events-none absolute bottom-6 left-3 z-[500] rounded-lg border border-white/10 bg-black/60 px-2.5 py-2 backdrop-blur-sm">
+      <div className="pointer-events-none absolute bottom-6 left-3 z-50 rounded-lg border border-white/10 bg-black/60 px-2.5 py-2 backdrop-blur-sm">
         <ul className="space-y-1 font-mono text-[10px] uppercase tracking-wider text-zinc-300">
           <li className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-electric-blue" /> Hub

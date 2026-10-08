@@ -5,24 +5,38 @@ import {
   AlertTriangle,
   BarChart3,
   Calendar,
+  ChevronDown,
   CreditCard,
   FileText,
   GitBranch,
   Home,
+  LayoutDashboard,
+  LogOut,
   PlusCircle,
+  Settings,
   Shield,
   User,
   UserPlus,
+  UserRound,
   Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { UserMenu } from "@/components/layout/user-menu";
 import { ThemeToggle } from "@/components/theme";
 import { useAuth } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { Logo, LogoMark } from "@/components/ui/Logo";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { roleBadgeVariant } from "@/lib/status-variants";
 
 interface NavItem {
   name: string;
@@ -223,7 +237,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { user, isLoading, isAuthenticated, logout } = useAuth();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -278,6 +292,14 @@ export default function DashboardLayout({
     item.roles.includes(userRole),
   );
 
+  // Role-specific dashboard home route
+  const roleHomeRoute: Record<string, string> = {
+    CUSTOMER: "/customer",
+    TECHNICIAN: "/technician",
+    POWER_OPERATOR: "/operator",
+    ADMIN: "/admin",
+  };
+
   // Labels are visible in the mobile drawer and whenever the
   // desktop sidebar is expanded.
   const expanded = mobileOpen || !collapsed;
@@ -313,7 +335,7 @@ export default function DashboardLayout({
             )}
           >
             <Link
-              href="/"
+              href={roleHomeRoute[userRole] || "/"}
               className="flex items-center gap-2"
               onClick={() => setMobileOpen(false)}
             >
@@ -417,7 +439,7 @@ export default function DashboardLayout({
         )}
       >
         <div className="flex-1">
-          {/* Header */}
+          {/* Header - shadcn style with theme toggle and user menu */}
           <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4">
               <div className="flex h-16 items-center justify-between">
@@ -451,37 +473,105 @@ export default function DashboardLayout({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="hidden sm:flex items-center gap-3">
-                    <span
-                      className={cn(
-                        "px-2 py-0.5 rounded-full text-xs font-medium",
-                        userRole === "CUSTOMER" &&
-                          "bg-electric-blue/10 text-electric-blue",
-                        userRole === "TECHNICIAN" &&
-                          "bg-smart-teal/10 text-smart-teal",
-                        userRole === "POWER_OPERATOR" &&
-                          "bg-amber/10 text-amber",
-                        userRole === "ADMIN" &&
-                          "bg-destructive/10 text-destructive",
-                      )}
-                    >
-                      {user?.role}
-                    </span>
-                  </div>
-
+                <div className="flex items-center gap-3">
+                  {/* Theme Toggle */}
                   <ThemeToggle />
 
+                  {/* User Menu Dropdown - shadcn style */}
                   {user && (
-                    <UserMenu
-                      user={{
-                        id: user.id,
-                        name: user.name,
-                        email: user.email,
-                        role: user.role,
-                        profileImage: user.profileImage,
-                      }}
-                    />
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label={`Account menu for ${user.name}`}
+                          className="flex items-center gap-2 rounded-full p-1.5 transition-colors hover:bg-accent"
+                        >
+                          <img
+                            src={user.profileImage || ""}
+                            alt={user.name}
+                            className="h-8 w-8 rounded-full bg-muted object-cover"
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                              e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                            }}
+                          />
+                          <span className="hidden h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium md:block text-primary">
+                            {user.name.charAt(0).toUpperCase()}
+                          </span>
+                          <span className="hidden text-sm font-medium md:block">
+                            {user.name}
+                          </span>
+                          <ChevronDown className="h-4 w-4 hidden md:block text-muted-foreground" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-64">
+                        <div className="px-2 py-1.5">
+                          <p className="text-sm font-medium">{user.name}</p>
+                          <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                          <div className="mt-1.5">
+                            <Badge variant={roleBadgeVariant(user.role)}>{user.role}</Badge>
+                          </div>
+                        </div>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel className="flex items-center gap-2">
+                          <Settings className="h-3.5 w-3.5" aria-hidden="true" />
+                          Account
+                        </DropdownMenuLabel>
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href={roleHomeRoute[userRole] || "/"}
+                            className="flex w-full items-center gap-2"
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
+                            Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                        {userRole === "CUSTOMER" && (
+                          <>
+                            <DropdownMenuItem asChild>
+                              <Link
+                                href="/customer/profile"
+                                className="flex w-full items-center gap-2"
+                              >
+                                <UserRound className="h-4 w-4" aria-hidden="true" />
+                                Profile
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link
+                                href="/customer/payments"
+                                className="flex w-full items-center gap-2"
+                              >
+                                <CreditCard className="h-4 w-4" aria-hidden="true" />
+                                Payments
+                              </Link>
+                            </DropdownMenuItem>
+                          </>
+                        )}
+                        {userRole === "TECHNICIAN" && (
+                          <DropdownMenuItem asChild>
+                            <Link
+                              href="/technician/profile"
+                              className="flex w-full items-center gap-2"
+                            >
+                              <UserRound className="h-4 w-4" aria-hidden="true" />
+                              Profile
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={async () => {
+                            await logout();
+                          }}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+                          Logout
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   )}
                 </div>
               </div>
