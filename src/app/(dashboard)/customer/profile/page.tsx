@@ -1,26 +1,16 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { useUpdateProfile, useUpdateProfileImage } from "@/hooks";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Camera,
-  Save,
-  Loader2,
-  AlertCircle,
-} from "lucide-react";
+import { Camera, Loader2, Save, User } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/dashboard";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { useAuth, useUpdateProfile, useUpdateProfileImage } from "@/hooks";
 
 export default function CustomerProfilePage() {
   const { user, isLoading: authLoading, refresh } = useAuth();
@@ -91,15 +81,10 @@ export default function CustomerProfilePage() {
 
   return (
     <div className="container mx-auto py-8 max-w-2xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-          <User className="h-8 w-8 text-primary" />
-          Profile Settings
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Manage your account information and preferences
-        </p>
-      </div>
+      <PageHeader
+        title="Profile Settings"
+        description="Manage your account information and preferences."
+      />
 
       <Card>
         <CardHeader>
@@ -230,26 +215,6 @@ export default function CustomerProfilePage() {
           </CardContent>
         </Card>
       </form>
-
-      <Separator className="my-6" />
-
-      <Card className="border-destructive/20 bg-destructive/5">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-destructive">
-            <AlertCircle className="h-5 w-5" />
-            Danger Zone
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Once you delete your account, there is no going back. Please be
-            certain.
-          </p>
-          <Button variant="destructive" className="w-full">
-            Delete Account
-          </Button>
-        </CardContent>
-      </Card>
     </div>
   );
 }
