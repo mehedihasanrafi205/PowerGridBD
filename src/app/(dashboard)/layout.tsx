@@ -1,30 +1,25 @@
 "use client";
 
-import { Sidebar } from "@/components/layout/sidebar";
-import { Header } from "@/components/layout/header";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { UserMenu } from "@/components/layout/user-menu";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useAuth } from "@/hooks";
 import {
-  Home,
+  AlertCircle,
   AlertTriangle,
+  BarChart3,
+  Calendar,
+  CreditCard,
+  FileText,
+  GitBranch,
+  Home,
   PlusCircle,
   Shield,
-  CreditCard,
   User,
-  BarChart3,
-  GitBranch,
-  Calendar,
   UserPlus,
-  FileText,
   Users,
-  Settings,
-  AlertCircle,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { useAuth } from "@/hooks";
+import { cn } from "@/lib/utils";
 
 interface NavItem {
   name: string;
@@ -201,13 +196,6 @@ const navItems: NavItem[] = [
   },
 ];
 
-const roleColors: Record<string, string> = {
-  CUSTOMER: "text-primary",
-  TECHNICIAN: "text-emerald-600",
-  POWER_OPERATOR: "text-amber-600",
-  ADMIN: "text-red-600",
-};
-
 export default function DashboardLayout({
   children,
 }: {
@@ -215,7 +203,7 @@ export default function DashboardLayout({
 }) {
   const { user, isLoading, isAuthenticated } = useAuth();
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   if (isLoading) {
     return (
@@ -255,7 +243,6 @@ export default function DashboardLayout({
   const filteredNavItems = navItems.filter((item) =>
     item.roles.includes(userRole),
   );
-  const roleColor = roleColors[userRole] || "text-gray-600";
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -263,7 +250,7 @@ export default function DashboardLayout({
       <aside
         className={cn(
           "fixed left-0 top-0 z-40 h-screen border-r bg-card transition-all duration-300",
-          true ? "w-16" : "w-64",
+          collapsed ? "w-16" : "w-64",
         )}
       >
         <div className="flex h-full flex-col">
@@ -271,7 +258,7 @@ export default function DashboardLayout({
           <div
             className={cn(
               "flex items-center justify-between border-b p-4",
-              true && "justify-center",
+              collapsed && "justify-center",
             )}
           >
             <Link href="/" className="flex items-center gap-2">
@@ -285,7 +272,7 @@ export default function DashboardLayout({
           <nav className="flex-1 overflow-y-auto p-2 space-y-1">
             {filteredNavItems.map((item) => {
               const isActive =
-                pathname === item.href || pathname.startsWith(item.href + "/");
+                pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <Link
                   key={item.href}
@@ -294,11 +281,11 @@ export default function DashboardLayout({
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
                     "hover:bg-accent hover:text-accent-foreground",
                     isActive && "bg-primary/10 text-primary",
-                    true && "justify-center px-2",
+                    collapsed && "justify-center px-2",
                   )}
                 >
                   <span className="shrink-0">{item.icon}</span>
-                  {!true && (
+                  {!collapsed && (
                     <>
                       <span className="truncate font-medium">{item.name}</span>
                       {item.badge && (
@@ -306,14 +293,14 @@ export default function DashboardLayout({
                           className={cn(
                             "ml-auto text-xs px-2 py-0.5 rounded-full",
                             item.badgeVariant === "destructive" &&
-                              "bg-red-100 text-red-600",
+                              "bg-destructive/10 text-destructive",
                             item.badgeVariant === "success" &&
-                              "bg-green-100 text-green-600",
+                              "bg-emerald/10 text-emerald",
                             item.badgeVariant === "warning" &&
-                              "bg-yellow-100 text-yellow-600",
+                              "bg-amber/10 text-amber",
                             item.badgeVariant === "info" &&
-                              "bg-blue-100 text-blue-600",
-                            "bg-gray-100 text-gray-600",
+                              "bg-electric-blue/10 text-electric-blue",
+                            "bg-muted text-muted-foreground",
                           )}
                         >
                           {item.badge}
@@ -329,6 +316,8 @@ export default function DashboardLayout({
           {/* Collapse toggle */}
           <div className="border-t p-2">
             <button
+              type="button"
+              aria-label="Toggle sidebar"
               onClick={() => setCollapsed((prev) => !prev)}
               className={cn(
                 "w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm",
@@ -336,9 +325,10 @@ export default function DashboardLayout({
               )}
             >
               <svg
+                aria-hidden="true"
                 className={cn(
                   "h-5 w-5 transition-transform duration-200",
-                  true && "rotate-180",
+                  collapsed && "rotate-180",
                 )}
                 fill="none"
                 stroke="currentColor"
@@ -358,9 +348,12 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <main
-        className={cn("flex-1 min-h-screen", true ? "lg:ml-16" : "lg:ml-64")}
+        className={cn(
+          "flex-1 min-h-screen",
+          collapsed ? "lg:ml-16" : "lg:ml-64",
+        )}
       >
-        <div className={cn("flex-1", true ? "lg:ml-16" : "lg:ml-64")}>
+        <div className={cn("flex-1", collapsed ? "lg:ml-16" : "lg:ml-64")}>
           {/* Header */}
           <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4">
@@ -378,12 +371,14 @@ export default function DashboardLayout({
                     <span
                       className={cn(
                         "px-2 py-0.5 rounded-full text-xs font-medium",
-                        userRole === "CUSTOMER" && "bg-blue-100 text-blue-600",
+                        userRole === "CUSTOMER" &&
+                          "bg-electric-blue/10 text-electric-blue",
                         userRole === "TECHNICIAN" &&
-                          "bg-green-100 text-green-600",
+                          "bg-smart-teal/10 text-smart-teal",
                         userRole === "POWER_OPERATOR" &&
-                          "bg-yellow-100 text-yellow-600",
-                        userRole === "ADMIN" && "bg-red-100 text-red-600",
+                          "bg-amber/10 text-amber",
+                        userRole === "ADMIN" &&
+                          "bg-destructive/10 text-destructive",
                       )}
                     >
                       {user?.role}
