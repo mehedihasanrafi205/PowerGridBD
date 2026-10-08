@@ -1,31 +1,30 @@
 "use client";
 
-import { useAuth } from "@/hooks";
-import { useOutage } from "@/hooks";
+import {
+  AlertCircle,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  Info,
+  Loader2,
+  MapPin,
+  Shield,
+  User,
+} from "lucide-react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { OutageStatusTimeline } from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import {
-  AlertTriangle,
-  Clock,
-  MapPin,
-  User,
-  Shield,
-  Loader2,
-  AlertCircle,
-  CheckCircle,
-  Info,
-} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth, useOutage } from "@/hooks";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { useState } from "react";
 
 export default function CustomerOutageDetailPage() {
   const searchParams = useSearchParams();
   const outageId = searchParams.get("id") ?? "";
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const { data: outage, isLoading, error } = useOutage(outageId);
   const [activeTab, setActiveTab] = useState("details");
 
@@ -55,7 +54,7 @@ export default function CustomerOutageDetailPage() {
       <div className="container mx-auto py-8">
         <Card className="max-w-2xl mx-auto">
           <CardContent className="text-center py-8">
-            <AlertCircle className="h-12 w-12 mx-auto text-red-500 mb-4" />
+            <AlertCircle className="h-12 w-12 mx-auto text-destructive mb-4" />
             <h2 className="text-xl font-semibold mb-2">Outage Not Found</h2>
             <p className="text-muted-foreground mb-4">
               The outage report you're looking for doesn't exist or has been
@@ -104,6 +103,9 @@ export default function CustomerOutageDetailPage() {
             Reported on {new Date(o.reportedAt).toLocaleDateString()} at{" "}
             {new Date(o.reportedAt).toLocaleTimeString()}
           </p>
+          <div className="mt-5 max-w-2xl">
+            <OutageStatusTimeline currentStatus={o.status} />
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Badge
@@ -288,7 +290,7 @@ export default function CustomerOutageDetailPage() {
                   </p>
                 </div>
                 {o.assignedAt && (
-                  <div className="relative pb-6 before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-blue-500">
+                  <div className="relative pb-6 before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-electric-blue">
                     <p className="text-sm font-medium">Technician Assigned</p>
                     <p className="text-muted-foreground text-sm">
                       {new Date(o.assignedAt).toLocaleString()}
@@ -296,7 +298,7 @@ export default function CustomerOutageDetailPage() {
                   </div>
                 )}
                 {o.inProgressAt && (
-                  <div className="relative pb-6 before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-amber-500">
+                  <div className="relative pb-6 before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-amber">
                     <p className="text-sm font-medium">Work Started</p>
                     <p className="text-muted-foreground text-sm">
                       {new Date(o.inProgressAt).toLocaleString()}
@@ -304,15 +306,15 @@ export default function CustomerOutageDetailPage() {
                   </div>
                 )}
                 {(o.resolvedAt || o.restoredAt) && (
-                  <div className="relative before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-green-500">
+                  <div className="relative before:absolute before:left-[-6px] before:top-0 before:h-2 before:w-2 before:rounded-full before:bg-emerald">
                     <p className="text-sm font-medium">
                       {o.restoredAt ? "Power Restored" : "Issue Resolved"}
                     </p>
                     <p className="text-muted-foreground text-sm">
-                      {new Date(o.restoredAt || o.resolvedAt!).toLocaleString()}
+                      {new Date(o.restoredAt || o.resolvedAt || "").toLocaleString()}
                     </p>
                     {o.resolutionNotes && (
-                      <p className="text-sm text-green-700 mt-1">
+                      <p className="text-sm text-emerald/90 mt-1">
                         {o.resolutionNotes}
                       </p>
                     )}
@@ -331,6 +333,7 @@ export default function CustomerOutageDetailPage() {
           className="text-primary hover:underline flex items-center gap-1"
         >
           <svg
+            aria-hidden="true"
             className="h-4 w-4"
             fill="none"
             stroke="currentColor"
