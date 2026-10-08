@@ -1,37 +1,27 @@
-import {
-  createZone,
-  getZones,
-  getZoneById,
-  updateZone,
-  deleteZone,
-  createSubstation,
-  getSubstations,
-  getSubstationById,
-  updateSubstation,
-  deleteSubstation,
-  createFeeder,
-  getFeeders,
-  getFeederById,
-  updateFeeder,
-  deleteFeeder,
-  createArea,
-  getAreas,
-  getAreaById,
-  updateArea,
-  deleteArea,
-} from "@/api/grid.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type {
-  ZoneFilters,
-  SubstationFilters,
-  FeederFilters,
-  AreaFilters,
-  ZonePayload,
-  SubstationPayload,
-  FeederPayload,
-  AreaPayload,
-} from "@/types";
+import {
+  createArea,
+  createFeeder,
+  createSubstation,
+  createZone,
+  deleteArea,
+  deleteFeeder,
+  deleteSubstation,
+  deleteZone,
+  getAreaById,
+  getAreas,
+  getFeederById,
+  getFeeders,
+  getSubstationById,
+  getSubstations,
+  getZoneById,
+  getZones,
+  updateArea,
+  updateFeeder,
+  updateSubstation,
+  updateZone,
+} from "@/api/grid.api";
 
 export const useZones = (filters?: {
   searchTerm?: string;
@@ -115,8 +105,15 @@ export const useSubstation = (id: string) => {
 export const useCreateSubstation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ name, zoneId }: { name: string; zoneId: string }) =>
-      createSubstation({ name, zoneId }),
+    mutationFn: ({
+      name,
+      code,
+      zoneId,
+    }: {
+      name: string;
+      code?: string;
+      zoneId: string;
+    }) => createSubstation({ name, code, zoneId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["substations"] });
       toast.success("Substation created!");
@@ -180,11 +177,13 @@ export const useCreateFeeder = () => {
   return useMutation({
     mutationFn: ({
       name,
+      code,
       substationId,
     }: {
       name: string;
+      code?: string;
       substationId: string;
-    }) => createFeeder({ name, substationId }),
+    }) => createFeeder({ name, code, substationId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["feeders"] });
       toast.success("Feeder created!");
@@ -246,8 +245,15 @@ export const useArea = (id: string) => {
 export const useCreateArea = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ name, feederId }: { name: string; feederId: string }) =>
-      createArea({ name, feederId }),
+    mutationFn: ({
+      name,
+      code,
+      feederId,
+    }: {
+      name: string;
+      code?: string;
+      feederId: string;
+    }) => createArea({ name, code, feederId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["areas"] });
       toast.success("Area created!");
