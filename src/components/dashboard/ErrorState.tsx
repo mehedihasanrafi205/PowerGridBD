@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface ErrorStateProps {
   title?: string;
-  message: string;
+  message: ReactNode;
   action?: ReactNode;
   className?: string;
 }

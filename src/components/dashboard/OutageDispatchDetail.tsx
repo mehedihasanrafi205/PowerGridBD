@@ -134,7 +134,16 @@ export function OutageDispatchDetail({
           <CardContent className="py-4">
             <ErrorState
               title="Failed to load technicians"
-              message="Could not fetch technician list. Please try again."
+              message={
+                <>
+                  Could not fetch technician list. This is likely a CORS issue —
+                  the backend must allow requests from{" "}
+                  <code className="px-1 bg-muted rounded">
+                    https://powergridbd.vercel.app
+                  </code>{" "}
+                  (see browser console for details).
+                </>
+              }
               action={
                 <button
                   type="button"
