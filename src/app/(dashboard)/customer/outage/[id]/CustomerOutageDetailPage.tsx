@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
+  CreditCard,
   Info,
   Loader2,
   MapPin,
@@ -18,7 +19,7 @@ import { OutageStatusTimeline } from "@/components/dashboard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth, useOutage } from "@/hooks";
+import { useAuth, useOutage, useInitiatePayment } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 export default function CustomerOutageDetailPage() {
@@ -27,6 +28,16 @@ export default function CustomerOutageDetailPage() {
   const { isLoading: authLoading } = useAuth();
   const { data: outage, isLoading, error } = useOutage(outageId);
   const [activeTab, setActiveTab] = useState("details");
+  const { mutate: initiatePayment, isPending: paymentPending } = useInitiatePayment();
+
+  const handlePriorityPayment = async () => {
+    if (!outage?.data) return;
+    initiatePayment({
+      type: "PRIORITY_RESTORATION",
+      amount: 500, // BDT 500 for priority restoration
+      outageId: outage.data.id,
+    });
+  };
 
   if (authLoading) {
     return (
@@ -115,11 +126,22 @@ export default function CustomerOutageDetailPage() {
             {statusIcons[o.status] || <Info className="h-4 w-4" />}
             {o.status}
           </Badge>
-          {o.isPriority && (
+          {o.isPriority ? (
             <Badge variant="warning" className="gap-1">
               <Shield className="h-3 w-3" />
               Priority
             </Badge>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePriorityPayment}
+              disabled={paymentPending}
+              className="gap-1"
+            >
+              <CreditCard className="h-3 w-3" />
+              {paymentPending ? "Processing..." : "Priority Upgrade (BDT 500)"}
+            </Button>
           )}
         </div>
       </div>
@@ -199,7 +221,21 @@ export default function CustomerOutageDetailPage() {
                         </Badge>
                       </dd>
                       <dt className="text-muted-foreground">Priority</dt>
-                      <dd>{o.isPriority ? "Yes" : "No"}</dd>
+                      <dd className="flex items-center gap-2">
+                        {o.isPriority ? (
+                          <Badge variant="success">Yes</Badge>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handlePriorityPayment}
+                            disabled={paymentPending}
+                          >
+                            <CreditCard className="h-3 w-3" />
+                            {paymentPending ? "Processing..." : "Make Priority (BDT 500)"}
+                          </Button>
+                        )}
+                      </dd>
                       <dt className="text-muted-foreground">Reported At</dt>
                       <dd>{new Date(o.reportedAt).toLocaleString()}</dd>
                       <dt className="text-muted-foreground">Last Updated</dt>

@@ -45,3 +45,5 @@ requirements.md
 /docs
 test-results/
 playwright-report/
+
+.vercel

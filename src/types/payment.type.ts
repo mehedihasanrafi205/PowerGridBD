@@ -10,6 +10,7 @@ export interface PaymentInitiatePayload {
   type: PaymentType;
   amount: number;
   outageId?: string;
+  planId?: string;
 }
 
 export interface PaymentFilters {

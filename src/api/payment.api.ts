@@ -8,11 +8,18 @@ import type {
   PaymentDetailResponse,
 } from "@/types";
 
-export const initiatePayment = (payload: PaymentInitiatePayload) =>
-  apiClient<PaymentInitiateResponse>("/payment", {
+export const initiatePayment = (payload: PaymentInitiatePayload) => {
+  const body = {
+    amount: payload.amount,
+    paymentType: payload.type,
+    outageReportId: payload.outageId,
+    planId: payload.planId,
+  };
+  return apiClient<PaymentInitiateResponse>("/payment", {
     method: "POST",
-    body: payload,
+    body,
   });
+};
 
 export const getMyPayments = (params?: PaymentFilters) => {
   const searchParams = new URLSearchParams();
