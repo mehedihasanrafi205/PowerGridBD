@@ -333,7 +333,7 @@ export default function LoginPage() {
       <Button
         type="button"
         variant="outline"
-        className="w-full"
+        className="w-full mt-6"
         onClick={handleGoogleLogin}
         disabled={isLoading}
       >
@@ -358,7 +358,7 @@ export default function LoginPage() {
         Continue with Google
       </Button>
 
-      <div className="relative mb-6">
+      <div className="relative mt-4 mb-6">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
