@@ -164,7 +164,6 @@ export default function ReportOutagePage() {
               <Checkbox
                 id="isPriority"
                 {...register("isPriority")}
-                checked={isPriority}
               />
               <Label htmlFor="isPriority" className="cursor-pointer">
                 <span className="font-medium">
