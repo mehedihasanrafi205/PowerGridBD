@@ -62,7 +62,8 @@ export default function OperatorOutagesPage() {
   } = useOutages({
     searchTerm: searchTerm || undefined,
     status: statusFilter !== "all" ? [statusFilter as OutageStatus] : undefined,
-    isPriority: priorityFilter !== "all" ? priorityFilter === "true" : undefined,
+    isPriority:
+      priorityFilter !== "all" ? priorityFilter === "true" : undefined,
     page,
     limit,
     sortBy: "reportedAt",
@@ -269,7 +270,10 @@ export default function OperatorOutagesPage() {
                           <TableCell>
                             {outage.isPriority ? (
                               <Badge variant="warning" className="gap-1">
-                                <Shield className="h-3 w-3" aria-hidden="true" />
+                                <Shield
+                                  className="h-3 w-3"
+                                  aria-hidden="true"
+                                />
                                 Priority
                               </Badge>
                             ) : (

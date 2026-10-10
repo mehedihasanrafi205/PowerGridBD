@@ -24,8 +24,19 @@ declare global {
     google: {
       accounts: {
         id: {
-          initialize: (config: { client_id: string; callback: (response: { credential: string }) => void; auto_select?: boolean; cancel_on_tap_outside?: boolean }) => void;
-          prompt: (callback: (notification: { isNotDisplayed: () => boolean; isSkippedMoment: () => boolean; getNotDisplayedReason: () => string }) => void) => void;
+          initialize: (config: {
+            client_id: string;
+            callback: (response: { credential: string }) => void;
+            auto_select?: boolean;
+            cancel_on_tap_outside?: boolean;
+          }) => void;
+          prompt: (
+            callback: (notification: {
+              isNotDisplayed: () => boolean;
+              isSkippedMoment: () => boolean;
+              getNotDisplayedReason: () => string;
+            }) => void,
+          ) => void;
         };
       };
     };
@@ -223,7 +234,8 @@ export default function LoginPage() {
           script.async = true;
           script.defer = true;
           script.onload = () => resolve();
-          script.onerror = () => reject(new Error("Failed to load Google Identity Services"));
+          script.onerror = () =>
+            reject(new Error("Failed to load Google Identity Services"));
           document.head.appendChild(script);
         });
       }
@@ -237,14 +249,19 @@ export default function LoginPage() {
 
         window.google.accounts.id.initialize({
           client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-          callback: (response: { credential: string }) => resolve(response.credential),
+          callback: (response: { credential: string }) =>
+            resolve(response.credential),
           auto_select: false,
           cancel_on_tap_outside: true,
         });
 
         window.google.accounts.id.prompt((notification) => {
           if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            reject(new Error(notification.getNotDisplayedReason() || "Prompt dismissed"));
+            reject(
+              new Error(
+                notification.getNotDisplayedReason() || "Prompt dismissed",
+              ),
+            );
           }
         });
       });
@@ -256,7 +273,9 @@ export default function LoginPage() {
         const authResponse = response as unknown as AuthResponse;
         const user = await establishSession(authResponse);
         if (!user) {
-          toast.error("Signed in via Google, but profile lookup failed. Try again.");
+          toast.error(
+            "Signed in via Google, but profile lookup failed. Try again.",
+          );
           return;
         }
         toast.success("Google login successful!");

@@ -1,4 +1,4 @@
-import { Role, UserStatus, User } from "./auth.type";
+import type { Role, User, UserStatus } from "./auth.type";
 
 export interface UserFilters {
   searchTerm?: string;
@@ -35,6 +35,19 @@ export interface UserPaginatedResponse {
     total: number;
     totalPages: number;
   };
+}
+
+export interface TechnicianOption {
+  id: string;
+  name: string;
+}
+
+export interface TechnicianListResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: TechnicianOption[];
+  meta: UserPaginatedResponse["meta"];
 }
 
 export interface UserDetailResponse {

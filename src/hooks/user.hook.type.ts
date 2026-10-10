@@ -1,25 +1,31 @@
-import {
-  getUsers,
-  getUserById,
-  updateProfile,
-  updateProfileImage,
-  updateUserStatus,
-  updateUserRole,
-  deleteUser,
-} from "@/api/user.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type {
-  UserFilters,
-  UserUpdatePayload,
-  UserStatusPayload,
-  UserRolePayload,
-} from "@/types";
+import {
+  deleteUser,
+  getTechnicians,
+  getUserById,
+  getUsers,
+  updateProfile,
+  updateProfileImage,
+  updateUserRole,
+  updateUserStatus,
+} from "@/api/user.api";
+import type { UserFilters, UserRolePayload, UserStatusPayload } from "@/types";
 
 export const useUsers = (filters?: UserFilters) => {
   return useQuery({
     queryKey: ["users", filters],
     queryFn: () => getUsers(filters),
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useTechnicians = (
+  filters?: Pick<UserFilters, "page" | "limit">,
+) => {
+  return useQuery({
+    queryKey: ["technicians", filters],
+    queryFn: () => getTechnicians(filters),
     staleTime: 60 * 1000,
   });
 };

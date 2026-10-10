@@ -1,13 +1,13 @@
 import apiClient from "@/lib/apiClient";
 import type {
-  UserFilters,
-  UserUpdatePayload,
-  UserStatusPayload,
-  UserRolePayload,
-  UserPaginatedResponse,
+  TechnicianListResponse,
   UserDetailResponse,
+  UserFilters,
+  UserPaginatedResponse,
   UserProfileResponse,
-  User,
+  UserRolePayload,
+  UserStatusPayload,
+  UserUpdatePayload,
 } from "@/types";
 
 export const getUsers = (params?: UserFilters) => {
@@ -20,6 +20,17 @@ export const getUsers = (params?: UserFilters) => {
   if (params?.sortBy) searchParams.append("sortBy", params.sortBy);
   if (params?.sortOrder) searchParams.append("sortOrder", params.sortOrder);
   return apiClient<UserPaginatedResponse>(`/user?${searchParams.toString()}`);
+};
+
+export const getTechnicians = (
+  params?: Pick<UserFilters, "page" | "limit">,
+) => {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.append("page", params.page.toString());
+  if (params?.limit) searchParams.append("limit", params.limit.toString());
+  return apiClient<TechnicianListResponse>(
+    `/user/technicians?${searchParams.toString()}`,
+  );
 };
 
 export const getUserById = (id: string) =>

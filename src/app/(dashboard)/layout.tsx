@@ -497,7 +497,9 @@ export default function DashboardLayout({
                             className="h-8 w-8 rounded-full bg-muted object-cover"
                             onError={(e) => {
                               e.currentTarget.style.display = "none";
-                              e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                              e.currentTarget.nextElementSibling?.classList.remove(
+                                "hidden",
+                              );
                             }}
                           />
                           <span className="hidden h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium md:block text-primary">
@@ -512,14 +514,21 @@ export default function DashboardLayout({
                       <DropdownMenuContent align="end" className="w-64">
                         <div className="px-2 py-1.5">
                           <p className="text-sm font-medium">{user.name}</p>
-                          <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {user.email}
+                          </p>
                           <div className="mt-1.5">
-                            <Badge variant={roleBadgeVariant(user.role)}>{user.role}</Badge>
+                            <Badge variant={roleBadgeVariant(user.role)}>
+                              {user.role}
+                            </Badge>
                           </div>
                         </div>
                         <DropdownMenuSeparator />
                         <DropdownMenuLabel className="flex items-center gap-2">
-                          <Settings className="h-3.5 w-3.5" aria-hidden="true" />
+                          <Settings
+                            className="h-3.5 w-3.5"
+                            aria-hidden="true"
+                          />
                           Account
                         </DropdownMenuLabel>
                         <DropdownMenuItem asChild>
@@ -528,7 +537,10 @@ export default function DashboardLayout({
                             className="flex w-full items-center gap-2"
                             onClick={() => setMobileOpen(false)}
                           >
-                            <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
+                            <LayoutDashboard
+                              className="h-4 w-4"
+                              aria-hidden="true"
+                            />
                             Dashboard
                           </Link>
                         </DropdownMenuItem>
@@ -539,7 +551,10 @@ export default function DashboardLayout({
                                 href="/customer/profile"
                                 className="flex w-full items-center gap-2"
                               >
-                                <UserRound className="h-4 w-4" aria-hidden="true" />
+                                <UserRound
+                                  className="h-4 w-4"
+                                  aria-hidden="true"
+                                />
                                 Profile
                               </Link>
                             </DropdownMenuItem>
@@ -548,7 +563,10 @@ export default function DashboardLayout({
                                 href="/customer/payments"
                                 className="flex w-full items-center gap-2"
                               >
-                                <CreditCard className="h-4 w-4" aria-hidden="true" />
+                                <CreditCard
+                                  className="h-4 w-4"
+                                  aria-hidden="true"
+                                />
                                 Payments
                               </Link>
                             </DropdownMenuItem>
@@ -560,7 +578,10 @@ export default function DashboardLayout({
                               href="/technician/profile"
                               className="flex w-full items-center gap-2"
                             >
-                              <UserRound className="h-4 w-4" aria-hidden="true" />
+                              <UserRound
+                                className="h-4 w-4"
+                                aria-hidden="true"
+                              />
                               Profile
                             </Link>
                           </DropdownMenuItem>

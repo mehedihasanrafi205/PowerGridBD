@@ -36,8 +36,8 @@ import {
   useAssignTechnician,
   useDeleteOutage,
   useOutage,
+  useTechnicians,
   useUpdateOutageStatus,
-  useUsers,
 } from "@/hooks";
 import { outageBadgeVariant } from "@/lib/status-variants";
 import type { OutageStatus } from "@/types";
@@ -77,7 +77,11 @@ export function OutageDispatchDetail({
   backLabel,
 }: OutageDispatchDetailProps) {
   const { data: outage, isLoading, error, refetch } = useOutage(outageId);
-  const { data: technicians, isLoading: techLoading, error: techError } = useUsers({ role: "TECHNICIAN", limit: 100 });
+  const {
+    data: technicians,
+    isLoading: techLoading,
+    error: techError,
+  } = useTechnicians({ limit: 100 });
 
   const assignTechnician = useAssignTechnician();
   const updateStatus = useUpdateOutageStatus();
@@ -135,14 +139,7 @@ export function OutageDispatchDetail({
             <ErrorState
               title="Failed to load technicians"
               message={
-                <>
-                  Could not fetch technician list. This is likely a CORS issue —
-                  the backend must allow requests from{" "}
-                  <code className="px-1 bg-muted rounded">
-                    https://powergridbd.vercel.app
-                  </code>{" "}
-                  (see browser console for details).
-                </>
+                "Unable to load the technician list. Check your connection and account permissions, then try again."
               }
               action={
                 <button

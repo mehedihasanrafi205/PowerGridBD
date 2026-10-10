@@ -161,10 +161,7 @@ export default function ReportOutagePage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Checkbox
-                id="isPriority"
-                {...register("isPriority")}
-              />
+              <Checkbox id="isPriority" {...register("isPriority")} />
               <Label htmlFor="isPriority" className="cursor-pointer">
                 <span className="font-medium">
                   Mark as Priority Restoration
