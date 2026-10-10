@@ -77,7 +77,7 @@ export function OutageDispatchDetail({
   backLabel,
 }: OutageDispatchDetailProps) {
   const { data: outage, isLoading, error, refetch } = useOutage(outageId);
-  const { data: technicians } = useUsers({ role: "TECHNICIAN", limit: 100 });
+  const { data: technicians, isLoading: techLoading, error: techError } = useUsers({ role: "TECHNICIAN", limit: 100 });
 
   const assignTechnician = useAssignTechnician();
   const updateStatus = useUpdateOutageStatus();
@@ -87,7 +87,7 @@ export function OutageDispatchDetail({
   const [notes, setNotes] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  if (isLoading) {
+  if (isLoading || techLoading) {
     return (
       <div className="container mx-auto max-w-4xl py-8">
         <div className="animate-pulse space-y-4">
@@ -119,6 +119,30 @@ export function OutageDispatchDetail({
                     <Button>{backLabel}</Button>
                   </Link>
                 </>
+              }
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (techError) {
+    return (
+      <div className="container mx-auto max-w-2xl py-8">
+        <Card>
+          <CardContent className="py-4">
+            <ErrorState
+              title="Failed to load technicians"
+              message="Could not fetch technician list. Please try again."
+              action={
+                <button
+                  type="button"
+                  onClick={() => refetch()}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  Retry
+                </button>
               }
             />
           </CardContent>
