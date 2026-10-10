@@ -25,6 +25,11 @@
   outline: none;
 }
 
+/* Keep the basemap dark while leaving map markers and controls unchanged. */
+.pg-map .pg-dark-tiles .leaflet-tile {
+  filter: grayscale(1) invert(1) brightness(0.68) contrast(1.15);
+}
+
 /* Zoom control — compact, dark */
 .pg-map .leaflet-bar {
   border: 1px solid rgb(255 255 255 / 0.12);

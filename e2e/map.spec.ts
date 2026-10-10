@@ -23,6 +23,33 @@ test("hero map renders container and markers", async ({ page }) => {
   });
 });
 
+test("map tiles load from OpenStreetMap with dark styling and attribution", async ({
+  page,
+}) => {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+
+  const tile = page.locator(".pg-dark-tiles .leaflet-tile").first();
+  await expect(tile).toBeVisible({ timeout: 30000 });
+  await expect
+    .poll(
+      () =>
+        tile.evaluate((element) => (element as HTMLImageElement).naturalWidth),
+      {
+        timeout: 30000,
+      },
+    )
+    .toBeGreaterThan(0);
+
+  await expect(
+    page.locator(
+      '.leaflet-control-attribution a[href="https://www.openstreetmap.org/copyright"]',
+    ),
+  ).toBeVisible();
+  await expect
+    .poll(() => tile.evaluate((element) => getComputedStyle(element).filter))
+    .toBe("grayscale(1) invert(1) brightness(0.68) contrast(1.15)");
+});
+
 test("map marker opens a detail popup on click", async ({ page }) => {
   await page.goto("/");
 

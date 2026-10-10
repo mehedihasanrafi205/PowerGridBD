@@ -36,7 +36,7 @@ The frontend and backend URLs are the project links supplied for this README; th
 | Backend (separate repository) | Express 5, TypeScript |
 | Database | PostgreSQL with Prisma 7 and the `pg` adapter |
 | Authentication | JWT access/refresh tokens, `bcryptjs`, Google OAuth; the frontend stores returned tokens in browser `localStorage` and sends bearer tokens |
-| Maps | Leaflet, React Leaflet, Stadia Maps Alidade Smooth Dark tiles |
+| Maps | Leaflet, React Leaflet, OpenStreetMap raster tiles with a dark CSS filter |
 | UI and styling | Tailwind CSS 4, shadcn/ui components, Biome |
 | Animation and charts | GSAP, Framer Motion, Lenis, CSS/Intersection Observer animations, Recharts |
 | Backend integrations | Redis for OTP-related storage, Nodemailer/SMTP, Cloudinary uploads, SSLCommerz payments |
@@ -325,7 +325,7 @@ The local API base URL is `http://localhost:5000/api/v1` when `PORT=5000`.
 
 ## Map configuration
 
-The map uses Leaflet/React Leaflet and loads Stadia Maps' `alidade_smooth_dark` tile URL. The source includes attribution for Stadia Maps, OpenMapTiles, and OpenStreetMap. No map-provider API-key environment variable is configured in this frontend. Confirm the tile provider's current access requirements and usage terms before relying on it in production.
+The map uses Leaflet/React Leaflet and loads raster tiles from `tile.openstreetmap.org`, applying a grayscale/invert filter to preserve the dark map appearance. No map-provider API key is needed. OpenStreetMap attribution remains visible in the map controls. The standard OSM tile service has a usage policy and is intended for reasonable use: honor its caching headers and use a hosted tile provider if the application grows beyond modest traffic.
 
 The landing-page map renders a deterministic topology with illustrative Bangladesh coordinates and statuses. The UI labels it “Demonstration topology”; the backend does not currently provide per-node map coordinates and live statuses to that map. Do not interpret its markers or status colors as live outage telemetry.
 

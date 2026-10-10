@@ -19,7 +19,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - **React Compiler** — enabled via `babel-plugin-react-compiler`
 - **TanStack Query** — server state management
 - **Zod** — validation schemas
-- **Leaflet / react-leaflet** — interactive maps (Stadia Maps tiles)
+- **Leaflet / react-leaflet** — interactive maps (OpenStreetMap tiles, dark-filtered)
 - **Lenis** — smooth scroll
 - **GSAP** — SVG/map animation, scroll-driven storytelling
 - **Framer Motion** — UI transitions, modals, cards
@@ -96,7 +96,7 @@ Key components: `button`, `input`, `textarea`, `select`, `dialog`, `dropdown-men
 
 ## Map System (React Leaflet)
 - Components in `src/components/map/` — `PowerGridMap`, `HeroGridMap`, `demo-topology`, `map-types`, `map.css`
-- Uses Stadia Maps Alidade Smooth Dark tiles (free, no API key for dev)
+- Uses OpenStreetMap raster tiles with a CSS dark filter; retain visible OSM attribution and honor tile caching.
 - MapContainer needs explicit `minHeight: 320` for test reliability
 - Overlays (legend, provenance badge) strictly confined within map bounds via `absolute inset-0 pointer-events-none z-10`
 - Z-index: map base (z-0), overlays (z-10), badges (z-20)
