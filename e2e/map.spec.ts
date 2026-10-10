@@ -83,7 +83,7 @@ test("hero map stays contained and responsive across viewport sizes", async ({
     await page.setViewportSize(viewport);
     await page.goto("/");
 
-    const mapCard = page.getByTestId("hero-map-card");
+    const mapCard = page.getByTestId("hero-map-card").first();
     await expect(mapCard).toBeVisible();
     await expect(page.locator(".leaflet-container")).toBeVisible();
 

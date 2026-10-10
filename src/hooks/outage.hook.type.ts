@@ -1,14 +1,14 @@
-import {
-  createOutage,
-  getOutages,
-  getOutageById,
-  assignTechnician,
-  updateOutageStatus,
-  deleteOutage,
-} from "@/api/outage.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { OutageFilters, OutageStatus, OutageStatusPayload } from "@/types";
+import {
+  assignTechnician,
+  createOutage,
+  deleteOutage,
+  getOutageById,
+  getOutages,
+  updateOutageStatus,
+} from "@/api/outage.api";
+import type { OutageFilters, OutageStatusPayload } from "@/types";
 
 export const useOutages = (filters?: OutageFilters) => {
   return useQuery({

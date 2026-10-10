@@ -20,15 +20,24 @@ export interface OutageStatusPayload {
 
 export interface OutageFilters {
   status?: OutageStatus[];
-  areaId?: string;
+  areaId?: string | string[];
+  feederId?: string;
+  substationId?: string;
+  zoneId?: string;
   isPriority?: boolean;
   searchTerm?: string;
+  technicianId?: string;
+  customerId?: string;
   page?: number;
   limit?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   from?: string;
   to?: string;
+  assignedFrom?: string;
+  assignedTo?: string;
+  resolvedFrom?: string;
+  resolvedTo?: string;
 }
 
 export interface Outage {
