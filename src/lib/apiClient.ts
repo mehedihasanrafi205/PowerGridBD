@@ -53,6 +53,12 @@ export const apiClient = ofetch.create({
       headers.set("Authorization", `Bearer ${token}`);
       options.headers = headers;
     }
+    // Don't set Content-Type for FormData — browser must set multipart boundary
+    if (options.body instanceof FormData) {
+      const headers = new Headers(options.headers);
+      headers.delete("content-type");
+      options.headers = headers;
+    }
   },
   onResponseError({ response }) {
     // Expired/revoked session: drop tokens so the route guard
