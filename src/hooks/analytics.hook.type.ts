@@ -91,10 +91,15 @@ export const useSubscribeSla = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: { planId: string }) => subscribeSla(payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["analytics", "my-summary"] });
-      queryClient.invalidateQueries({ queryKey: ["sla", "plans"] });
-      toast.success("SLA subscription successful!");
+    onSuccess: (data) => {
+      if (data?.data?.paymentUrl) {
+        // Redirect to SSLCommerz payment page
+        window.location.href = data.data.paymentUrl;
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["analytics", "my-summary"] });
+        queryClient.invalidateQueries({ queryKey: ["sla", "plans"] });
+        toast.success("SLA subscription successful!");
+      }
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to subscribe to SLA");

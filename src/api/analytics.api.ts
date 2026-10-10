@@ -11,6 +11,7 @@ import type {
   AuditLogFilters,
   SlaPlanResponse,
   SlaSubscribePayload,
+  SlaSubscribeResponse,
   TechnicianWorkloadResponse,
 } from "@/types";
 
@@ -44,7 +45,10 @@ export const getSlaPlans = () =>
   apiClient<SlaPlanResponse>("/analytics/sla-plans");
 
 export const subscribeSla = (payload: SlaSubscribePayload) =>
-  apiClient("/analytics/sla/subscribe", { method: "POST", body: payload });
+  apiClient<SlaSubscribeResponse>("/analytics/sla/subscribe", {
+    method: "POST",
+    body: payload,
+  });
 
 export const getAuditLogs = (params?: AuditLogFilters) => {
   const searchParams = new URLSearchParams();

@@ -130,12 +130,14 @@ export interface SlaSubscribeResponse {
   statusCode: number;
   message: string;
   data?: {
-    subscription: {
+    paymentUrl: string;
+    transactionId: string;
+    plan: {
       id: string;
-      planId: string;
-      startDate: string;
-      endDate: string;
-      isActive: boolean;
+      name: string;
+      tier: string;
+      price: number;
+      durationDays: number;
     };
   };
 }
