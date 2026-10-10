@@ -50,6 +50,7 @@ export default function OperatorOutagesPage() {
   const { isLoading: authLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
@@ -61,6 +62,7 @@ export default function OperatorOutagesPage() {
   } = useOutages({
     searchTerm: searchTerm || undefined,
     status: statusFilter !== "all" ? [statusFilter as OutageStatus] : undefined,
+    isPriority: priorityFilter !== "all" ? priorityFilter === "true" : undefined,
     page,
     limit,
     sortBy: "reportedAt",
@@ -140,6 +142,28 @@ export default function OperatorOutagesPage() {
                       {opt.label}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={priorityFilter}
+                onValueChange={(v) => {
+                  setPriorityFilter(v);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger aria-label="Filter by priority" className="w-40">
+                  <SelectValue placeholder="Priority" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem key="all" value="all">
+                    All
+                  </SelectItem>
+                  <SelectItem key="true" value="true">
+                    Priority Only
+                  </SelectItem>
+                  <SelectItem key="false" value="false">
+                    Normal Only
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -243,13 +267,14 @@ export default function OperatorOutagesPage() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            {outage.isPriority && (
+                            {outage.isPriority ? (
                               <Badge variant="warning" className="gap-1">
-                                <Shield
-                                  className="h-3 w-3"
-                                  aria-hidden="true"
-                                />
+                                <Shield className="h-3 w-3" aria-hidden="true" />
                                 Priority
+                              </Badge>
+                            ) : (
+                              <Badge variant="secondary" className="gap-1">
+                                Normal
                               </Badge>
                             )}
                           </TableCell>
