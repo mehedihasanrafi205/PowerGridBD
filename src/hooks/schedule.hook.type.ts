@@ -1,18 +1,17 @@
-import {
-  createSchedule,
-  getSchedules,
-  getScheduleById,
-  updateSchedule,
-  updateScheduleStatus,
-  deleteSchedule,
-} from "@/api/schedule.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  createSchedule,
+  deleteSchedule,
+  getScheduleById,
+  getSchedules,
+  updateSchedule,
+  updateScheduleStatus,
+} from "@/api/schedule.api";
 import type {
   ScheduleFilters,
-  SchedulePayload,
-  ScheduleUpdatePayload,
   ScheduleStatusPayload,
+  ScheduleUpdatePayload,
 } from "@/types";
 
 export const useSchedules = (filters?: ScheduleFilters) => {
@@ -40,7 +39,15 @@ export const useCreateSchedule = () => {
       toast.success("Schedule created successfully!");
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to create schedule");
+      const errorData = "data" in error ? error.data : undefined;
+      const message =
+        errorData &&
+        typeof errorData === "object" &&
+        "message" in errorData &&
+        typeof errorData.message === "string"
+          ? errorData.message
+          : error.message;
+      toast.error(message || "Failed to create schedule");
     },
   });
 };

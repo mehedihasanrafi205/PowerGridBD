@@ -5,7 +5,6 @@ import { ArrowLeft, Loader2, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 import { PageHeader } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
@@ -23,17 +22,27 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAreas, useAuth, useCreateSchedule } from "@/hooks";
 import { cn } from "@/lib/utils";
 
-const scheduleSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  description: z.string().optional(),
-  type: z.enum(["FEEDER", "AREA"]),
-  areaId: z.string().min(1, "Area is required"),
-  feederId: z.string().optional(),
-  startTime: z.string().min(1, "Start time is required"),
-  endTime: z.string().min(1, "End time is required"),
-  recurrence: z.enum(["NONE", "DAILY", "WEEKLY", "MONTHLY"]),
-  recurrenceDays: z.array(z.string()).optional(),
-});
+const scheduleSchema = z
+  .object({
+    title: z.string().min(3, "Title must be at least 3 characters"),
+    description: z.string().optional(),
+    type: z.enum(["FEEDER", "AREA"]),
+    areaId: z.string().min(1, "Area is required"),
+    feederId: z.string().optional(),
+    startTime: z.string().min(1, "Start time is required"),
+    endTime: z.string().min(1, "End time is required"),
+    reason: z.string().trim().min(1, "Reason is required"),
+    recurrence: z.enum(["NONE", "DAILY", "WEEKLY", "MONTHLY"]),
+    recurrenceDays: z.array(z.string()).optional(),
+  })
+  .refine((data) => new Date(data.startTime) > new Date(), {
+    message: "Start time must be in the future",
+    path: ["startTime"],
+  })
+  .refine((data) => new Date(data.endTime) > new Date(data.startTime), {
+    message: "End time must be after start time",
+    path: ["endTime"],
+  });
 
 type ScheduleForm = z.infer<typeof scheduleSchema>;
 
@@ -61,6 +70,7 @@ export default function CreateSchedulePage() {
       feederId: "",
       startTime: "",
       endTime: "",
+      reason: "",
       recurrence: "NONE",
       recurrenceDays: [],
     },
@@ -69,17 +79,19 @@ export default function CreateSchedulePage() {
   const recurrence = watch("recurrence");
   const showRecurrenceDays = recurrence !== "NONE";
 
-  const handleSubmitForm = async (data: ScheduleForm) => {
-    try {
-      await createMutation.mutateAsync(data);
-      toast.success("Schedule created successfully!");
-      // NOTE: no router.refresh() here — it aborts the pending
-      // client navigation. The list refetches via query
-      // invalidation in the mutation itself.
-      router.push("/operator/schedules");
-    } catch {
-      toast.error("Failed to create schedule");
-    }
+  const handleSubmitForm = (data: ScheduleForm) => {
+    const { feederId, ...scheduleData } = data;
+    createMutation.mutate(
+      {
+        ...scheduleData,
+        ...(feederId ? { feederId } : {}),
+        startTime: new Date(data.startTime).toISOString(),
+        endTime: new Date(data.endTime).toISOString(),
+      },
+      {
+        onSuccess: () => router.push("/operator/schedules"),
+      },
+    );
   };
 
   const daysOfWeek = [
@@ -173,6 +185,26 @@ export default function CreateSchedulePage() {
                 disabled={isLoading}
                 rows={3}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="reason">Reason *</Label>
+              <Textarea
+                id="reason"
+                placeholder="Explain why this schedule is needed"
+                {...register("reason")}
+                disabled={isLoading}
+                rows={3}
+                className={cn(
+                  errors.reason &&
+                    "border-destructive focus:border-destructive",
+                )}
+              />
+              {errors.reason && (
+                <p className="text-sm text-destructive">
+                  {errors.reason.message}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>

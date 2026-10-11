@@ -355,4 +355,4 @@ These are ideas, not claims about existing functionality:
 
 ## License
 
-No `LICENSE` file or license declaration is present in this frontend repository, so no frontend license is specified here. The separate backend package metadata declares `ISC`; that does not specify a license for this frontend repository.
+No `LICENSE` file or license declaration is present in this frontend repository, so no frontend license is specified here. The separate backend package metadata declares `ISC`; that does not specify a license for this frontend repository./

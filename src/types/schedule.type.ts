@@ -14,7 +14,7 @@ export interface SchedulePayload {
   areaId?: string;
   startTime: string;
   endTime: string;
-  reason?: string;
+  reason: string;
   recurrence?: ScheduleRecurrence;
   recurrenceDays?: string[];
 }
