@@ -31,14 +31,22 @@ export default function ResetPasswordPage() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ResetForm>({
     resolver: zodResolver(resetSchema),
     defaultValues: { otp: "", password: "", confirmPassword: "" },
   });
 
+  const otpValue = watch("otp", "");
+
   const onSubmit = (data: ResetForm) => {
     resetMutation.mutate(data);
+  };
+
+  const handleOtpChange = (value: string) => {
+    setValue("otp", value, { shouldValidate: true });
   };
 
   return (
@@ -56,9 +64,11 @@ export default function ResetPasswordPage() {
         <div className="space-y-2">
           <Label htmlFor="otp">Reset Code</Label>
           <InputOTP
-            {...register("otp")}
+            name="otp"
+            value={otpValue}
+            onChange={handleOtpChange}
             disabled={resetMutation.isPending}
-            className={cn(
+            inputClassName={cn(
               errors.otp &&
                 "border-destructive focus:border-destructive focus:ring-destructive/20",
             )}

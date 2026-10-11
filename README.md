@@ -6,10 +6,10 @@ The platform brings customer outage reporting, technician work, grid and schedul
 
 ## Project links
 
-| Resource | URL |
-| --- | --- |
-| Frontend | [powergridbd.vercel.app](https://powergridbd.vercel.app/) |
-| Backend API | [powergridbd-backend.vercel.app](https://powergridbd-backend.vercel.app/) |
+| Resource       | URL                                                                                                 |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| Frontend       | [powergridbd.vercel.app](https://powergridbd.vercel.app/)                                           |
+| Backend API    | [powergridbd-backend.vercel.app](https://powergridbd-backend.vercel.app/)                           |
 | Backend source | [mehedihasanrafi205/PowerGridBD-Backend](https://github.com/mehedihasanrafi205/PowerGridBD-Backend) |
 
 The frontend and backend URLs are the project links supplied for this README; their availability is not guaranteed by this repository.
@@ -29,18 +29,18 @@ The frontend and backend URLs are the project links supplied for this README; th
 
 ## Technology
 
-| Area | Technologies found in the project |
-| --- | --- |
-| Frontend | Next.js 16, React 19, TypeScript |
-| Frontend data and forms | TanStack Query, `ofetch`, Zod, React Hook Form |
-| Backend (separate repository) | Express 5, TypeScript |
-| Database | PostgreSQL with Prisma 7 and the `pg` adapter |
-| Authentication | JWT access/refresh tokens, `bcryptjs`, Google OAuth; the frontend stores returned tokens in browser `localStorage` and sends bearer tokens |
-| Maps | Leaflet, React Leaflet, OpenStreetMap raster tiles with a dark CSS filter |
-| UI and styling | Tailwind CSS 4, shadcn/ui components, Biome |
-| Animation and charts | GSAP, Framer Motion, Lenis, CSS/Intersection Observer animations, Recharts |
-| Backend integrations | Redis for OTP-related storage, Nodemailer/SMTP, Cloudinary uploads, SSLCommerz payments |
-| Deployment configuration | Frontend static export; backend Vercel routing configuration |
+| Area                          | Technologies found in the project                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Frontend                      | Next.js 16, React 19, TypeScript                                                                                                           |
+| Frontend data and forms       | TanStack Query, `ofetch`, Zod, React Hook Form                                                                                             |
+| Backend (separate repository) | Express 5, TypeScript                                                                                                                      |
+| Database                      | PostgreSQL with Prisma 7 and the `pg` adapter                                                                                              |
+| Authentication                | JWT access/refresh tokens, `bcryptjs`, Google OAuth; the frontend stores returned tokens in browser `localStorage` and sends bearer tokens |
+| Maps                          | Leaflet, React Leaflet, OpenStreetMap raster tiles with a dark CSS filter                                                                  |
+| UI and styling                | Tailwind CSS 4, shadcn/ui components, Biome                                                                                                |
+| Animation and charts          | GSAP, Framer Motion, Lenis, CSS/Intersection Observer animations, Recharts                                                                 |
+| Backend integrations          | Redis for OTP-related storage, Nodemailer/SMTP, Cloudinary uploads, SSLCommerz payments                                                    |
+| Deployment configuration      | Frontend static export; backend Vercel routing configuration                                                                               |
 
 The frontend is configured with `output: "export"` and produces static files in `out/`. It calls the separate API from the browser; it does not contain the Express backend or a frontend API route implementation.
 
@@ -62,30 +62,30 @@ The backend organizes its API by feature module. Its Express application mounts 
 
 ### Important frontend directories
 
-| Path | Contents |
-| --- | --- |
-| `src/app/` | Public, authentication, application, payment-result, and role-based dashboard pages |
-| `src/api/` | Typed client functions for auth, users, grid, outages, schedules, payments, applications, and analytics |
-| `src/components/landing/` | Public landing-page sections |
-| `src/components/map/` | Leaflet map, map types, styles, and demonstration topology |
-| `src/components/animation/` | Lenis, GSAP, and reduced-motion providers |
-| `src/components/ui/` | Shared UI components |
-| `src/hooks/` | Query and feature hooks |
-| `src/lib/` | API client, utilities, and shared helpers |
-| `src/providers/` | Authentication and application providers |
-| `src/types/` | Shared frontend types |
-| `e2e/` | Playwright end-to-end tests |
+| Path                        | Contents                                                                                                |
+| --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `src/app/`                  | Public, authentication, application, payment-result, and role-based dashboard pages                     |
+| `src/api/`                  | Typed client functions for auth, users, grid, outages, schedules, payments, applications, and analytics |
+| `src/components/landing/`   | Public landing-page sections                                                                            |
+| `src/components/map/`       | Leaflet map, map types, styles, and demonstration topology                                              |
+| `src/components/animation/` | Lenis, GSAP, and reduced-motion providers                                                               |
+| `src/components/ui/`        | Shared UI components                                                                                    |
+| `src/hooks/`                | Query and feature hooks                                                                                 |
+| `src/lib/`                  | API client, utilities, and shared helpers                                                               |
+| `src/providers/`            | Authentication and application providers                                                                |
+| `src/types/`                | Shared frontend types                                                                                   |
+| `e2e/`                      | Playwright end-to-end tests                                                                             |
 
 ## User roles
 
 These roles are enforced by the backend API. Dashboard navigation is also role-aware in the frontend; hiding a link is not a substitute for backend authorization.
 
-| Role | Main capabilities |
-| --- | --- |
-| `CUSTOMER` | Report and follow outages, view schedules and personal summaries, manage a profile, and use customer payment/SLA pages |
-| `TECHNICIAN` | View assigned outage work, update eligible work statuses, and view technician summary/profile pages |
-| `POWER_OPERATOR` | Manage grid resources and schedules, assign technicians, review technician applications, and view operational analytics |
-| `ADMIN` | Manage users and roles, oversee grid and outage operations, and access administration, payments, analytics, and audit-log pages |
+| Role             | Main capabilities                                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `CUSTOMER`       | Report and follow outages, view schedules and personal summaries, manage a profile, and use customer payment/SLA pages          |
+| `TECHNICIAN`     | View assigned outage work, update eligible work statuses, and view technician summary/profile pages                             |
+| `POWER_OPERATOR` | Manage grid resources and schedules, assign technicians, review technician applications, and view operational analytics         |
+| `ADMIN`          | Manage users and roles, oversee grid and outage operations, and access administration, payments, analytics, and audit-log pages |
 
 Technician access is associated with the application/review flow or a role grant. Power-operator and administrator privileges are managed by the backend rather than public registration.
 
@@ -93,29 +93,29 @@ Technician access is associated with the application/review flow or a role grant
 
 The paths below are frontend pages. Dashboard pages are intended for signed-in users with the corresponding role.
 
-| Page/route | Purpose | Access |
-| --- | --- | --- |
-| `/` | Public landing page | Public |
-| `/about`, `/services`, `/pricing`, `/contact` | Public project information, pricing, and contact form | Public |
-| `/auth/login`, `/auth/register`, `/auth/verify-email` | Sign-in, customer registration, and email verification | Public |
-| `/auth/forgot-password`, `/auth/reset-password` | Password recovery | Public |
-| `/apply`, `/apply/verify` | Technician application and verification | Public |
-| `/payment/success`, `/payment/cancel` | Payment-provider return pages | Public |
-| `/customer`, `/customer/outage`, `/customer/outages`, `/customer/outage/report` | Customer dashboard and outage reporting | Customer |
-| `/customer/payments`, `/customer/schedules`, `/customer/sla`, `/customer/profile` | Customer account and service pages | Customer |
-| `/technician`, `/technician/outage`, `/technician/outages`, `/technician/summary`, `/technician/profile` | Technician dashboard, work, summary, and profile | Technician |
-| `/operator`, `/operator/outage`, `/operator/outages`, `/operator/grid`, `/operator/schedules`, `/operator/schedules/create` | Operator dashboard and grid/outage/schedule tools | Power operator |
-| `/operator/analytics`, `/operator/applications`, `/operator/audit-logs` | Operator analytics and application/audit-log pages | Power operator UI |
-| `/admin`, `/admin/outage`, `/admin/outages`, `/admin/grid`, `/admin/users`, `/admin/payments` | Administrative dashboard and management pages | Admin |
-| `/admin/analytics`, `/admin/applications`, `/admin/audit-logs` | Administrative analytics, application, and audit-log pages | Admin |
+| Page/route                                                                                                                  | Purpose                                                    | Access            |
+| --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------- |
+| `/`                                                                                                                         | Public landing page                                        | Public            |
+| `/about`, `/services`, `/pricing`, `/contact`                                                                               | Public project information, pricing, and contact form      | Public            |
+| `/auth/login`, `/auth/register`, `/auth/verify-email`                                                                       | Sign-in, customer registration, and email verification     | Public            |
+| `/auth/forgot-password`, `/auth/reset-password`                                                                             | Password recovery                                          | Public            |
+| `/apply`, `/apply/verify`                                                                                                   | Technician application and verification                    | Public            |
+| `/payment/success`, `/payment/cancel`                                                                                       | Payment-provider return pages                              | Public            |
+| `/customer`, `/customer/outage`, `/customer/outages`, `/customer/outage/report`                                             | Customer dashboard and outage reporting                    | Customer          |
+| `/customer/payments`, `/customer/schedules`, `/customer/sla`, `/customer/profile`                                           | Customer account and service pages                         | Customer          |
+| `/technician`, `/technician/outage`, `/technician/outages`, `/technician/summary`, `/technician/profile`                    | Technician dashboard, work, summary, and profile           | Technician        |
+| `/operator`, `/operator/outage`, `/operator/outages`, `/operator/grid`, `/operator/schedules`, `/operator/schedules/create` | Operator dashboard and grid/outage/schedule tools          | Power operator    |
+| `/operator/analytics`, `/operator/applications`, `/operator/audit-logs`                                                     | Operator analytics and application/audit-log pages         | Power operator UI |
+| `/admin`, `/admin/outage`, `/admin/outages`, `/admin/grid`, `/admin/users`, `/admin/payments`                               | Administrative dashboard and management pages              | Admin             |
+| `/admin/analytics`, `/admin/applications`, `/admin/audit-logs`                                                              | Administrative analytics, application, and audit-log pages | Admin             |
 
 ## API reference
 
 The API is maintained in the separate backend repository. The route and access details below are based on its checked-in route modules at revision `22ecab16250d992043c82f9bacfbd6c6a9aae880`; check that repository for subsequent changes.
 
-| Environment | API base URL |
-| --- | --- |
-| Local backend | `http://localhost:5000/api/v1` |
+| Environment                 | API base URL                                    |
+| --------------------------- | ----------------------------------------------- |
+| Local backend               | `http://localhost:5000/api/v1`                  |
 | Project-provided deployment | `https://powergridbd-backend.vercel.app/api/v1` |
 
 The backend also exposes `GET /` (outside `/api/v1`) as a basic service response. Authenticated routes accept a bearer token or the backend's authentication cookie. The frontend API client currently persists token values in `localStorage` and attaches the access token as a bearer token.
@@ -124,102 +124,102 @@ In the tables, **any authenticated role** means `CUSTOMER`, `TECHNICIAN`, `POWER
 
 ### Authentication — `/auth`
 
-| Method | Path | Access | Purpose |
-| --- | --- | --- | --- |
-| `POST` | `/register` | Public | Register a customer and send an email verification OTP |
-| `POST` | `/verify-email` | Public | Verify the registration OTP |
-| `POST` | `/login` | Public | Authenticate with credentials |
-| `GET` | `/me` | Any authenticated role | Retrieve the current user |
-| `POST` | `/refresh-token` | Public route; refresh cookie required | Issue refreshed tokens |
-| `POST` | `/google` | Public | Google sign-in |
-| `POST` | `/forgot-password` | Public | Start password recovery |
-| `POST` | `/reset-password` | Public | Complete password recovery |
+| Method | Path               | Access                                | Purpose                                                |
+| ------ | ------------------ | ------------------------------------- | ------------------------------------------------------ |
+| `POST` | `/register`        | Public                                | Register a customer and send an email verification OTP |
+| `POST` | `/verify-email`    | Public                                | Verify the registration OTP                            |
+| `POST` | `/login`           | Public                                | Authenticate with credentials                          |
+| `GET`  | `/me`              | Any authenticated role                | Retrieve the current user                              |
+| `POST` | `/refresh-token`   | Public route; refresh cookie required | Issue refreshed tokens                                 |
+| `POST` | `/google`          | Public                                | Google sign-in                                         |
+| `POST` | `/forgot-password` | Public                                | Start password recovery                                |
+| `POST` | `/reset-password`  | Public                                | Complete password recovery                             |
 
 ### Users — `/user`
 
-| Method | Path | Access | Purpose |
-| --- | --- | --- | --- |
-| `PATCH` | `/profile` | Any authenticated role | Update the current profile |
-| `PATCH` | `/profile-image` | Any authenticated role | Upload a profile image (`profileImage` multipart field) |
-| `GET` | `/` | Admin | List users |
-| `GET` | `/:id` | Admin | Retrieve a user |
-| `PATCH` | `/:id/status` | Admin | Change user status |
-| `PATCH` | `/:id/role` | Admin or power operator | Change a role; operator grants/revokes are limited to technician role |
-| `DELETE` | `/:id` | Admin | Soft-delete a user |
+| Method   | Path             | Access                  | Purpose                                                               |
+| -------- | ---------------- | ----------------------- | --------------------------------------------------------------------- |
+| `PATCH`  | `/profile`       | Any authenticated role  | Update the current profile                                            |
+| `PATCH`  | `/profile-image` | Any authenticated role  | Upload a profile image (`profileImage` multipart field)               |
+| `GET`    | `/`              | Admin                   | List users                                                            |
+| `GET`    | `/:id`           | Admin                   | Retrieve a user                                                       |
+| `PATCH`  | `/:id/status`    | Admin                   | Change user status                                                    |
+| `PATCH`  | `/:id/role`      | Admin or power operator | Change a role; operator grants/revokes are limited to technician role |
+| `DELETE` | `/:id`           | Admin                   | Soft-delete a user                                                    |
 
 ### Grid — `/grid`
 
 The resource paths are `/zones`, `/substations`, `/feeders`, and `/areas`.
 
-| Method | Path | Access | Purpose |
-| --- | --- | --- | --- |
-| `GET` | `/zones`, `/substations`, `/feeders`, `/areas` | Any authenticated role | List grid resources |
-| `POST` | `/zones`, `/substations`, `/feeders`, `/areas` | Admin or power operator | Create a grid resource |
-| `PATCH` | `/zones/:id`, `/substations/:id`, `/feeders/:id`, `/areas/:id` | Admin or power operator | Update a grid resource |
+| Method   | Path                                                           | Access                  | Purpose                |
+| -------- | -------------------------------------------------------------- | ----------------------- | ---------------------- |
+| `GET`    | `/zones`, `/substations`, `/feeders`, `/areas`                 | Any authenticated role  | List grid resources    |
+| `POST`   | `/zones`, `/substations`, `/feeders`, `/areas`                 | Admin or power operator | Create a grid resource |
+| `PATCH`  | `/zones/:id`, `/substations/:id`, `/feeders/:id`, `/areas/:id` | Admin or power operator | Update a grid resource |
 | `DELETE` | `/zones/:id`, `/substations/:id`, `/feeders/:id`, `/areas/:id` | Admin or power operator | Delete a grid resource |
 
 The backend route modules do not define `GET /:id` handlers for these grid resources.
 
 ### Outages — `/outage`
 
-| Method | Path | Access | Purpose |
-| --- | --- | --- | --- |
-| `POST` | `/` | Customer | Report an outage |
-| `GET` | `/` | Any authenticated role | List outage reports with role-scoped results |
-| `GET` | `/:id` | Any authenticated role | Retrieve an outage report |
-| `PATCH` | `/:id/assign` | Admin or power operator | Assign a technician |
-| `PATCH` | `/:id/status` | Admin, power operator, or technician | Update outage status |
-| `DELETE` | `/:id` | Admin, power operator, or customer | Delete an outage report, subject to service-level ownership/state rules |
+| Method   | Path          | Access                               | Purpose                                                                 |
+| -------- | ------------- | ------------------------------------ | ----------------------------------------------------------------------- |
+| `POST`   | `/`           | Customer                             | Report an outage                                                        |
+| `GET`    | `/`           | Any authenticated role               | List outage reports with role-scoped results                            |
+| `GET`    | `/:id`        | Any authenticated role               | Retrieve an outage report                                               |
+| `PATCH`  | `/:id/assign` | Admin or power operator              | Assign a technician                                                     |
+| `PATCH`  | `/:id/status` | Admin, power operator, or technician | Update outage status                                                    |
+| `DELETE` | `/:id`        | Admin, power operator, or customer   | Delete an outage report, subject to service-level ownership/state rules |
 
 ### Schedules — `/schedule`
 
-| Method | Path | Access | Purpose |
-| --- | --- | --- | --- |
-| `GET` | `/` and `/:id` | Any authenticated role | List or retrieve schedules |
-| `POST` | `/` | Admin or power operator | Create a schedule |
-| `PATCH` | `/:id` and `/:id/status` | Admin or power operator | Update a schedule or its status |
-| `DELETE` | `/:id` | Admin or power operator | Delete a schedule |
+| Method   | Path                     | Access                  | Purpose                         |
+| -------- | ------------------------ | ----------------------- | ------------------------------- |
+| `GET`    | `/` and `/:id`           | Any authenticated role  | List or retrieve schedules      |
+| `POST`   | `/`                      | Admin or power operator | Create a schedule               |
+| `PATCH`  | `/:id` and `/:id/status` | Admin or power operator | Update a schedule or its status |
+| `DELETE` | `/:id`                   | Admin or power operator | Delete a schedule               |
 
 ### Payments — `/payment`
 
-| Method | Path | Access | Purpose |
-| --- | --- | --- | --- |
-| `POST` | `/` | Customer | Initiate a payment |
-| `POST` | `/ipn`, `/success`, `/fail`, `/cancel` | Public provider callbacks | Process SSLCommerz callbacks |
-| `GET` | `/transaction/:id` | Any authenticated role | Retrieve a transaction |
-| `GET` | `/my-payments` | Customer | List the current customer's payments |
-| `POST` | `/refund` | Customer | Initiate a refund request |
+| Method | Path                                   | Access                    | Purpose                              |
+| ------ | -------------------------------------- | ------------------------- | ------------------------------------ |
+| `POST` | `/`                                    | Customer                  | Initiate a payment                   |
+| `POST` | `/ipn`, `/success`, `/fail`, `/cancel` | Public provider callbacks | Process SSLCommerz callbacks         |
+| `GET`  | `/transaction/:id`                     | Any authenticated role    | Retrieve a transaction               |
+| `GET`  | `/my-payments`                         | Customer                  | List the current customer's payments |
+| `POST` | `/refund`                              | Customer                  | Initiate a refund request            |
 
 ### Analytics — `/analytics`
 
-| Method | Path | Access | Purpose |
-| --- | --- | --- | --- |
-| `GET` | `/operational`, `/performance`, `/geographical`, `/financial`, `/trends` | Admin or power operator | Retrieve operational and business analytics |
-| `GET` | `/my-summary` | Customer | Retrieve the customer summary |
-| `GET` | `/technician-summary` | Technician | Retrieve the technician summary |
-| `GET` | `/audit-logs` | Admin | Retrieve audit logs |
+| Method | Path                                                                     | Access                  | Purpose                                     |
+| ------ | ------------------------------------------------------------------------ | ----------------------- | ------------------------------------------- |
+| `GET`  | `/operational`, `/performance`, `/geographical`, `/financial`, `/trends` | Admin or power operator | Retrieve operational and business analytics |
+| `GET`  | `/my-summary`                                                            | Customer                | Retrieve the customer summary               |
+| `GET`  | `/technician-summary`                                                    | Technician              | Retrieve the technician summary             |
+| `GET`  | `/audit-logs`                                                            | Admin                   | Retrieve audit logs                         |
 
 ### Technician applications — `/applications`
 
-| Method | Path | Access | Purpose |
-| --- | --- | --- | --- |
-| `POST` | `/`, `/verify-email`, `/resend-otp` | Public | Submit an application and verify/resend its email OTP |
-| `GET` | `/my` | Public route; email query parameter | Check application status |
-| `GET` | `/` | Admin or power operator | List applications |
-| `PATCH` | `/:id/review` | Admin or power operator | Approve or reject an application |
+| Method  | Path                                | Access                              | Purpose                                               |
+| ------- | ----------------------------------- | ----------------------------------- | ----------------------------------------------------- |
+| `POST`  | `/`, `/verify-email`, `/resend-otp` | Public                              | Submit an application and verify/resend its email OTP |
+| `GET`   | `/my`                               | Public route; email query parameter | Check application status                              |
+| `GET`   | `/`                                 | Admin or power operator             | List applications                                     |
+| `PATCH` | `/:id/review`                       | Admin or power operator             | Approve or reject an application                      |
 
 ### Frontend/backend integration gaps
 
 The following calls or pages exist in the frontend, but corresponding handlers are absent from the backend route modules listed above. They should not be treated as available API features without confirming or implementing backend support:
 
-| Frontend reference | Current backend route status |
-| --- | --- |
-| `POST /auth/logout` | No logout route is registered |
-| `GET /payment/all` | No all-payments route is registered |
-| `GET /analytics/technician-workload`, `GET /analytics/sla-plans`, `POST /analytics/sla/subscribe` | No matching analytics routes are registered |
-| `GET /applications/:id` | No application-by-ID route is registered |
-| `GET /grid/{zones,substations,feeders,areas}/:id` | The backend registers list/create/update/delete routes, but no grid-by-ID GET handlers |
-| Operator audit-log page | The backend's `/analytics/audit-logs` route is restricted to admins |
+| Frontend reference                                                                                | Current backend route status                                                           |
+| ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `POST /auth/logout`                                                                               | No logout route is registered                                                          |
+| `GET /payment/all`                                                                                | No all-payments route is registered                                                    |
+| `GET /analytics/technician-workload`, `GET /analytics/sla-plans`, `POST /analytics/sla/subscribe` | No matching analytics routes are registered                                            |
+| `GET /applications/:id`                                                                           | No application-by-ID route is registered                                               |
+| `GET /grid/{zones,substations,feeders,areas}/:id`                                                 | The backend registers list/create/update/delete routes, but no grid-by-ID GET handlers |
+| Operator audit-log page                                                                           | The backend's `/analytics/audit-logs` route is restricted to admins                    |
 
 ## Environment variables
 
@@ -239,22 +239,22 @@ For a deployed frontend, use the backend API base URL ending in `/api/v1`.
 
 The backend repository provides `.env.example`. The names below are taken from its configuration/example; values here are placeholders, not project credentials.
 
-| Variables | Purpose |
-| --- | --- |
-| `NODE_ENV`, `PORT` | Runtime mode and HTTP port |
-| `BACKEND_URL`, `FRONTEND_URL` | Backend callback URLs, frontend CORS origin, and redirects |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_ACCESS_EXPIRES_IN`, `JWT_REFRESH_EXPIRES_IN` | JWT signing and token lifetimes |
-| `BCRYPT_SALT_ROUNDS` | Password-hashing cost |
-| `GOOGLE_CLIENT_ID` | Backend Google OAuth verification |
-| `TESTER_ADMIN_NAME`, `TESTER_ADMIN_EMAIL`, `TESTER_ADMIN_PASSWORD` | Seeded administrator account |
-| `TESTER_POWER_OPERATOR_NAME`, `TESTER_POWER_OPERATOR_EMAIL`, `TESTER_POWER_OPERATOR_PASSWORD` | Seeded power-operator account |
-| `TESTER_TECHNICIAN_NAME`, `TESTER_TECHNICIAN_EMAIL`, `TESTER_TECHNICIAN_PASSWORD` | Seeded technician account |
-| `REDIS_USER`, `REDIS_PASSWORD`, `REDIS_HOST`, `REDIS_PORT` | Redis connection for OTP storage |
-| `EMAIL_SENDER`, `SMTP_USER`, `SMTP_PASSWORD` | Email sender and SMTP authentication |
-| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Profile-image uploads |
-| `SSLC_STORE_ID`, `SSLC_STORE_PASSWORD`, `SSLC_IS_LIVE` | SSLCommerz credentials and mode |
-| `PRIORITY_RESTORATION_PRICE`, `SLA_SUBSCRIPTION_PRICE` | Server-side product prices; the backend code defaults these to 500 and 2000 respectively |
+| Variables                                                                                     | Purpose                                                                                  |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `NODE_ENV`, `PORT`                                                                            | Runtime mode and HTTP port                                                               |
+| `BACKEND_URL`, `FRONTEND_URL`                                                                 | Backend callback URLs, frontend CORS origin, and redirects                               |
+| `DATABASE_URL`                                                                                | PostgreSQL connection string                                                             |
+| `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_ACCESS_EXPIRES_IN`, `JWT_REFRESH_EXPIRES_IN`  | JWT signing and token lifetimes                                                          |
+| `BCRYPT_SALT_ROUNDS`                                                                          | Password-hashing cost                                                                    |
+| `GOOGLE_CLIENT_ID`                                                                            | Backend Google OAuth verification                                                        |
+| `TESTER_ADMIN_NAME`, `TESTER_ADMIN_EMAIL`, `TESTER_ADMIN_PASSWORD`                            | Seeded administrator account                                                             |
+| `TESTER_POWER_OPERATOR_NAME`, `TESTER_POWER_OPERATOR_EMAIL`, `TESTER_POWER_OPERATOR_PASSWORD` | Seeded power-operator account                                                            |
+| `TESTER_TECHNICIAN_NAME`, `TESTER_TECHNICIAN_EMAIL`, `TESTER_TECHNICIAN_PASSWORD`             | Seeded technician account                                                                |
+| `REDIS_USER`, `REDIS_PASSWORD`, `REDIS_HOST`, `REDIS_PORT`                                    | Redis connection for OTP storage                                                         |
+| `EMAIL_SENDER`, `SMTP_USER`, `SMTP_PASSWORD`                                                  | Email sender and SMTP authentication                                                     |
+| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`                        | Profile-image uploads                                                                    |
+| `SSLC_STORE_ID`, `SSLC_STORE_PASSWORD`, `SSLC_IS_LIVE`                                        | SSLCommerz credentials and mode                                                          |
+| `PRIORITY_RESTORATION_PRICE`, `SLA_SUBSCRIPTION_PRICE`                                        | Server-side product prices; the backend code defaults these to 500 and 2000 respectively |
 
 Do not commit `.env`, `.env.local`, real tester-account credentials, or any provider secrets.
 
@@ -302,26 +302,26 @@ The local API base URL is `http://localhost:5000/api/v1` when `PORT=5000`.
 
 ### Frontend
 
-| Command | Script | Purpose |
-| --- | --- | --- |
-| `bun run dev` | `next dev` | Run the development server |
-| `bun run build` | `next build` | Build the application and static export in `out/` |
-| `bun run start` | `next start` | Script declared by the package; the configured production output is a static export, so deployment should serve `out/` as static files |
-| `bun run lint` | `biome check` | Run Biome checks |
-| `bun run test` | `bun test` | Run Bun tests |
-| `bun run test:e2e` | `playwright test` | Run Playwright end-to-end tests |
-| `bun run format` | `biome format --write` | Format files with Biome |
+| Command            | Script                 | Purpose                                                                                                                                |
+| ------------------ | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `bun run dev`      | `next dev`             | Run the development server                                                                                                             |
+| `bun run build`    | `next build`           | Build the application and static export in `out/`                                                                                      |
+| `bun run start`    | `next start`           | Script declared by the package; the configured production output is a static export, so deployment should serve `out/` as static files |
+| `bun run lint`     | `biome check`          | Run Biome checks                                                                                                                       |
+| `bun run test`     | `bun test`             | Run Bun tests                                                                                                                          |
+| `bun run test:e2e` | `playwright test`      | Run Playwright end-to-end tests                                                                                                        |
+| `bun run format`   | `biome format --write` | Format files with Biome                                                                                                                |
 
 ### Backend
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Run the TypeScript API with `tsx watch` |
-| `npm run build` | Compile with TypeScript |
-| `npm start` | Run `dist/src/server.js` |
-| `npm run lint:check` / `npm run lint:fix` | Check or apply Biome lint fixes |
-| `npm run format:check` / `npm run format:fix` | Check or apply Biome formatting |
-| `npm test` | Placeholder script; the backend package currently exits with “no test specified” |
+| Command                                       | Purpose                                                                          |
+| --------------------------------------------- | -------------------------------------------------------------------------------- |
+| `npm run dev`                                 | Run the TypeScript API with `tsx watch`                                          |
+| `npm run build`                               | Compile with TypeScript                                                          |
+| `npm start`                                   | Run `dist/src/server.js`                                                         |
+| `npm run lint:check` / `npm run lint:fix`     | Check or apply Biome lint fixes                                                  |
+| `npm run format:check` / `npm run format:fix` | Check or apply Biome formatting                                                  |
+| `npm test`                                    | Placeholder script; the backend package currently exits with “no test specified” |
 
 ## Map configuration
 

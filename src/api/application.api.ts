@@ -17,13 +17,13 @@ export const createApplication = (payload: ApplicationPayload) =>
     data: Application;
   }>("/applications", { method: "POST", body: payload });
 
-export const verifyApplication = (otp: string) =>
+export const verifyApplication = (payload: { email: string; otp: string }) =>
   apiClient<{
     success: boolean;
     statusCode: number;
     message: string;
     data: Application;
-  }>("/applications/verify-email", { method: "POST", body: { otp } });
+  }>("/applications/verify-email", { method: "POST", body: payload });
 
 export const resendApplicationOtp = (email: string) =>
   apiClient<{ success: boolean; statusCode: number; message: string }>(

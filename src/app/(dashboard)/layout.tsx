@@ -491,20 +491,25 @@ export default function DashboardLayout({
                           aria-label={`Account menu for ${user.name}`}
                           className="flex items-center gap-2 rounded-full p-1.5 transition-colors hover:bg-accent"
                         >
-                          <img
-                            src={user.profileImage || ""}
-                            alt={user.name}
-                            className="h-8 w-8 rounded-full bg-muted object-cover"
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none";
-                              e.currentTarget.nextElementSibling?.classList.remove(
-                                "hidden",
-                              );
-                            }}
-                          />
-                          <span className="hidden h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium md:block text-primary">
-                            {user.name.charAt(0).toUpperCase()}
-                          </span>
+                          {user.profileImage ? (
+                            <img
+                              src={user.profileImage}
+                              alt={user.name}
+                              className="h-8 w-8 rounded-full bg-muted object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                                e.currentTarget.nextElementSibling?.classList.remove(
+                                  "hidden",
+                                );
+                              }}
+                            />
+                          ) : (
+                            <span
+                              className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary"
+                            >
+                              {user.name.charAt(0).toUpperCase()}
+                            </span>
+                          )}
                           <span className="hidden text-sm font-medium md:block">
                             {user.name}
                           </span>

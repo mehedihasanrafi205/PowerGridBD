@@ -34,6 +34,8 @@ export default function ApplicationVerifyForm() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     getValues,
     formState: { errors },
   } = useForm<VerifyForm>({
@@ -44,16 +46,25 @@ export default function ApplicationVerifyForm() {
     },
   });
 
+  const otpValue = watch("otp", "");
+
   const onSubmit = (data: VerifyForm) => {
-    verifyMutation.mutate(data.otp, {
-      onSuccess: () => setVerified(true),
-    });
+    verifyMutation.mutate(
+      { email: data.email, otp: data.otp },
+      {
+        onSuccess: () => setVerified(true),
+      },
+    );
   };
 
   const onResend = () => {
     const email = getValues("email");
     if (!email) return;
     resendMutation.mutate(email);
+  };
+
+  const handleOtpChange = (value: string) => {
+    setValue("otp", value, { shouldValidate: true });
   };
 
   if (verified) {
@@ -104,9 +115,11 @@ export default function ApplicationVerifyForm() {
         <div className="space-y-2">
           <Label htmlFor="verify-otp">Verification Code</Label>
           <InputOTP
-            {...register("otp")}
+            name="otp"
+            value={otpValue}
+            onChange={handleOtpChange}
             disabled={verifyMutation.isPending}
-            className={cn(errors.otp && "border-destructive")}
+            inputClassName={cn(errors.otp && "border-destructive")}
           />
           {errors.otp && (
             <p className="text-sm text-destructive">{errors.otp.message}</p>
