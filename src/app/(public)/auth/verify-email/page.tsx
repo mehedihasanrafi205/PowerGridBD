@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -123,110 +123,120 @@ export default function VerifyEmailPage() {
 
   return (
     <AuthShell>
-      <div className="mb-8 text-center">
-        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-electric-blue/10">
-          <svg
-            className="h-7 w-7 text-electric-blue"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
+      <div className="flex min-h-[calc(100svh-5rem)] flex-col justify-center lg:min-h-0">
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-electric-blue/10">
+            <svg
+              className="h-7 w-7 text-electric-blue"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <h1 className="mb-2 text-3xl font-bold tracking-tight text-foreground">
+            Verify Your Email
+          </h1>
+          <p className="mx-auto max-w-md text-muted-foreground">
+            We&apos;ve sent a 6-digit verification code to
+            <br />
+            <span className="break-all font-medium text-foreground">
+              {email || "your email"}
+            </span>
+          </p>
         </div>
-        <h1 className="mb-2 text-3xl font-bold tracking-tight text-foreground">
-          Verify Your Email
-        </h1>
-        <p className="mx-auto max-w-md text-muted-foreground">
-          We&apos;ve sent a 6-digit verification code to
-          <br />
-          <span className="break-all font-medium text-foreground">
-            {email || "your email"}
-          </span>
-        </p>
-      </div>
 
-      <form
-        onSubmit={handleSubmit(handleVerify)}
-        className="mx-auto w-full max-w-xs space-y-5"
-      >
-        <div className="space-y-3">
-          <Label
-            htmlFor="otp"
-            className="block text-center text-sm font-medium text-foreground"
+        <form
+          onSubmit={handleSubmit(handleVerify)}
+          className="mx-auto w-full max-w-xs space-y-5"
+        >
+          <div className="space-y-3">
+            <Label
+              htmlFor="otp"
+              className="block text-center text-sm font-medium text-foreground"
+            >
+              Verification Code
+            </Label>
+            <div className="flex justify-center">
+              <InputOTP
+                name="otp"
+                value={otpValue}
+                onChange={handleOtpChange}
+                disabled={isLoading}
+                length={6}
+                containerClassName="gap-1.5 sm:gap-2"
+                className="w-full justify-center"
+                inputClassName={cn(
+                  "h-12 w-10 sm:w-11",
+                  errors.otp &&
+                    "border-destructive focus:border-destructive focus:ring-destructive/20",
+                )}
+              />
+            </div>
+            {errors.otp && (
+              <p className="text-sm text-destructive text-center">
+                {errors.otp.message}
+              </p>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            className="h-12 w-full text-base font-semibold text-white"
+            disabled={isLoading}
           >
-            Verification Code
-          </Label>
-          <div className="flex justify-center">
-            <InputOTP
-              name="otp"
-              value={otpValue}
-              onChange={handleOtpChange}
-              disabled={isLoading}
-              length={6}
-              containerClassName="gap-1.5 sm:gap-2"
-              className="w-full justify-center"
-              inputClassName={cn(
-                "h-12 w-10 sm:w-11",
-                errors.otp &&
-                  "border-destructive focus:border-destructive focus:ring-destructive/20",
-              )}
+            {isLoading ? "Verifying..." : "Verify Email"}
+          </Button>
+        </form>
+
+        <div className="mx-auto mt-6 w-full max-w-xs space-y-4 text-center">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <span
+              className="h-px min-w-4 flex-1 bg-border"
+              aria-hidden="true"
+            />
+            <span className="whitespace-nowrap">
+              Didn&apos;t receive the code?
+            </span>
+            <span
+              className="h-px min-w-4 flex-1 bg-border"
+              aria-hidden="true"
             />
           </div>
-          {errors.otp && (
-            <p className="text-sm text-destructive text-center">
-              {errors.otp.message}
-            </p>
-          )}
-        </div>
 
-        <Button
-          type="submit"
-          className="h-12 w-full text-base font-semibold text-white"
-          disabled={isLoading}
-        >
-          {isLoading ? "Verifying..." : "Verify Email"}
-        </Button>
-      </form>
-
-      <div className="mx-auto mt-6 w-full max-w-xs space-y-4 text-center">
-        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          <span className="h-px min-w-4 flex-1 bg-border" aria-hidden="true" />
-          <span className="whitespace-nowrap">Didn&apos;t receive the code?</span>
-          <span className="h-px min-w-4 flex-1 bg-border" aria-hidden="true" />
-        </div>
-
-        <Button
-          variant="outline"
-          size="default"
-          onClick={handleResendOtp}
-          disabled={resendLoading || resendCooldown > 0}
-          className="h-11 w-full"
-        >
-          {resendLoading
-            ? "Sending..."
-            : resendCooldown > 0
-              ? `Resend OTP (${resendCooldown}s)`
-              : "Resend OTP"}
-        </Button>
-      </div>
-
-      <div className="mt-7 text-center">
-        <p className="text-sm text-muted-foreground">
-          Back to{" "}
-          <a
-            href="/auth/login"
-            className="font-medium text-primary hover:underline"
+          <Button
+            variant="outline"
+            size="default"
+            onClick={handleResendOtp}
+            disabled={resendLoading || resendCooldown > 0}
+            className="h-11 w-full"
           >
-            Sign In
-          </a>
-        </p>
+            {resendLoading
+              ? "Sending..."
+              : resendCooldown > 0
+                ? `Resend OTP (${resendCooldown}s)`
+                : "Resend OTP"}
+          </Button>
+        </div>
+
+        <div className="mt-7 text-center">
+          <p className="text-sm text-muted-foreground">
+            Back to{" "}
+            <a
+              href="/auth/login"
+              className="font-medium text-primary hover:underline"
+            >
+              Sign In
+            </a>
+          </p>
+        </div>
       </div>
     </AuthShell>
   );

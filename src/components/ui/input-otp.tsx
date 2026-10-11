@@ -145,12 +145,7 @@ const InputOTP = React.forwardRef<
             />
           ))}
         </div>
-        <input
-          type="hidden"
-          name={name}
-          value={values.join("")}
-          readOnly
-        />
+        <input type="hidden" name={name} value={values.join("")} readOnly />
       </div>
     );
   },

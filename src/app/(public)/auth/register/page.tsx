@@ -44,7 +44,6 @@ interface AuthResponse {
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
 
   const {
     register,
@@ -69,9 +68,11 @@ export default function RegisterPage() {
         password: data.password,
       });
       if (response.success) {
-        setOtpSent(true);
         toast.success(
           "Registration successful! Please check your email for the OTP.",
+        );
+        router.push(
+          `/auth/verify-email?email=${encodeURIComponent(data.email.trim())}`,
         );
       } else {
         toast.error(response.message || "Registration failed");
@@ -86,11 +87,6 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
-
-  if (otpSent) {
-    router.push("/auth/verify-email");
-    return null;
-  }
 
   return (
     <AuthShell>
